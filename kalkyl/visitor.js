@@ -5,6 +5,10 @@ define(['../lib/quack.js', './exports.js'], function(q, KL) {
             throw "abstract function call";
         },
 
+        visitFunction: function (expr) {
+            throw "abstract function call";
+        },
+
         visitConstant: function (expr) {
             throw "abstract function call";
         },
@@ -20,7 +24,6 @@ define(['../lib/quack.js', './exports.js'], function(q, KL) {
         visitVariable: function (expr) {
             throw "abstract function call";
         },
-
 
         visitMatrix: function (expr) {
             throw "abstract function call";
@@ -67,6 +70,22 @@ define(['../lib/quack.js', './exports.js'], function(q, KL) {
         },
 
         visitCos: function (expr) {
+            return this.visitUnaryOperator(expr);
+        },
+
+        visitTan: function (expr) {
+            return this.visitUnaryOperator(expr);
+        },
+
+        visitArcsin: function (expr) {
+            return this.visitUnaryOperator(expr);
+        },
+
+        visitArccos: function (expr) {
+            return this.visitUnaryOperator(expr);
+        },
+
+        visitArctan: function (expr) {
             return this.visitUnaryOperator(expr);
         },
 

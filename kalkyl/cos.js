@@ -1,5 +1,5 @@
 define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOperator) {
-    KL.UnaryMinus = q.createClass(KL.UnaryOperator, {
+    return KL.Cos = q.createClass(KL.UnaryOperator, {
         /**
          * Evaluated.
          */
@@ -12,11 +12,11 @@ define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL
                 if (arg instanceof KL.Matrix) {
                     var m = arg.toMatrixNM();
                     m.forEachArgument(function (v, k) {
-                            m.element(k, -v);
+                            m.element(k, Math.cos(v));
                     });
                     return m.toSpecificDim();
                 } else {
-                    return new KL.Constant(-arg.value());
+                    return new KL.Constant(Math.cos(arg.value()));
                 }
             } else {
                 return this.clone();
@@ -41,18 +41,7 @@ define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL
          * Accept expression visitor.
          */
         accept: function (visitor) {
-            return visitor.visitUnaryMinus(this);
+            return visitor.visitCos(this);
         },
     });
-
-    q.patch(KL.Expression, {
-
-        negated: function() {
-            return new KL.UnaryMinus(this.clone());
-        }
-
-    });
-
-    return KL.UnaryMinus;
-
 });

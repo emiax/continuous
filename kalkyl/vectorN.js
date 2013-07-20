@@ -13,7 +13,7 @@ define(['../lib/quack.js', './exports.js', './vector.js'], function(q, KL, Vecto
          * Get or set argument. Index is a number.
          */
         argument: function(index, value) {
-            if (index < this.length() > 0) {
+            if (index < this.length() && index >= 0) {
                 if (value !== undefined) this._elements[index] = value;
                 return this._elements[index];
             } else {
@@ -52,7 +52,7 @@ define(['../lib/quack.js', './exports.js', './vector.js'], function(q, KL, Vecto
          */
         evaluated: function(values) {
             var evaluatedElements = [];
-            forEachArgument(function (v) {
+            this.forEachArgument(function (v) {
                 evaluatedElements.push(v.evaluated());
             })
             return new KL.VectorN(evaluatedElements);

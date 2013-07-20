@@ -14,11 +14,11 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
         },
 
         visitPlus: function (expr) {
-            var left = expr.left().simplified();
-            var right = expr.right().simplified();
-
+            var left = expr.left().simplified(this);
+            var right = expr.right().simplified(this);
+            
             if (left instanceof KL.Constant && right instanceof KL.Constant) {
-                return expr.evaluated();
+                return new KL.Constant(left.value() + right.value());
             }
 
             if (left instanceof KL.Constant && !left.value()) {
@@ -29,32 +29,32 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
                 return left;
             }
 
-            return expr.clone();
+            return new KL.Plus(left, right);
         },
 
         visitMinus: function(expr) {
-            var left = expr.left().simplified();
-            var right = expr.right().simplified();
+            var left = expr.left().simplified(this);
+            var right = expr.right().simplified(this);
 
             if (left instanceof KL.Constant && right instanceof KL.Constant) {
-                return expr.evaluated();
+                return expr.evaluated().simplified(this);
             }
 
             if (left instanceof KL.Constant && !left.value()) {
-                return right.negated();
+                return right.negated().simplified(this);
             }
 
             if (right instanceof KL.Constant && !right.value()) {
                 return left;
             }
 
-            return expr.clone();
+            return KL.Minus(left, right);
 
         },
 
         visitMultiplication: function (expr) {
-            var left = expr.left().simplified();
-            var right = expr.right().simplified();
+            var left = expr.left().simplified(this);
+            var right = expr.right().simplified(this);
 
             if (left instanceof KL.Constant && right instanceof KL.Constant) {
                 return expr.evaluated();
@@ -63,6 +63,8 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
             if (left instanceof KL.Constant) {
                 if (!left.value()) {
                     return left;
+                } else {
+                    console.log(left.value());
                 }
                 if (left.value() === 1) {
                     return right;
@@ -76,12 +78,14 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
                     return left;
                 }
             }
-            return expr.clone();
+
+
+            return new KL.Multiplication(left, right);
         },
 
         visitDivision: function (expr) {
-            var left = expr.left().simplified();
-            var right = expr.right().simplified();
+            var left = expr.left().simplified(this);
+            var right = expr.right().simplified(this);
 
             if (left instanceof KL.Constant && right instanceof KL.Constant) {
                 var evaluated = expr.evaluated();
@@ -103,11 +107,11 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
         },
 
         visitPower: function (expr) {
-            var left = expr.left().simplified();
-            var right = expr.right().simplified();
+            var left = expr.left().simplified(this);
+            var right = expr.right().simplified(this);
 
             if (left instanceof KL.Constant && right instanceof KL.Constant) {
-                return expr.evaluated();
+                return expr.evaluated().simplified(this);
             }
 
             if (left instanceof KL.Constant) {
@@ -141,7 +145,14 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
         },
 
         visitMatrix: function (expr) {
-            return expr.clone();
+            var matrix = expr.clone();
+            var scope = this;
+            matrix.forEachElement(function (v, k) {
+                var simplified = v.simplified(scope);
+                matrix.element(k, simplified);
+            });
+            
+            return matrix;
         }
     });
 

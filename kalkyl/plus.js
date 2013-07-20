@@ -38,7 +38,7 @@ define(['../lib/quack.js', './exports.js', './binaryOperator.js'], function(q, K
                     return new KL.Constant(left.value() + right.value());
                 }
             } else {
-                console.error("kalkyl internal error");
+                return this.clone();
             }
         },
 

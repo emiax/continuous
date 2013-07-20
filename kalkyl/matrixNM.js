@@ -60,10 +60,10 @@ define(['../lib/quack.js', './exports.js', './matrix.js'], function(q, KL, Matri
         /**
          * Evaluated.
          */
-        evaluated: function () {
+        evaluated: function (map) {
             var evaluated = Matrix.createZeroMatrix(this.dim());
             this.forEachElement(function (v, k) {
-                evaluated.element(k, v.evaluated());
+                evaluated.element(k, v.evaluated(map));
             });
 
             if (evaluated.isScalar()) {

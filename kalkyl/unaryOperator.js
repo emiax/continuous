@@ -5,7 +5,8 @@ define(['../lib/quack.js', './exports.js', './expression.js', './innerNode.js'],
          * Constructor.
          */
         constructor: function (arg) {
-            this._arg = arg;
+            arg = KL.Constant.boxConstant(arg);
+            this.arg(arg);
         },
 
 
@@ -17,6 +18,17 @@ define(['../lib/quack.js', './exports.js', './expression.js', './innerNode.js'],
             return this._arg;
         },
 
+
+        /**
+         * Get or set argument at position i
+         */
+        argument: function(i, v) {
+            if (i === 0) {
+                return arg(v);
+            } else {
+                console.error("accessing outside bounds");
+            }
+        },
 
         /**
          * Accept ExpressionVisitor.

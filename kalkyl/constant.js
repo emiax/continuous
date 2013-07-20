@@ -17,7 +17,10 @@ define(['../lib/quack.js', './exports.js', './leaf.js'], function(q, KL, Leaf) {
          * Value.
          */
         value: function (value) {
-            if (value !== undefined) this._value = value;
+            if (value !== undefined) {
+                this._value = +value;
+//                console.log(value + " => " + (+value));
+            }
             return this._value;
         },
 

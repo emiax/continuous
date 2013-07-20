@@ -15,10 +15,9 @@ define(['../lib/quack.js', './exports.js', './expression.js', './innerNode.js'],
          * Return transposed matrix.
          */
         transposed: function () {
-            var m = Matrix.createZeroMatrix(this.dim().reversed());
-            this.forEachArgument(function (k, v) {
-                var index = [k[1], k[0]];
-                m.element(index, v);
+            var m = KL.Matrix.createZeroMatrix(this.dim().reversed());
+            this.forEachElement(function (v, k) {
+                m.element(k.reversed(), v);
             });
             return m.toSpecificDim();
         },
@@ -83,7 +82,6 @@ define(['../lib/quack.js', './exports.js', './expression.js', './innerNode.js'],
             this.forEachElement(function (v, k) {
                 if (!v.identicalTo(matrix.element(k))) {
                     identical = false;
-                    return false;
                 }
             });
 

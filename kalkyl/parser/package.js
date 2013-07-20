@@ -1,0 +1,25 @@
+define(['./exports.js',
+        './token.js',
+//        './name.js',
+//        './leftParen.js',
+//        './leftSquare.js',
+//        './leftCurly.js',
+//        './rightParen.js',
+//        './rightSquare.js',
+//        './rightCurly.js',
+//        './plus.js',
+//        './minus.js',
+//        './asterisk.js',
+//        './slash.js',
+//        './caret.js',
+//        './comma.js',
+        './parseRule.js',
+        './parseError.js',
+        './simpleParser.js',
+        './lexer.js',
+        './simpleLexer.js',
+        './parser.js'],
+       function(exports) {
+           console.log("loaded kalkyl parser module");
+           return exports;
+       });

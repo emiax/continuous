@@ -17,6 +17,20 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
 
         /**
+         * Visit function.
+         */
+        visitFunction: function (fn) {
+            var str = fn.symbol() + "(";
+            var scope = this;
+            fn.forEachArgument(function (a) {
+                str += a.simpleFormat(scope) + ", ";
+            });
+            str = str.substr(0, str.length - 2);
+            return str + ")";
+        },
+
+
+        /**
          * Visit variable.
          */
         visitVariable: function (variable) {
@@ -82,6 +96,54 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         visitDivision: function (plus) {
             return "(" + plus.left().simpleFormat(this) + ") / (" +
                 plus.right().simpleFormat(this) + ")";
+        },
+
+
+        /**
+         * Visit cos.
+         */
+        visitCos: function (cos) {
+            return "cos(" + cos.arg().simpleFormat(this) + ")";
+        },
+
+
+        /**
+         * Visit sin.
+         */
+        visitSin: function (sin) {
+            return "sin(" + sin.arg().simpleFormat(this) + ")";
+        },
+
+
+        /**
+         * Visit tan.
+         */
+        visitTan: function (tan) {
+            return "tan(" + tan.arg().simpleFormat(this) + ")";
+        },
+
+
+        /**
+         * Visit cos.
+         */
+        visitArccos: function (arccos) {
+            return "arccos(" + arccos.arg().simpleFormat(this) + ")";
+        },
+
+
+        /**
+         * Visit sin.
+         */
+        visitArcsin: function (arcsin) {
+            return "arcsin(" + arcsin.arg().simpleFormat(this) + ")";
+        },
+
+
+        /**
+         * Visit tan.
+         */
+        visitArctan: function (arctan) {
+            return "arctan(" + arctan.arg().simpleFormat(this) + ")";
         },
 
 

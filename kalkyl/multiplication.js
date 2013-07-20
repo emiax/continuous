@@ -22,31 +22,33 @@ define(['../lib/quack.js', './exports.js', './binaryOperator.js'], function(q, K
             var right = this.right().evaluated(map);
 
             if (!left.isEvaluated() || !right.isEvaluated()) {
-                console.log("Kalkyl internal error");
+                return this.clone();
             }
             var type = this.type();
 
             if (type === 'ss') {
                 return new KL.Constant(left.value() * right.value());
             } else if (type === 'Ms') {
-                return this.evaluateMatrixAndScalar(left, right);
+                return this.evaluateMatrixAndScalar(left, right, map);
             } else if (type === 'sM') {
-                return this.evaluateMatrixAndScalar(right, left);
+                return this.evaluateMatrixAndScalar(right, left, map);
             } else { // type ==== 'MM'
-                return this.evaluateTwoMatrices(left, right);
+                return this.evaluateTwoMatrices(left, right, map);
             }
         },
 
 
-        evaluateMatrixAndScalar: function (matrix, scalar) {
+        evaluateMatrixAndScalar: function (matrix, scalar, map) {
             var output = matrix.toMatrixNM();
             output.forEachElement(function (v, k) {
-                output.element(k, v.value() * scalar.value());
+                var mult = new KL.Multiplication(v, scalar);
+                output.element(k, mult.evaluated(map));
             });
             return output.toSpecificDim();
         },
 
-        evaluateTwoMatrices: function (left, right) {
+
+        evaluateTwoMatrices: function (left, right, map) {
             var first = left.toMatrixNM();
             var second = right.toMatrixNM();
             var output = KL.Matrix.createZeroMatrix(this.dim());
@@ -55,8 +57,11 @@ define(['../lib/quack.js', './exports.js', './binaryOperator.js'], function(q, K
             output.forEachElement(function (v, k) {
                 var r = k.x().value(), c = k.y().value();
                 for (var i = 0; i < innerN; i++) {
-                    var product = first.element(new KL.Vector2(r, i)).value() * second.element(new KL.Vector2(i, c)).value();
-                    output.element(k, output.element(k).value() + product);
+                    
+                    var mult = new KL.Multiplication(first.element(new KL.Vector2(r, i)),
+                                                 second.element(new KL.Vector2(i, c)));
+                    var sum = new KL.Plus(output.element(k), mult);
+                    output.element(k, sum.evaluated(map));
                 }
             });
             return output.toSpecificDim();
@@ -112,6 +117,10 @@ define(['../lib/quack.js', './exports.js', './binaryOperator.js'], function(q, K
          * Accept expression visitor.
          */
         accept: function (visitor) {
+//            return null;
+//            if (!window.global) window.global = 1;
+//            window.global++;
+//            if (global > 50) return;
             return visitor.visitMultiplication(this);
         },
     });

@@ -21,10 +21,12 @@ define(['../lib/quack.js', './exports.js', './leaf.js'], function(q, KL, Leaf) {
          * Return evlauated version, using map from symbols to numbers
          */
         evaluated: function (map) {
-            if (map === undefined) console.error("map is undefined");
-            var value = map[this.symbol()];
+            //if (map === undefined) console.error("map is undefined");
+            var value = map && map[this.symbol()];
             if (value !== undefined) {
                 return new KL.Constant(value);
+            } else {
+                return this.clone();
             }
         },
 
