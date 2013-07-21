@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './expression.js'], function(q, KL, Expression) {
+define(['quack', './exports.js', './expression.js'], function(q, KL, Expression) {
     KL.Dumper = q.createClass({
 
         /**

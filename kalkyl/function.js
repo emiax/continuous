@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './expression.js', './innerNode.js'], function(q, KL, Expression, InnerNode) {
+define(['quack', './exports.js', './expression.js', './innerNode.js'], function(q, KL, Expression, InnerNode) {
     return KL.Function = q.createClass(Expression, [InnerNode], {
         /**
          * Constructor

@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './binaryOperator.js'], function(q, KL, BinaryOperator) {
+define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryOperator) {
     return KL.Plus = q.createClass(BinaryOperator, {
         /**
          * Constructor.

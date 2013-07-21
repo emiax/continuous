@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js'], function(q, KL) {
+define(['quack', './exports.js'], function(q, KL) {
     return KL.Visitor = q.createClass({
 
         visitExpression: function (expr) {
@@ -65,16 +65,20 @@ define(['../lib/quack.js', './exports.js'], function(q, KL) {
             return this.visitUnaryOperator(expr);
         },
 
-        visitSin: function (expr) {
+        visitTrigonometricFunction: function (expr) {
             return this.visitUnaryOperator(expr);
+        },
+
+        visitSin: function (expr) {
+            return this.visitTrigonometricFunction(expr);
         },
 
         visitCos: function (expr) {
-            return this.visitUnaryOperator(expr);
+            return this.visitTrigonometricFunction(expr);
         },
 
         visitTan: function (expr) {
-            return this.visitUnaryOperator(expr);
+            return this.visitTrigonometricFunction(expr);
         },
 
         visitArcsin: function (expr) {

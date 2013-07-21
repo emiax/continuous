@@ -84,10 +84,20 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         /**
          * Visit multiplication.
          */
-        visitMultiplication: function (plus) {
-            return "(" + plus.left().simpleFormat(this) + ") * (" +
-                plus.right().simpleFormat(this) + ")";
+        visitMultiplication: function (multiplication) {
+            return "(" + multiplication.left().simpleFormat(this) + ") * (" +
+                multiplication.right().simpleFormat(this) + ")";
         },
+
+
+        /**
+         * Visit power.
+         */
+        visitPower: function (power) {
+            return "(" + power.left().simpleFormat(this) + ") ^ (" +
+                power.right().simpleFormat(this) + ")";
+        },
+
 
 
         /**
@@ -151,7 +161,10 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
          * Visit vector.
          */
         visitVector: function (vector) {
-            var str = "[";
+            var leftBracket = '&#91;';
+            var rightBracket = '&#93;';
+            
+            var str = leftBracket;
             var dim = vector.dim();
             var dumper = this;
             vector.forEachArgument(function (v, k) {
@@ -160,7 +173,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                     str += ", ";
                 }
             });
-            str += "]'";
+            str += rightBracket + "'";
             return str;
         },
 
@@ -169,7 +182,11 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
          * Visit vector.
          */
         visitMatrix: function (matrix) {
-            var str = "\n[";
+            var leftBracket = '&#91;';
+            var rightBracket = '&#93;';
+
+
+            var str = "\n" + leftBracket;
             var dim = matrix.dim();
             var dumper = this;
 
@@ -178,18 +195,18 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                 var r = k.x().value(), c = k.y().value();
 
                 if (currentRow !== r) {
-                    str += "\n "
+                    str += ";\n "
                 }
 
                 str += v.simpleFormat(dumper);
-                if (c < dim.y().value() - 1 || r < dim.x().value() - 1) {
+                if (c < dim.y().value() - 1 && r < dim.x().value()) {
                     str += ", ";
                 }
 
                 currentRow = r;
                 currentColumn = c;
             });
-            str += "]\n";
+            str += rightBracket + ";\n";
             return str;
         }
     });

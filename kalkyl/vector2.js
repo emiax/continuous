@@ -1,9 +1,9 @@
-define(['../lib/quack.js', './exports.js', './vector.js'], function(q, KL, Vector) {
+define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
     return KL.Vector2 = q.createClass(Vector, {
         /**
          * Constructor.
          */
-        constructor: function(x, y, z) {
+        constructor: function(x, y) {
             this.x(KL.Constant.boxConstant(x));
             this.y(KL.Constant.boxConstant(y));
         },
@@ -79,7 +79,7 @@ define(['../lib/quack.js', './exports.js', './vector.js'], function(q, KL, Vecto
          * To vector with general length
          */
         toVectorN: function() {
-            return new KL.VectorN([this.x(), this.y(), this.z()]);
+            return new KL.VectorN([this.x(), this.y()]);
         },
 
 

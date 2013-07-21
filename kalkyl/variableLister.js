@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], function(q, KL, Visitor, Expression) {
+define(['quack', './exports.js', './visitor.js', './expression.js'], function(q, KL, Visitor, Expression) {
     KL.VariableLister = q.createClass(Visitor, {
 
         listVariables: function (expr) {

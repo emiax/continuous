@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOperator) {
+define(['quack', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOperator) {
     KL.UnaryMinus = q.createClass(KL.UnaryOperator, {
         /**
          * Evaluated.

@@ -1,5 +1,4 @@
-define(['../lib/quack.js', './exports.js', './vector.js'], function(q, KL, Vector) {
-
+define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
     return KL.Vector3 = q.createClass(Vector, {
         /**
          * Constructor.
@@ -91,7 +90,7 @@ define(['../lib/quack.js', './exports.js', './vector.js'], function(q, KL, Vecto
         forEachElement: function (f) {
             f(this.x(), new KL.Vector2(0, 0));
             f(this.y(), new KL.Vector2(1, 0));
-            f(this.z(), new KL.Vector2(1, 0));
+            f(this.z(), new KL.Vector2(2, 0));
         },
 
 

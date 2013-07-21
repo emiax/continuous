@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], function(q, KL, Visitor, Expression) {
+define(['quack', './exports.js', './visitor.js', './expression.js'], function(q, KL, Visitor, Expression) {
     KL.Simplifier = q.createClass(Visitor, {
 
         simplify: function (expr) {
@@ -36,19 +36,23 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
             var left = expr.left().simplified(this);
             var right = expr.right().simplified(this);
 
+            if (left.identicalTo(right)) {
+                return new KL.Constant(0);
+            }
+            
             if (left instanceof KL.Constant && right instanceof KL.Constant) {
-                return expr.evaluated().simplified(this);
+                return expr.evaluated();
             }
 
             if (left instanceof KL.Constant && !left.value()) {
-                return right.negated().simplified(this);
+                return right.negated();
             }
 
             if (right instanceof KL.Constant && !right.value()) {
                 return left;
             }
 
-            return KL.Minus(left, right);
+            return new KL.Minus(left, right);
 
         },
 
@@ -57,7 +61,7 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
             var right = expr.right().simplified(this);
 
             if (left instanceof KL.Constant && right instanceof KL.Constant) {
-                return expr.evaluated();
+                return (new KL.Multiplication(left, right)).evaluated();
             }
 
             if (left instanceof KL.Constant) {
@@ -88,7 +92,7 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
             var right = expr.right().simplified(this);
 
             if (left instanceof KL.Constant && right instanceof KL.Constant) {
-                var evaluated = expr.evaluated();
+                var evaluated = (new KL.Division(left, right)).evaluated();
                 if (evaluated.value() === Math.round(evaluated.value())) {
                     return evaluated;
                 }
@@ -136,11 +140,7 @@ define(['../lib/quack.js', './exports.js', './visitor.js', './expression.js'], f
             return expr.clone();
         },
 
-        visitSin: function (expr) {
-            return expr.clone();
-        },
-
-        visitCos: function (expr) {
+        visitTrigonometricFunction: function (expr) {
             return expr.clone();
         },
 

@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './vector.js'], function(q, KL, Vector) {
+define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
     return KL.VectorN = q.createClass(Vector, {
 
         /**
@@ -51,11 +51,11 @@ define(['../lib/quack.js', './exports.js', './vector.js'], function(q, KL, Vecto
          * Evaluated.
          */
         evaluated: function(values) {
-            var evaluatedElements = [];
-            this.forEachArgument(function (v) {
-                evaluatedElements.push(v.evaluated());
-            })
-            return new KL.VectorN(evaluatedElements);
+            var m = this.toMatrixNM().evaluated();
+            if (m instanceof KL.Matrix) {
+                return m.toSpecificDim();
+            }
+            return m;
         },
 
 

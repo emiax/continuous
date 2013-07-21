@@ -1,4 +1,4 @@
-define(['../lib/quack.js'], function (q) {
+define(['quack'], function (q) {
     return q.createInterface(
         /**
          * For each argument. Apply a function on all children

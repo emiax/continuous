@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './matrix.js'], function(q, KL, Matrix) {
+define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
     return KL.MatrixNM = q.createClass(Matrix, {
 
 
@@ -67,7 +67,7 @@ define(['../lib/quack.js', './exports.js', './matrix.js'], function(q, KL, Matri
             });
 
             if (evaluated.isScalar()) {
-                return evaluated.element([0, 0]);
+                return evaluated.element(new KL.Vector2(0, 0));
             } else {
                 return evaluated;
             }

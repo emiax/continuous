@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './binaryOperator.js'], function(q, KL, BinaryOperator) {
+define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryOperator) {
     return KL.Multiplication = q.createClass(BinaryOperator, {
         /**
          * Constructor.
@@ -44,7 +44,8 @@ define(['../lib/quack.js', './exports.js', './binaryOperator.js'], function(q, K
                 var mult = new KL.Multiplication(v, scalar);
                 output.element(k, mult.evaluated(map));
             });
-            return output.toSpecificDim();
+            var s = output.toSpecificDim();
+            return s;
         },
 
 
@@ -117,10 +118,6 @@ define(['../lib/quack.js', './exports.js', './binaryOperator.js'], function(q, K
          * Accept expression visitor.
          */
         accept: function (visitor) {
-//            return null;
-//            if (!window.global) window.global = 1;
-//            window.global++;
-//            if (global > 50) return;
             return visitor.visitMultiplication(this);
         },
     });

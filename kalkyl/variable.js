@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './leaf.js'], function(q, KL, Leaf) {
+define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
     return KL.Variable = q.createClass(Leaf, {
         /**
          * Constructor

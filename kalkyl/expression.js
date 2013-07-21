@@ -5,7 +5,7 @@
  * Expression
  ************************************************************/
 
-define(['../lib/quack.js', './exports.js'], function(q, KL) { 
+define(['quack', './exports.js'], function(q, KL) { 
     
     return KL.Expression = q.createAbstractClass({
 
@@ -14,7 +14,7 @@ define(['../lib/quack.js', './exports.js'], function(q, KL) {
      */
     dim: new q.AbstractMethod(),
 
-
+        
     /**
      * Evaluated.
      */

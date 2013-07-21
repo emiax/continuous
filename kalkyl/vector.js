@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './matrix.js'], function(q, KL, Matrix) {
+define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
     return KL.Vector = q.createAbstractClass(Matrix, {
 
         toVectorN: new q.AbstractMethod(),
