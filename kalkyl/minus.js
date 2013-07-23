@@ -38,7 +38,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
                     return new KL.Constant(left.value() - right.value());
                 }
             } else {
-                return this.clone();
+                return new KL.Minus(left, right);
             }
         },
 

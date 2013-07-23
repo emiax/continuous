@@ -179,7 +179,6 @@ define(['quack', 'kalkyl', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], 
                                 elements.push(row);
                             });
 
-                            console.log(elements);
                             var matrix = new Kalkyl.MatrixNM(elements);
                             return matrix.toSpecificDim();
                         }

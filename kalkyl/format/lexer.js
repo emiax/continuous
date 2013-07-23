@@ -42,6 +42,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
                 if (token = this.extractToken()) {
                     return token;
                 } else {
+                    console.log(this.cursor() +  " " + this.source().length);
                     // report character that caused error.
                     this.generateError("unexpected character");
                     this.get(); // ignore character.
@@ -103,7 +104,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
          */
         source: function (str) {
             if (str !== undefined) {
-                this._source = str;
+                this._source = str + "";
                 this._cursor = 0;
                 this._errors = [];
             }
@@ -186,7 +187,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
          * Return true if done
          */
         done: function () {
-            return this.cursor() === this._source.length;
+            return this.cursor() >= this._source.length;
         },
 
         /****************************************

@@ -1,4 +1,4 @@
-define(['quack', '../kalkyl/package.js', './exports.js', './request.js'], function (q, KL, CS, Request) {
+define(['quack', 'kalkyl', 'communication/exports.js', 'communication/request.js'], function (q, KL, CS, Request) {
 
     return CS.IntegralRequest = q.createClass(Request, {
         /**
@@ -13,7 +13,7 @@ define(['quack', '../kalkyl/package.js', './exports.js', './request.js'], functi
         /**
          * Serialize this request
          */
-        serialize: function () {
+        jsonEncode: function () {
             return JSON.stringify({
                 expr: this._expr.simpleFormat(),
                 symbol: this._symbol
@@ -24,7 +24,7 @@ define(['quack', '../kalkyl/package.js', './exports.js', './request.js'], functi
         /**
          * Unserialize the request, STATIC METHOD that returns a Request instance.
          */
-        unserialize: function (str) {
+        jsonDecode: function (str) {
             var obj = JSON.parse(str);
             var expr, symbol;
             if (obj) {

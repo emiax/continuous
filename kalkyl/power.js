@@ -28,7 +28,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
             var right = this.right().evaluated(map);
             
             if (left.isScalar() && right.isScalar() && left.isEvaluated() && right.isEvaluated()) {
-                return new KL.Constant(Math.power(left.value(),  right.value()));
+                return new KL.Constant(Math.pow(left.value(),  right.value()));
             } else {
                 return this.clone();
             }

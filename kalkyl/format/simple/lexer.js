@@ -28,12 +28,12 @@ define(['quack', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], function(q
 
             lexer.addReservedWord(['dot', 'DOT'], 'dot');
             lexer.addReservedWord(['cross', 'CROSS'], 'cross');
-            lexer.addReservedWord(['arcsin', 'asin', 'ARCSIN', 'ASIN'], 'arcsin');
-            lexer.addReservedWord(['arccos', 'acos', 'ARCCOS', 'ACOS'], 'arccos');
-            lexer.addReservedWord(['arctan', 'atan', 'ARCTAN', 'ATAN'], 'arctan');
-            lexer.addReservedWord(['sqrt', "SQRT"], 'sqrt');
-            lexer.addReservedWord(['ln', "LN"], 'ln');
-            lexer.addReservedWord(['lg', "LG"], 'lg');
+           // lexer.addReservedWord(['arcsin', 'asin', 'ARCSIN', 'ASIN'], 'arcsin');
+           // lexer.addReservedWord(['arccos', 'acos', 'ARCCOS', 'ACOS'], 'arccos');
+           // lexer.addReservedWord(['arctan', 'atan', 'ARCTAN', 'ATAN'], 'arctan');
+           // lexer.addReservedWord(['sqrt', "SQRT"], 'sqrt');
+           // lexer.addReservedWord(['ln', "LN"], 'ln');
+           // lexer.addReservedWord(['lg', "LG"], 'lg');
         },
         
 
@@ -109,6 +109,10 @@ define(['quack', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], function(q
                     case 'leftCurly':
                     case 'number':                        
                     case 'name':
+                    case 'cos': case 'sin': case 'tan':
+                    case 'arccos': case 'arcsin': case 'arctan':
+                    case 'ln': case 'lg': case 'sqrt':
+
                         this._tokenBuffer.unshift(new Format.Token('implicitMultiplication', '', this._lastToken.position()));
                         
                     }

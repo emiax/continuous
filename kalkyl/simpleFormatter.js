@@ -3,7 +3,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         /**
          * Get String.
          */
-        simpleFormat: function (expr) {
+        format: function (expr) {
             return expr.accept(this);
         },
 
@@ -160,11 +160,8 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         /**
          * Visit vector.
          */
-        visitVector: function (vector) {
-            var leftBracket = '&#91;';
-            var rightBracket = '&#93;';
-            
-            var str = leftBracket;
+        visitVector: function (vector) {            
+            var str = '[';
             var dim = vector.dim();
             var dumper = this;
             vector.forEachArgument(function (v, k) {
@@ -173,7 +170,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                     str += ", ";
                 }
             });
-            str += rightBracket + "'";
+            str += "]'";
             return str;
         },
 
@@ -186,7 +183,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             var rightBracket = '&#93;';
 
 
-            var str = "\n" + leftBracket;
+            var str = "\n[";
             var dim = matrix.dim();
             var dumper = this;
 
@@ -206,7 +203,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                 currentRow = r;
                 currentColumn = c;
             });
-            str += rightBracket + ";\n";
+            str += "]\n";
             return str;
         }
     });
@@ -217,7 +214,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             if (!formatter) {
                 formatter = new KL.SimpleFormatter();
             }
-            return formatter.simpleFormat(this);
+            return formatter.format(this);
         }
     });
     

@@ -1,0 +1,35 @@
+html, body {
+    font-size: 1.3em;
+    background-color: #333;
+    text-align: center;   
+    color: #888;
+}
+
+input {
+    font-family: 'Inconsolata';
+    width: 100%;
+    text-align: center;
+    background-color: #333;
+    border: none;
+    font-size: 1em;
+    color: #fff;
+    margin-top: 2em;
+}
+
+
+#console {
+    margin-top: 1em;
+    font-family: 'Inconsolata';
+}
+
+.error {
+    color: #f00;   
+}
+
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}

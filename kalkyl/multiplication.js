@@ -20,9 +20,9 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
             if (!this.dim()) console.error("Inner matrix dimensions must agree");
             var left = this.left().evaluated(map);
             var right = this.right().evaluated(map);
-
+        
             if (!left.isEvaluated() || !right.isEvaluated()) {
-                return this.clone();
+                return new KL.Multiplication(left, right);
             }
             var type = this.type();
 

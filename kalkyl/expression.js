@@ -5,7 +5,7 @@
  * Expression
  ************************************************************/
 
-define(['quack', './exports.js'], function(q, KL) { 
+define(['quack', 'kalkyl/exports.js'], function(q, KL) { 
     
     return KL.Expression = q.createAbstractClass({
 

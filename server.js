@@ -1,38 +1,37 @@
 var requirejs = require('requirejs');
 
 requirejs.config({
-    baseUrl: './', 
+    baseUrl: './',
     paths: {
-        quack: './lib/quack'
+        // List of all Continuous packages
+        'quack':                 './lib/quack',
+        'jquery':                './lib/jquery-2.0.3.min',
+        'kalkyl':                './kalkyl/package',
+        'kalkyl/format':         './kalkyl/format/package',
+        'kalkyl/format/simple':  './kalkyl/format/simple/package',
+        'kalkyl/format/sage':    './kalkyl/format/sage/package',
+        'communication':         './communication/package',
+        'communication/server':  './communication/server/package',
+        'server':                './server/package',
     },
     nodeRequire: require
 });
 
 
-
-requirejs(['kalkyl/package', 'sage/package', 'communication/server/package'], function(KL, SAGE, S) {
+requirejs(['kalkyl', 'communication/server', 'server'], function(Kalkyl, ServerCommunication, Server) {
     
-    var constant = new KL.Constant(10);
-    var x = new KL.Variable('x');
-    var y = new KL.Variable('y');
-    var minus = new KL.Minus(constant, x);      
-    var vector = new KL.Vector3(minus, x, y);
     
-    var sage = new SAGE.Wrapper();
-    var ssw = new S.SocketServerWrapper(8080);
-
-
     
+    var sage = new Server.SageWrapper();
+    var router = new Server.Router(sage);
+    var socketServer = new ServerCommunication.SocketServer(8080, router);
     
 });
 
 
-
-
-
-
 /*
-
-
-
+  if (request instanceof Communication.EvaluateRequest) {
+  var input = request.expression();
+  this.respond(new Communication.ExpressionResponse(expr), socketId, requestId);
+  }
 */

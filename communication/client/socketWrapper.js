@@ -1,36 +1,29 @@
-define(['quack', './exports.js'], function (q, C) {
+define(['quack', 'communication/client/exports.js'], function (q, C) {
 
     return C.SocketWrapper = q.createClass({
         /**
          * Constructor.
          */
-        constructor: function (url) {
+        constructor: function (url, connection) {
             this._url = url;
+            this._connected = false;
             this._socket = null;
+            this.connect();
+            this._connection = connection;
+            this._queue = [];
         },
 
         
-        connect: function (callback) {
-            var socket;
-            try {
-                socket = this._socket = new WebSocket(this._url);
-            } catch(e) {
-                console.error("could not connect to url");
-                console.error(e);
-            }
-            
-            socket.onopen = callback; //this.onOpen.bind(this);
-            socket.onclose = this.onClose.bind(this);
-            socket.onmessage = this.onMessage.bind(this);
-            socket.onerror = this.onError.bind(this);
-        },
-        
-
         /**
          * On socket open.
          */
         onOpen: function (evt) {
             console.log("Socket open");
+            this._connected = true;
+            var sentMessages = this.writeQueue();
+            if (sentMessages) {
+                console.log("socket catching up! sent " + sentMessages + " messages.");
+            }
         },
 
 
@@ -39,6 +32,7 @@ define(['quack', './exports.js'], function (q, C) {
          */
         onClose: function (evt) {
             console.log("Socket closed");
+            this._connected = false;
         },
 
 
@@ -48,6 +42,9 @@ define(['quack', './exports.js'], function (q, C) {
         onMessage: function (evt) {
             console.log("Socket message");
             console.log(evt.data);
+            if (this._connection) {
+                this._connection.recieveResponse(evt.data);
+            }
         },
 
 
@@ -56,14 +53,58 @@ define(['quack', './exports.js'], function (q, C) {
          */
         onError: function (evt) {
             console.log("Socket error");
+            console.log(evt);
+        },
+
+        
+        /**
+         * Connect to server.
+         */
+        connect: function () {
+            var socket = this._socket = new WebSocket(this._url);
+            socket.onopen = this.onOpen.bind(this);
+            socket.onclose = this.onClose.bind(this);
+            socket.onmessage = this.onMessage.bind(this);
+            socket.onerror = this.onError.bind(this);
         },
 
 
         /**
-         * Write to socket.
+         * Write to socket. Queue message and try to reconnect if disconnected
          */
-        write: function(data) {
-            this._socket.send(data);
+        write: function (message) {
+            this.enqueue(message);
+            if (this.connected()) {
+                this.writeQueue();
+            } else {
+                this.connect();
+            }
+        },
+
+        
+        connected: function() {
+            return this._connected;
+        },
+        
+
+        enqueue: function (message) {
+            this._queue.push(message);
+        },
+
+
+        /**
+         * Write queue to socket
+         */
+        writeQueue: function() {
+            var sentMessages = 0;
+            var scope = this;
+            this._queue.forEach(function (m) {
+                scope._socket.send(m);
+                console.log("writing '" + m + "'");
+                sentMessages++;
+            });
+            this._queue = [];
+            return sentMessages;
         }
     });    
 });

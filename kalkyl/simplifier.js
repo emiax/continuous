@@ -56,6 +56,15 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
         },
 
+        visitUnaryPlus: function (expr) {
+            return expr.arg().simplified();
+        },
+
+        visitUnaryMinus: function (expr) {
+            return expr.arg().simplified().negated();
+        },
+
+
         visitMultiplication: function (expr) {
             var left = expr.left().simplified(this);
             var right = expr.right().simplified(this);
@@ -107,7 +116,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                     return left;
                 }
             }
-            return expr.clone();
+            return new KL.Division(left, right);
         },
 
         visitPower: function (expr) {
