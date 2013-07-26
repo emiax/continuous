@@ -6,7 +6,6 @@ define(['quack', 'kalkyl/format/simple', 'communication/exports.js', 'communicat
          */
         constructor: function (expr) {
             this._expr = expr;
-            console.log(expr);
         },
         
 
@@ -14,7 +13,6 @@ define(['quack', 'kalkyl/format/simple', 'communication/exports.js', 'communicat
          * Return expression.
          */        
         expression: function () {
-            console.log(this);
             return this._expr;
         },
         

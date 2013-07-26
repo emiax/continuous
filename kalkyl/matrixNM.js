@@ -9,7 +9,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
             var scope = this;
             this._rows = rows;
             this.forEachElement(function (v, k) {
-                scope.element(k, KL.Constant.boxConstant(v));
+                scope.element(k, KL.Number.boxNumber(v));
             });
         },
 
@@ -20,7 +20,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
         element: function(index, value) {
             var row = index.x().value();
             var column = index.y().value();
-            value = KL.Constant.boxConstant(value);
+            value = KL.Number.boxNumber(value);
 
             var dim = this.dim();
             if (row < dim.x().value() && row >= 0 && column < dim.y().value() && column >= 0) {

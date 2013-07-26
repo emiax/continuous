@@ -4,8 +4,8 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
          * Constructor.
          */
         constructor: function (left, right) {
-            this.left(KL.Constant.boxConstant(left));
-            this.right(KL.Constant.boxConstant(right));
+            this.left(KL.Number.boxNumber(left));
+            this.right(KL.Number.boxNumber(right));
             if (!this.dim()) {
                 console.error("Inner matrix dimensions must agree");
             }
@@ -27,7 +27,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
             var type = this.type();
 
             if (type === 'ss') {
-                return new KL.Constant(left.value() * right.value());
+                return new KL.Number(left.value() * right.value());
             } else if (type === 'Ms') {
                 return this.evaluateMatrixAndScalar(left, right, map);
             } else if (type === 'sM') {

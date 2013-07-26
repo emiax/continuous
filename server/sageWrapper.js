@@ -1,4 +1,8 @@
 define(['quack', 'server/exports.js'], function (q, Server) {
+
+    var spawn = require('child_process').spawn;
+    var fs = require('fs');
+
     var QueueItem = q.createClass({
         /**
          * Constructor
@@ -10,17 +14,24 @@ define(['quack', 'server/exports.js'], function (q, Server) {
         }
     });
 
-    var spawn = require('child_process').spawn;
-
     return Server.SageWrapper = q.createClass({
         /**
          * Constructor
          */
         constructor: function () {
             this._ready = false;
-
             this._head = new QueueItem('dummy node');
             this._tail = this._head;
+            this._sage = this.spawn();
+            this.onOutput = this.defaultOnOutput;
+        },
+
+
+        /**
+         * Spawn process
+         */
+        spawn: function () {
+            this._ready = false;
 
             var scope = this;
             var sage = spawn('/Applications/sage/sage', []);
@@ -34,14 +45,14 @@ define(['quack', 'server/exports.js'], function (q, Server) {
             })
 
             sage.on('close', function (code) {
-                console.error("Sage closed!");
+                console.error("Sage closed! Respawning process!");
+                scope._sage = scope.spawn();
             });
 
-            this._sage = sage;
-            this.onOutput = this.defaultOnOutput;
+            return sage;
         },
-        
-        
+
+
         /**
          * Run piece of code in sage, and invoke callback with output when done
          */
@@ -61,32 +72,71 @@ define(['quack', 'server/exports.js'], function (q, Server) {
                 var item = this.dequeue();
                 if (item) {
                     this._ready = false;
-                    this.write(item.code);
-                    this.write('output'); //ask sage for output variable
-                    scope.onOutput = function(output) {
-                        console.log("Sage said: " + output);
-                        if (item.callback) {
-                            item.callback(false, output.toString().substring(12));
-                        }
-                        scope._ready = true;
-                        scope.onOutput = scope.defaultOnOutput;
-                        scope.onError = scope.defaultOnError;
-                        scope.runNext();
-                    }
-                    
-                    scope.onError = function(output) {
-                        console.log("SAGE ERROR");
-                        if (item.callback) {
-                            item.callback(output.toString(), "");
-                        }
-                        scope._ready = true;
-                        scope.onOutput = scope.defaultOnOutput;
-                        scope.onError = scope.defaultOnError;
-                        scope.runNext();
 
-                    }
+                    this.saveCode(item.code, function() {
+                        // load code from saved file.
+                        scope.write('%runfile "' + scope.fileName()  + '"');
+                        // invoke funciton WITHOUT SEMICOLON which will result in printing the return value
+                        scope.write(scope.functionName() + '()');
+                        
+//                        scope.write('1 + 1');
+
+                        scope.onOutput = function(output) {
+
+                            if (item.callback) {
+                                console.log("SAGE SAYS: " + output.toString().substring(12));
+                                item.callback(false, output.toString().substring(12));
+                            }
+                            scope._ready = true;
+                            scope.onOutput = scope.defaultOnOutput;
+                            scope.onError = scope.defaultOnError;
+                            scope.runNext();
+                        }
+
+                        scope.onError = function(output) {
+                            console.log("SAGE ERROR");
+                            if (item.callback) {
+                                item.callback(output.toString(), "");
+                            }
+                            scope._ready = true;
+                            scope.onOutput = scope.defaultOnOutput;
+                            scope.onError = scope.defaultOnError;
+                            scope.runNext();
+
+                        }
+                    })
                 }
             }
+        },
+
+
+        fileName: function() {
+            return 'continuous_command.sage';
+        },
+        
+        
+        functionName: function() {
+            return 'continuous_command';
+        },
+
+
+        /**
+         * Write code to file
+         */
+        saveCode: function (code, callback) {
+            callback = callback || function() {};
+            var lines = code.split('\n');
+            var functionDefinition = "def " + this.functionName() + "():\n";
+            lines.forEach(function (line) {
+                functionDefinition += "\t" + line + "\n";
+            });
+            fs.writeFile(this.fileName(), functionDefinition, function(err) {
+                if (err) {
+                    console.log("SageWrapper could not write to file");
+                } else {
+                    callback();
+                }
+            });
         },
 
 
@@ -95,7 +145,9 @@ define(['quack', 'server/exports.js'], function (q, Server) {
          */
         defaultOnOutput: function(output) {
             console.log("unhandled sage output:");
+            console.log("----------------------");
             console.log(output.toString());
+            console.log("----------------------");
             this._ready = true;
         },
 
@@ -104,8 +156,10 @@ define(['quack', 'server/exports.js'], function (q, Server) {
          * Default on error.
          */
         defaultOnError: function(output) {
-            console.log("unhandled sage error:");
+            console.log("unhandled sage ERROR:");
+            console.log("----------------------");
             console.log(output.toString());
+            console.log("----------------------");
             this._ready = true;
         },
 
@@ -115,7 +169,6 @@ define(['quack', 'server/exports.js'], function (q, Server) {
          * Private. Write to sage.
          */
         write: function(data) {
-            console.log("Writing to sage: " + data);
             this._sage.stdin.write(data + '\n');
         },
 
@@ -128,7 +181,7 @@ define(['quack', 'server/exports.js'], function (q, Server) {
             this._tail = item;
         },
 
-        
+
         /**
          * Dequeue an item
          */
@@ -145,7 +198,7 @@ define(['quack', 'server/exports.js'], function (q, Server) {
             }
         },
 
-        
+
         printQueue: function () {
             var current = this._head;
             console.log("---sage commandd queue---");
@@ -153,10 +206,7 @@ define(['quack', 'server/exports.js'], function (q, Server) {
                 current = current.next;
                 console.log(current.code);
             }
-            console.log("--- end sage commandd queue---");
+            console.log("---end sage commandd queue---");
         }
-
-
-        
     });
 });

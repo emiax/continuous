@@ -45,7 +45,7 @@ define(['quack', 'communication', 'communication/server/exports.js'], function (
          * On connection.
          */
         onConnection: function (ws) {
-            console.log("new connection");
+            console.log("new connection (socketServer)");
             var socketId = this.nextSocketId();
             var socketWrapper = new Server.SocketWrapper(ws, this, socketId);
             this._sockets[socketId] = socketWrapper;
@@ -55,18 +55,14 @@ define(['quack', 'communication', 'communication/server/exports.js'], function (
         /**
          * On connection.
          */
-        recieveRequest: function(requestString, socketId) {
-            console.log("input from " + socketId);
+        receiveRequest: function(requestString, socketId) {
             var parser = this.requestParser();
             var request = parser.parse(requestString);
             var requestId = parser.parsedId();
             
             var scope = this;
-            console.log("REQUEST");
-            console.log(request);
-
             this.router().request(request, function(response) {
-                console.log("responding to " + requestId);
+//                console.log("responding to " + requestId);
                 scope.respond(response, socketId, requestId);
             });
         },

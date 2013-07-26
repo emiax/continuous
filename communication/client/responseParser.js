@@ -50,6 +50,8 @@ define(['quack', 'communication', 'communication/client/exports.js'], function (
             switch (responseType) {
             case 'expression' :
                 return Communication.ExpressionResponse;
+            case 'error' :
+                return Communication.ErrorResponse;
             default: return null;
             }
         }

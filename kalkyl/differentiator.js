@@ -14,15 +14,15 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             return this._symbol;
         },
 
-        visitConstant: function (expr) {
-            return new KL.Constant(0);
+        visitNumber: function (expr) {
+            return new KL.Number(0);
         },
 
         visitVariable: function (expr) {
             if (expr.symbol() === this.symbol()) {
-                return new KL.Constant(1);
+                return new KL.Number(1);
             } else {
-                return new KL.Constant(0);
+                return new KL.Number(0);
             }
         },
 

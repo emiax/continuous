@@ -9,7 +9,7 @@ define(['quack', './exports.js'], function(q, KL) {
             throw "abstract function call";
         },
 
-        visitConstant: function (expr) {
+        visitNumber: function (expr) {
             throw "abstract function call";
         },
 

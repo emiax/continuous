@@ -32,7 +32,6 @@ define(['quack', 'kalkyl/format/simple', 'communication/exports.js', 'communicat
             var simpleParser = new SimpleFormat.Parser();
             if (obj) {
                 if (obj.expr) {
-                    console.log(obj.expr);
                     expr = simpleParser.parse(obj.expr); 
                 } else {
                     return null;

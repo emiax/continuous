@@ -1,12 +1,12 @@
 define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
-    return KL.Constant = q.createClass(KL.Leaf, {
+    return KL.Number = q.createClass(KL.Leaf, {
 
 
         /**
          * Constructor.
          */
         constructor: function (value) {
-            if (value instanceof KL.Constant) {
+            if (value instanceof KL.Number) {
                 value = value.value();
             }
             this.value(value);
@@ -52,7 +52,7 @@ define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
          * Accept visitor.
          */
         accept: function (visitor) {
-            return visitor.visitConstant(this);
+            return visitor.visitNumber(this);
         },
 
         /**
@@ -67,16 +67,16 @@ define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
          * Clone
          */
         clone: function () {
-            return new KL.Constant(this);
+            return new KL.Number(this);
         },
 
         
         /**
          * Box constant (for static use)
          */
-        boxConstant: function (v) {
+        boxNumber: function (v) {
             if (typeof v === 'number') {
-                return new KL.Constant(v);
+                return new KL.Number(v);
             } else {
                 return v;
             }

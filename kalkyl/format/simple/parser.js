@@ -225,7 +225,7 @@ define(['quack', 'kalkyl', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], 
 
                 parser.rule('number', new Format.ParseRule({
                     nud: function (parser, token) {
-                        return new Kalkyl.Constant(token.string());
+                        return new Kalkyl.Number(token.string());
                     },
                     led: function (parser, token, left) {
                         parser.generateError("unexpected token", token);

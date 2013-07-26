@@ -26,8 +26,15 @@ define(['quack', 'communication', 'server/exports.js'], function (q, Communicati
                  */
             case Communication.EvaluateRequest:
                 var evaluator = new Server.Evaluator(sage);
-                evaluator.evaluate(request.expression(), function(expr) {
-                    callback(new Communication.ExpressionResponse(expr));
+                evaluator.evaluate(request.expression(), function(err, expr) {
+                    if (err) {
+                        console.log("Could not evaluate expression! (router.js)");
+                        callback(new Communication.ErrorResponse(err));
+                    } else if (expr) {
+                        callback(new Communication.ExpressionResponse(expr));
+                    } else {
+                        callback(new Communication.ErrorResponse(new Errors.UnknownError()));                      
+                    }
                 });                
                 break;
                 /**
@@ -41,7 +48,7 @@ define(['quack', 'communication', 'server/exports.js'], function (q, Communicati
                 break;
                 
             default:
-                console.log("No routing rule for that request.");
+                console.log("No routing rule for that request. (router.js)");
             }
         }
 

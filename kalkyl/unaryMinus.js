@@ -16,7 +16,7 @@ define(['quack', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOpe
                     });
                     return m.toSpecificDim();
                 } else {
-                    return new KL.Constant(-arg.value());
+                    return new KL.Number(-arg.value());
                 }
             } else {
                 return this.clone();

@@ -13,6 +13,7 @@ requirejs.config({
         'communication':         './communication/package',
         'communication/server':  './communication/server/package',
         'server':                './server/package',
+        'errors':                './errors/package',
     },
     nodeRequire: require
 });
@@ -20,18 +21,8 @@ requirejs.config({
 
 requirejs(['kalkyl', 'communication/server', 'server'], function(Kalkyl, ServerCommunication, Server) {
     
-    
-    
     var sage = new Server.SageWrapper();
     var router = new Server.Router(sage);
     var socketServer = new ServerCommunication.SocketServer(8080, router);
     
 });
-
-
-/*
-  if (request instanceof Communication.EvaluateRequest) {
-  var input = request.expression();
-  this.respond(new Communication.ExpressionResponse(expr), socketId, requestId);
-  }
-*/

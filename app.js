@@ -9,7 +9,9 @@ requirejs.config({
         'kalkyl/format/simple':  './kalkyl/format/simple/package',
         'kalkyl/format/sage':    './kalkyl/format/sage/package',
         'communication':         './communication/package',
-        'communication/client':  './communication/client/package'
+        'communication/client':  './communication/client/package',
+        'mathgl':                './mathgl/package',
+        'errors':                './errors/package'
     }
 });
 
@@ -98,14 +100,16 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
                 // THIS IS HOW WE LIKE IT. CLEAN AND SIMPLE.              
                 var req = new Communication.EvaluateRequest(expr);
                 connection.request(req, function(response) {
+                    
+                    var html = $('#console').html()
                     if (response instanceof Communication.ExpressionResponse) {
                         console.log(response.expression());
-                        var html = $('#console').html()
                         $('#console').html(html + response.expression().simpleFormat() + "<br/>");
+                    } else if (response instanceof Communication.ErrorResponse) {
+                        $('#console').html(html + "<br>Could not evaluate!");
+                    } else {
+                        console.log(response);
                     }
-//                    } else if (response instanceof Communication.ErrorResponse) {
-//                        console.log("Connection error");
- //                   }
                 });
 
 /*                server.evaluate(expr, function({

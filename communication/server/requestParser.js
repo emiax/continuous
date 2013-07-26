@@ -12,16 +12,11 @@ define(['quack', 'communication/server/exports.js', 'communication'], function (
          */
         parse: function (requestJson) {
             var jsonObject = JSON.parse(requestJson);
-            console.log(jsonObject);
             if (this.validateJsonObject(jsonObject)) {
-                console.log("valid!");
                 var RequestClass = this.getRequestClass(jsonObject.type);
                 if (RequestClass) {
                     var request = RequestClass.jsonDecode(jsonObject.payload);
                     this._parsedId = jsonObject.id;
-//                    var request = new RequestClass(payload);
-                    console.log("RETURNING FROM REQUESTPARSER");
-                    console.log(request);
                     return request;
                 } else {
                     console.error("'" + jsonObject.type + "' is not a known RequestClass type.");

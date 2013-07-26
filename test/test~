@@ -1,0 +1,1 @@
+node /usr/local/lib/node_modules/jasmine-node/lib/jasmine-node/cli --runWithRequireJs --requireJsSetup ./requirejs-setup.js ./basic.spec.js

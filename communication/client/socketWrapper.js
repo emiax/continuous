@@ -8,6 +8,7 @@ define(['quack', 'communication/client/exports.js'], function (q, C) {
             this._url = url;
             this._connected = false;
             this._socket = null;
+            this._connecting = false;
             this.connect();
             this._connection = connection;
             this._queue = [];
@@ -20,6 +21,7 @@ define(['quack', 'communication/client/exports.js'], function (q, C) {
         onOpen: function (evt) {
             console.log("Socket open");
             this._connected = true;
+            this._connecting = false;
             var sentMessages = this.writeQueue();
             if (sentMessages) {
                 console.log("socket catching up! sent " + sentMessages + " messages.");
@@ -43,7 +45,7 @@ define(['quack', 'communication/client/exports.js'], function (q, C) {
             console.log("Socket message");
             console.log(evt.data);
             if (this._connection) {
-                this._connection.recieveResponse(evt.data);
+                this._connection.receiveResponse(evt.data);
             }
         },
 
@@ -61,11 +63,14 @@ define(['quack', 'communication/client/exports.js'], function (q, C) {
          * Connect to server.
          */
         connect: function () {
-            var socket = this._socket = new WebSocket(this._url);
-            socket.onopen = this.onOpen.bind(this);
-            socket.onclose = this.onClose.bind(this);
-            socket.onmessage = this.onMessage.bind(this);
-            socket.onerror = this.onError.bind(this);
+            if (!this._connecting) {
+                this._connecting = true;
+                var socket = this._socket = new WebSocket(this._url);
+                socket.onopen = this.onOpen.bind(this);
+                socket.onclose = this.onClose.bind(this);
+                socket.onmessage = this.onMessage.bind(this);
+                socket.onerror = this.onError.bind(this);
+            }
         },
 
 

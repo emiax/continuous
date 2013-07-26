@@ -11,7 +11,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         /**
          * Visit constant.
          */
-        visitConstant: function (constant) {
+        visitNumber: function (constant) {
             return constant.value();
         },
 

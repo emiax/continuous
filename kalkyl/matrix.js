@@ -48,7 +48,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
          * Return true if evaluated
          */
         isEvaluated: function () {
-            return this.allElementsInstanceOf(KL.Constant);
+            return this.allElementsInstanceOf(KL.Number);
         },
 
 
@@ -113,7 +113,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
             for (var i = 0; i < r; i++) {
                 m[i] = new Array(c);
                 for (var j = 0; j < c; j++) {
-                    m[i][j] = i === j ? new KL.Constant(1) : new KL.Constant(0);
+                    m[i][j] = i === j ? new KL.Number(1) : new KL.Number(0);
                 }
             }
             return new KL.MatrixNM(m);
@@ -136,7 +136,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
             for (var i = 0; i < r; i++) {
                 m[i] = new Array(c);
                 for (var j = 0; j < c; j++) {
-                    m[i][j] = new KL.Constant(0);
+                    m[i][j] = new KL.Number(0);
                 }
             }
             return new KL.MatrixNM(m);

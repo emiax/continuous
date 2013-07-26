@@ -9,7 +9,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             return expr.accept(this);
         },
 
-        visitConstant: function (expr) {
+        visitNumber: function (expr) {
             return {};
         },
 

@@ -5,7 +5,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
          * Constructor.
          */
         constructor: function (arg) {
-            arg = KL.Constant.boxConstant(arg);
+            arg = KL.Number.boxNumber(arg);
             this.arg(arg);
         },
 

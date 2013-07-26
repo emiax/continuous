@@ -1,4 +1,4 @@
-define(['quack', 'kalkyl', 'kalkyl/format/sage', 'server/exports.js'], function (q, Kalkyl, SageFormat, Server) {
+define(['quack', 'kalkyl', 'kalkyl/format/sage', 'server/exports.js', 'errors'], function (q, Kalkyl, SageFormat, Server, Errors) {
     return Server.Evaluator = q.createClass({
         /**
          * Constructor.
@@ -26,23 +26,25 @@ define(['quack', 'kalkyl', 'kalkyl/format/sage', 'server/exports.js'], function 
             var code = "";
             var variableSymbols = expr.listVariables();
 
+            var tab = "\t";
             variableSymbols.forEach(function (s) {
                 code += "var('" + s + "'); ";
             });
 
-            // todo! Check if output is symbolic expression
-            code += "output = (" + sageFormatter.format(expr) + ").simplify_full();";
-            
-            console.log("RUNNING CODE: ");
-            console.log(code);
+            code += "expr = " + sageFormatter.format(expr) + ';\n';
+            code += "if (type(expr) == sage.symbolic.expression.Expression):\n";
+            code += tab + "return expr.simplify_full();\n";
+            code += "else:\n";
+            code += tab + "return expr;";
 
             this.sage().run(code, function (err, data) {
                 var expr = sageParser.parse(data);
-                console.log(data);
-                callback(expr);
+                if (expr) {
+                    callback(false, expr);
+                } else {
+                    callback(new Errors.SageError("Could not evaluate expression"));
+                }
             });
         }
-        
-
     });
 });

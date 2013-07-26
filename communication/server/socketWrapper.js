@@ -8,7 +8,8 @@ define(['quack', 'communication/server/exports.js'], function (q, Server) {
             this._socket = ws;
             this._host = host;
             this._id = id;
-            
+            this._opened = true;
+
             ws.on('message', this.onMessage.bind(this));
             ws.on('close', this.onClose.bind(this));
             ws.on('error', this.onError.bind(this));
@@ -27,9 +28,9 @@ define(['quack', 'communication/server/exports.js'], function (q, Server) {
          * On connection.
          */
         onMessage: function (data) {
-            console.log("recieved message: " + data);
+            console.log("received message (socket wrapper): \n\t" + data);
             if (this._host) {
-                this._host.recieveRequest(data, this._id);
+                this._host.receiveRequest(data, this._id);
             }
         }, 
 
@@ -38,7 +39,8 @@ define(['quack', 'communication/server/exports.js'], function (q, Server) {
          * On socket close.
          */
         onClose: function (evt) {
-            console.log("Socket closed");
+            console.log("Socket closed (socket wrapper)");
+            this._opened = false;
         },
 
 
@@ -46,7 +48,7 @@ define(['quack', 'communication/server/exports.js'], function (q, Server) {
          * On socket error.
          */
         onError: function (evt) {
-            console.log("Socket error");
+            console.log("Socket error (socket wrapper)");
         },
 
 
@@ -54,7 +56,11 @@ define(['quack', 'communication/server/exports.js'], function (q, Server) {
          * Write string to socket.
          */
         write: function (message) {
-            this._socket.send(message);
+            if (this._opened) {
+                this._socket.send(message);
+            } else {
+                console.log("Client closed connection. Cannot write. (socketWrapper.js)");
+            }
         }
         
     });

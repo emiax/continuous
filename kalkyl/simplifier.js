@@ -5,7 +5,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             return expr.accept(this);
         },
 
-        visitConstant: function (expr) {
+        visitNumber: function (expr) {
             return expr.clone();
         },
 
@@ -17,15 +17,15 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             var left = expr.left().simplified(this);
             var right = expr.right().simplified(this);
             
-            if (left instanceof KL.Constant && right instanceof KL.Constant) {
-                return new KL.Constant(left.value() + right.value());
+            if (left instanceof KL.Number && right instanceof KL.Number) {
+                return new KL.Number(left.value() + right.value());
             }
 
-            if (left instanceof KL.Constant && !left.value()) {
+            if (left instanceof KL.Number && !left.value()) {
                 return right;
             }
 
-            if (right instanceof KL.Constant && !right.value()) {
+            if (right instanceof KL.Number && !right.value()) {
                 return left;
             }
 
@@ -37,18 +37,18 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             var right = expr.right().simplified(this);
 
             if (left.identicalTo(right)) {
-                return new KL.Constant(0);
+                return new KL.Number(0);
             }
             
-            if (left instanceof KL.Constant && right instanceof KL.Constant) {
+            if (left instanceof KL.Number && right instanceof KL.Number) {
                 return expr.evaluated();
             }
 
-            if (left instanceof KL.Constant && !left.value()) {
+            if (left instanceof KL.Number && !left.value()) {
                 return right.negated();
             }
 
-            if (right instanceof KL.Constant && !right.value()) {
+            if (right instanceof KL.Number && !right.value()) {
                 return left;
             }
 
@@ -69,11 +69,11 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             var left = expr.left().simplified(this);
             var right = expr.right().simplified(this);
 
-            if (left instanceof KL.Constant && right instanceof KL.Constant) {
+            if (left instanceof KL.Number && right instanceof KL.Number) {
                 return (new KL.Multiplication(left, right)).evaluated();
             }
 
-            if (left instanceof KL.Constant) {
+            if (left instanceof KL.Number) {
                 if (!left.value()) {
                     return left;
                 } else {
@@ -83,7 +83,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                     return right;
                 }
             }
-            if (right instanceof KL.Constant) {
+            if (right instanceof KL.Number) {
                 if (!right.value()) {
                     return right;
                 }
@@ -100,18 +100,18 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             var left = expr.left().simplified(this);
             var right = expr.right().simplified(this);
 
-            if (left instanceof KL.Constant && right instanceof KL.Constant) {
+            if (left instanceof KL.Number && right instanceof KL.Number) {
                 var evaluated = (new KL.Division(left, right)).evaluated();
                 if (evaluated.value() === Math.round(evaluated.value())) {
                     return evaluated;
                 }
             }
 
-            if (left instanceof KL.Constant) {
+            if (left instanceof KL.Number) {
                 if (!left.value()) {
                     return left;
                 }
-            } else if (right instanceof KL.Constant) {
+            } else if (right instanceof KL.Number) {
                 if (right.value() === 1) {
                     return left;
                 }
@@ -123,17 +123,17 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             var left = expr.left().simplified(this);
             var right = expr.right().simplified(this);
 
-            if (left instanceof KL.Constant && right instanceof KL.Constant) {
+            if (left instanceof KL.Number && right instanceof KL.Number) {
                 return expr.evaluated().simplified(this);
             }
 
-            if (left instanceof KL.Constant) {
+            if (left instanceof KL.Number) {
                 if (!left.value()) {
                     return left;
                 }
             }
 
-            if (right instanceof KL.Constant) {
+            if (right instanceof KL.Number) {
                 if (right.value() === 0) {
                     return left;
                 }

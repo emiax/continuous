@@ -4,8 +4,8 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
          * Constructor.
          */
         constructor: function (left, right) {
-            left = KL.Constant.boxConstant(left);
-            right = KL.Constant.boxConstant(right);
+            left = KL.Number.boxNumber(left);
+            right = KL.Number.boxNumber(right);
             this._dim = left.dim();
             
             if (left.isScalar() && right.isScalar()) {
@@ -28,7 +28,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
             var right = this.right().evaluated(map);
             
             if (left.isScalar() && right.isScalar() && left.isEvaluated() && right.isEvaluated()) {
-                return new KL.Constant(Math.pow(left.value(),  right.value()));
+                return new KL.Number(Math.pow(left.value(),  right.value()));
             } else {
                 return this.clone();
             }

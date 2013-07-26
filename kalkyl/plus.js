@@ -4,8 +4,8 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
          * Constructor.
          */
         constructor: function (left, right) {
-            left = KL.Constant.boxConstant(left);
-            right = KL.Constant.boxConstant(right);
+            left = KL.Number.boxNumber(left);
+            right = KL.Number.boxNumber(right);
             this._dim = left.dim();
 
             if (this.dim().identicalTo(right.dim())) {
@@ -35,7 +35,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
                     });
                     return first.toSpecificDim();
                 } else {
-                    return new KL.Constant(left.value() + right.value());
+                    return new KL.Number(left.value() + right.value());
                 }
             } else {
                 return new KL.Plus(left, right);

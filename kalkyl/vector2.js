@@ -4,8 +4,8 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          * Constructor.
          */
         constructor: function(x, y) {
-            this.x(KL.Constant.boxConstant(x));
-            this.y(KL.Constant.boxConstant(y));
+            this.x(KL.Number.boxNumber(x));
+            this.y(KL.Number.boxNumber(y));
         },
 
 

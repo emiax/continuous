@@ -76,7 +76,6 @@ define(['quack', 'communication/client/exports.js', 'communication'], function (
          * Invoke callback method and remove it from callback map
          */        
         executeCallback: function (id, response) {
-            console.log(id);
             if (this._callbacks[id]) {
                 this._callbacks[id](response);
                 delete this._callbacks[id];
@@ -87,12 +86,10 @@ define(['quack', 'communication/client/exports.js', 'communication'], function (
         /**
          * Recieve response
          */
-        recieveResponse: function (responseString) {
+        receiveResponse: function (responseString) {
             var parser = this.responseParser();
             var response = parser.parse(responseString);
             var id = parser.parsedId();
-
-            console.log(id);
 
             this.executeCallback(id, response);
         }

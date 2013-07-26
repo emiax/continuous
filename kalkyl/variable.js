@@ -24,7 +24,7 @@ define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
             //if (map === undefined) console.error("map is undefined");
             var value = map && map[this.symbol()];
             if (value !== undefined) {
-                return new KL.Constant(value);
+                return new KL.Number(value);
             } else {
                 return this.clone();
             }
@@ -70,6 +70,19 @@ define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
         toPrimitive: function () {
             console.error("Cannot convert symbolic variable to primitive");
             return null;
+        },
+
+        
+        /**
+         * Box variable (for static use)
+         */
+        boxVariable: function (v) {
+            if (typeof v === 'string') {
+                return new KL.Variable(v);
+            } else {
+                return v;
+            }
         }
+
     });
 });
