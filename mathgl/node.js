@@ -293,8 +293,10 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
                 if (childExpressions[symbol] instanceof MathGL.Node) {
                     if (parentExpressions[symbol] instanceof MathGL.Node) {
                         childExpressions[symbol] = parentExpressions[symbol];
-                    } else {
+                    } else if (parentExpressions[symbol] instanceof Kalkyl.Expression) {
                         childExpressions[symbol] = parent;
+                    } else {
+                        delete childExpressions[symbol];
                     }
                 }
             });

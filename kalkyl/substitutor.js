@@ -17,9 +17,14 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         },
 
         substitute: function (expr) {
+            this._performedSubstitutions = {};
             return expr.accept(this);
         },
 
+        performedSubstitutions: function () {
+            return this._perfoemdSubstitutions;
+        },
+        
         getSubstitute: function (s) {
             if (s instanceof Kalkyl.Variable) {
                 s = s.symbol();
@@ -43,6 +48,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                 var sub = scope.getSubstitute(symbol);
                 if (expr.symbol() === symbol) {
                     substitute = sub;
+                    scope.performedSubstitutions[symbol] = substitute;
                 }
             });
             
@@ -79,7 +85,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
     });
 
 
-    function substitutor = function(substitutorOrMap) {
+    function substitutor(substitutorOrMap) {
         var substitutor = null;
         if (substitutorOrMap instanceof Kalkyl.Substitutor) {
             substitutor = substitutorOrMap;

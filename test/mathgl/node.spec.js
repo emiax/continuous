@@ -152,6 +152,10 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                 c.undefine('x')
                 expect(c.get('x').identicalTo(b.get('x'))).toBe(true);
                 
+                b.undefine('x');
+                expect(c.get('x')).toBe(undefined);
+                
+                
             });
 
         });
