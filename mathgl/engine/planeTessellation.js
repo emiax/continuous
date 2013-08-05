@@ -76,21 +76,14 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             vertices[k++] = uMax;
             vertices[k++] = vMax;
             
-
-
-
-            // Create triangles
             k = 0;
-//            triangles[k++] = 0;
-//            triangles[k++] = 2;
-//            triangles[k++] = 1;
-
             for (i = 0; i < a; i++) {
-                for (j = 0; j < m; j++) {
+                for (j = 0; j < b; j++) {
+                    
                     triangles[k++] = i*m + j;
                     triangles[k++] = i*m + j + 1;
                     triangles[k++] = (i + 1)*m + j;
-
+                  
                     triangles[k++] = (i + 1)*m + j;
                     triangles[k++] = i*m + j + 1;
                     triangles[k++] = (i + 1)*m + j + 1;
