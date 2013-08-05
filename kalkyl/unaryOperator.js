@@ -66,7 +66,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
          * Identical to.
          */
         identicalTo: function (expr) {
-            return (expr.getClass() === this.getClass()
+            return (expr && expr.getClass() === this.getClass()
                     && expr.arg().identicalTo(this.arg()))
         },
 

@@ -25,6 +25,7 @@ requirejs.config({
 
 var modules = [
     './test/kalkyl/basic.spec.js',
+    './test/kalkyl/topologicalSorter.spec.js',
     './test/mathgl/node.spec.js'
 
 ];

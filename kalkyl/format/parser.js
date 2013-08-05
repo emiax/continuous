@@ -49,7 +49,6 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
             
             var t = this.current();
             this.next();
-
             var left = (this.nud(t))(this, t);
             
             while (rbp < this.lbp(this.current())) {

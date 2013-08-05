@@ -2,19 +2,27 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
     Kalkyl.Substitutor = q.createClass(Visitor, {
 
         constructor: function (map) {
+            this.map(map);
+        },
+
+        map: function (map) {
             this._substitutes = {};
             var scope = this;
-            Object.keys(map).forEach(function (s) {
-                var v = map[s];
-                if (typeof v === 'number') {
-                    scope._substitutes[s] = Kalkyl.Number.boxNumber(v);
-                } else if (typeof v === 'string') {
-                    scope._substitutes[s] = Kalkyl.Variable.boxVariable(v);
-                } else if (v instanceof Kalkyl.Expression) {
-                    scope._substitutes[s] = v;
-                }
-            });
+            if (map !== undefined) {
+                Object.keys(map).forEach(function (s) {
+                    var v = map[s];
+                    if (typeof v === 'number') {
+                        scope._substitutes[s] = Kalkyl.Number.boxNumber(v);
+                    } else if (typeof v === 'string') {
+                        scope._substitutes[s] = Kalkyl.Variable.boxVariable(v);
+                    } else if (v instanceof Kalkyl.Expression) {
+                        scope._substitutes[s] = v;
+                    }
+                });
+            }
+            return this._map;
         },
+
 
         substitute: function (expr) {
             this._performedSubstitutions = {};

@@ -23,12 +23,18 @@ define(['kalkyl/exports.js',
         'kalkyl/vector2.js',
         'kalkyl/vector3.js',
         'kalkyl/vectorN.js',
+
+        'kalkyl/derivative.js',
+        
         // Visitors
         'kalkyl/visitor.js',
         'kalkyl/simplifier.js',
         'kalkyl/substitutor.js',
         'kalkyl/variableLister.js',
         'kalkyl/differentiator.js',
+        // Misc.
+        'kalkyl/topologicalSorter.js',
+        'kalkyl/flattener.js',
         // Basic output of expression trees
         'kalkyl/simpleFormatter.js',
         'kalkyl/dumper.js'],

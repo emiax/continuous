@@ -158,6 +158,31 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                 
             });
 
+            it ("can return flat expressions, derived from defintions in its ancestors", function () {
+
+                var p = new SimpleFormat.Parser();
+                var a = new MathGL.Node({
+                    expressions: {
+                        t: 'x*2'
+                    }
+                });
+
+                var b = new MathGL.Node({
+                    expressions: {
+                        x: 1
+                    }
+                });
+
+                var c = new MathGL.Node({
+                    expressions: {
+                        x: 2
+                    }
+                });
+
+                a.add(b).add(c);
+                expect(b.flat('t').identicalTo(p.parse('1*2'))).toBe(true);
+                expect(c.flat('t').identicalTo(p.parse('2*2'))).toBe(true);
+            });
         });
     };
 });

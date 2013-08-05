@@ -1,4 +1,4 @@
-define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOperator) {
+define(['quack', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOperator) {
     
     return KL.Derivative = q.createClass(UnaryOperator, {
         
@@ -7,42 +7,50 @@ define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL
          */
         constructor: function (arg, symbol) {
             this.arg(arg);
-            this.variable(symbol);
-        }
+            this.symbol(symbol);
+        },
         
         /**
-         * Get or set variable.
+         * Get or set symbol.
          */
-        symbol: function (variable) {
-            if (variable !== undefined) this._variable = variable;
-            return this._variable;
-        }
+        symbol: function (symbol) {
+            if (symbol !== undefined) {
+                this._symbol = symbol;
+            }
+            return this._symbol;
+        },
         
        
         /**
          * Clone.
          */
         clone: function() {
-            return new (this.getClass())(this.arg().clone(), this.variable().clone());
+            return new (this.getClass())(this.arg().clone(), this.symbol().clone());
         },
         
         
         /**
-         * Identical to expr
+         * Identical to expr?
          */
         identicalTo: function(expr) {
-            return (expr.getClass() === this.getClass()
+            return (expr && expr.getClass() === this.getClass()
                     && expr.arg().identicalTo(this.arg())
-                    && expr.variable().identicalTo(this.variable()));
+                    && expr.symbol().identicalTo(this.symbol()));
         },
 
         
+        /**
+         * Evaluated.
+         */
         evaluated: function() {
-            return this.arg().differentiated(this.variable().symbol()).evaluated();
+            return this.arg().differentiated(this.symbol()).evaluated();
+        },
+        
+        
+        dim: function () {
+            return this.arg().dim();
         }
 
 
     });
-    
-
-}
+});

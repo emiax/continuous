@@ -1,5 +1,5 @@
-define(['quack'], function (q) {
-    return q.createInterface(
+define(['quack', 'kalkyl/exports.js'], function (q, Kalkyl) {
+    return Kalkyl.InnerNode = q.createInterface(
         /**
          * For each argument. Apply a function on all children
          */

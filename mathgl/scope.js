@@ -2,7 +2,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
 
     var nextId = 1;
 
-    return MathGL.Node = q.createClass({
+    return MathGL.Scope = q.createClass({
         /**
          * Constructor.
          *
@@ -15,17 +15,17 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
 
             /**
              * Map from symbol to either of the following
-             *   1) Scope where expression was defined (Some other MathGL.Node)
+             *   1) Scope where expression was defined (Some other MathGL.Scope)
              *   2) Kalkyl Expression
              */
             this._expressions = {};
 
             this._id = nextId++;
-            
             this._parent = null;
+            this._space = null;
 
             /**
-             * Map from node id to child.
+             * Map from scope id to child.
              */
             this._children = {};
             
@@ -34,13 +34,20 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
         },
 
 
+        /**
+         * Id is public readable.
+         */
+        id: function() {
+            return this._id;
+        },
         
         /*****************************************************
          * Public 'scene graph' methods
          *****************************************************/
         
+
         /**
-         * Return parent node
+         * Return parent scope
          */
         parent: function () {
             return this._parent;
@@ -59,18 +66,50 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             return children;
         },
 
+
+        traverse: function (f) {
+            f(this);
+            this.forEachChild(function (c) {
+                c.traverse(f);
+            });
+        }, 
+
+
+        /**
+         * Space
+         */
+        space: function () {
+            return this._space;
+        },
+
+
+        /**
+         * Notify Observers
+         */
+        notifyObservers: function (type, symbol) {
+            var space = this.space();
+            if (space) {
+                space.notifyObservers(this, type, symbol);
+                this.forEachChild(function (child) {
+                    space.notifyObservers(child, type, symbol);
+                });
+            }
+        },
+        
         
         /**
          * Add child.
          */
         add: function (child) {
-            if (child instanceof MathGL.Node) {
+            if (child instanceof MathGL.Scope) {
                 this._children[child._id] = child;
                 child._parent = this;
                 child.updateScope();
+                child.notifyObservers('add');
             } else {
-                throw "Type error. Child is not a node";
+                throw "Type error. Child is not a scope";
             }
+            return this;
         },
 
 
@@ -82,6 +121,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             if (child) {
                 child.parent = null;
                 child.updateScope();
+                child.notifyObservers('remove');
                 delete this.children[child._id];
                 return true;
             }
@@ -97,6 +137,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             Object.keys(this._children).forEach(function (k) {
                 f(scope._children[k], k);
             });
+            return this;
         },
 
         
@@ -106,18 +147,21 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
          *****************************************************/
 
         /**
-         * Define a expression in the scope of this node
+         * Define a expression in the scope of this scope
          * Redefinition is possible, but use set(symbol, value) to show your intention!
          */
         define: function (symbol, value) {
             if (value === undefined) {
                 value = null;
             }
-            this._expressions[symbol] = null;
+
+            this._expressions[symbol] = null;               
             this.setOne(symbol, value);
             this.forEachChild(function(c) {
                 c.updateScope();
             });
+            this.notifyObservers('expression', symbol);
+            return this;
         },
 
         
@@ -129,10 +173,10 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
                 if (this.defines(symbol)) {
                     delete this._expressions[symbol];
                     this.updateScope();
-                    return true;
                 }
             }
-            return false;
+            this.notifyObservers('expression', symbol);
+            return this;
         },
 
         
@@ -145,7 +189,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             var scope = this;
             Object.keys(this._expressions).forEach(function (symbol) {
                 var expr = scope._expressions[symbol];
-                if (expr instanceof MathGL.Node) {
+                if (expr instanceof MathGL.Scope) {
                     expressions[symbol] = expr._expressions[symbol];
                 } else {
                     expressions[symbol] = expr;
@@ -153,6 +197,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             });
             return expressions;
         },
+
 
         /**
          * Get exppression
@@ -168,20 +213,19 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
         /**
          * Get expression and substitute symbols with definitions in outer scopes
          */
-        /**
+
         flat: function (symbol) {
             var expr = this.get(symbol);
             var expressions = this.getAll();
-            var flat;
             if (expr) {
                 if (flat = expr.flattened(expressions)) {
                     return flat;
                 }
             }
+            return null;
         },
         
 
-        */
         /**
          * Set one expression or multiple expressions.
          * Input can be two arguments (symbol, value) or a map from symbols to values.
@@ -198,7 +242,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
 
         
         /**
-         * Return true if this node defines a expression with symbol as key.
+         * Return true if this scope defines a expression with symbol as key.
          */
         defines: function (symbol) {
             return this.expressionScope(symbol) === this;
@@ -206,12 +250,12 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
 
         
         /**
-         * Return the node where the expression with symbol as key was defined.
+         * Return the scope where the expression with symbol as key was defined.
          * Return null if expression is undefined.
          */
         expressionScope: function (symbol) {
             var expression = this._expressions[symbol];
-            if (expression instanceof MathGL.Node) {
+            if (expression instanceof MathGL.Scope) {
                 return expression;
             } else if (expression !== undefined) {
                 return this;
@@ -269,8 +313,13 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
                 console.error("could not set expression to " + value);
                 return;
             }
+            var oldExpr = scope._expressions[symbol];
+            if (!oldExpr || !expr.identicalTo(oldExpr)) {
+                scope._expressions[symbol] = expr;
+                this.notifyObservers('expression', symbol);
+            }
 
-            return scope._expressions[symbol] = expr;
+            return scope._expressions[symbol];
         },
 
         
@@ -280,6 +329,8 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
         updateScope: function () {
             var parent = this.parent();
 
+            this._space = parent.space();
+            
             if (!parent) {
                 return;
             }
@@ -290,8 +341,8 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             // Reinherit old references from parent.
             // Remove references that are undefined in parent scope.
             Object.keys(childExpressions).forEach(function (symbol) {
-                if (childExpressions[symbol] instanceof MathGL.Node) {
-                    if (parentExpressions[symbol] instanceof MathGL.Node) {
+                if (childExpressions[symbol] instanceof MathGL.Scope) {
+                    if (parentExpressions[symbol] instanceof MathGL.Scope) {
                         childExpressions[symbol] = parentExpressions[symbol];
                     } else if (parentExpressions[symbol] instanceof Kalkyl.Expression) {
                         childExpressions[symbol] = parent;
@@ -304,7 +355,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             // Inherit new references from parent
             Object.keys(parentExpressions).forEach(function (symbol) {
                 if (childExpressions[symbol] === undefined) {
-                    if (parentExpressions[symbol] instanceof MathGL.Node) {
+                    if (parentExpressions[symbol] instanceof MathGL.Scope) {
                         childExpressions[symbol] = parentExpressions[symbol];
                     } else {
                         childExpressions[symbol] = parent;

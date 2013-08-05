@@ -14,7 +14,7 @@ define(['quack', 'kalkyl', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], 
             var parser = this.parser();
             var expression = null;
             parser.source(str);
-            if (str) {
+            if (str !== undefined) {
                 expression = parser.expression();
             } else {
                 parser.generateError("nothing to parse");
