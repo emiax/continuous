@@ -13,8 +13,6 @@ define(['quack', 'mathgl/appearanceNode.js', 'mathgl/exports.js'], function(q, A
             background = spec.background || null;
             
             this.blendMode(blendMode);
-            console.log(this instanceof MathGL.Gradient);
-            console.log(background);
             this.background(background);
         },
 

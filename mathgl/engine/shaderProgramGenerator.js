@@ -1,4 +1,4 @@
-define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Kalkyl, MathGL, Engine) {
+define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Kalkyl, GLSL, MathGL, Engine) {
 
     /**
      * Attributes are composed from:
@@ -17,11 +17,15 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
             this._gl = gl;
             this._entity = entity;
 
-            this._attributes = null;
+
             this._uniforms = null;
+            this._attributes = null;
+            this._varyings = null;
             this._vertexShaderDefinitions = null;
             this._fragmentShaderDefinitions = null;
 
+            this._glslFormatter = null;
+            
             this._dependencyGraph = null;
         },
 
@@ -80,7 +84,7 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
         /**
          * Find out where to define all the variables required by the vertex and fragment shader.
          */
-        shaderDefinitions: function () {
+        categorizeSymbols: function () {
             var graph = this.dependencyGraph();
 
             var vertexSinks = Object.keys(this.vertexShaderSinks());
@@ -134,36 +138,6 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
             return this.entity().getAll();
         },
 
-        /**
-         * Return all expressions needed to render the entity. (map symbol->expression)
-         */
-        /*
-          expressions: function () {
-          var verteShaderSymbols = this.vertexShaderSymbols();
-          var fragmentShaderSymbols = this.fragmentShaderSymbols();
-
-          var symbols = {};
-          Object.keys(vertexShaderSymbols).forEach(function(s) {
-          symbols[s] = true;
-          });
-          Object.keys(fragmentShaderSymbols).forEach(function(s) {
-          symbols[s] = true;
-          });
-
-          var expressions = {};
-          var entity = this.entity();
-          Object.keys(symbols).forEach(function (s) {
-          var expr = entity.get(s);
-          if (expr) {
-          expressions[s] = expr;
-          } else {
-          console.error(s + " is required to render entity " + entity.id());
-          }
-          });
-          console.log(expressions);
-          return expressions;
-          },*/
-
 
         /**
          * ParameterSymbols. (set of symbols)
@@ -199,48 +173,76 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
          * Generate shader program.
          */
         generate: function () {
-            //            console.log(this.parameterDependentSymbols());
-            this.shaderDefinitions();
-
-            console.log('uniforms');
-            console.log(this._uniforms);
-            console.log('attributes');
-            console.log(this._attributes);
-            console.log('varyings');
-            console.log(this._varyings);
-            console.log('vertexShaderDefinitions');
-            console.log(this._vertexShaderDefinitions);
-            console.log('fragmentShaderDefinitions');
-            console.log(this._fragmentShaderDefinitions);
-
-            console.log(this.reference('t', 'vertex'));
-
-            var vsGenerator = new Engine.VertexShaderGenerator();
-            var fsGenerator = new Engine.FragmentShaderGenerator();
-
             var gl = this.gl();
-            var entity = this.entity();
+            var vs = this.vertexShader(gl);
+            var fs = this.fragmentShader(gl);
 
-            /* var vs = vsGenerator.generate(gl, entity);
-               var fs = fsGenerator.generate(gl, entity);
-
-               return new Engine.ShaderProgram(vs, fs);*/
+            return new Engine.ShaderProgram(vs, fs);
         },
 
+
+        /**
+         * Return all uniform symbols
+         */
+        uniforms: function () {
+            if (!this._uniforms) {
+                this.categorizeSymbols();
+            }
+            return this._uniforms;
+        },
+        
         
         /**
          * Return true if symbol is defined as a uniform.
          */
         uniform: function (symbol) {
-            return this._uniforms.indexOf(symbol) !== -1;
+            return this.uniforms().indexOf(symbol) !== -1;
+        },
+
+        
+        /**
+         * Return the name of the symbol referenced as a uniform.
+         */
+        uniformReference: function (symbol) {
+            return 'u_' + symbol;
         },
 
 
         /**
+         * Return all uniform symbols
+         */
+        attributes: function () {
+            if (!this._attributes) {
+                this.categorizeSymbols();
+            }
+            return this._attributes;
+        },
+        
+        
+        /**
          * Return true if symbol is defined as a attribute.
           */
         attribute: function (symbol) {
-            return this._attributes.indexOf(symbol) !== -1;
+            return this.attributes().indexOf(symbol) !== -1;
+        },
+
+        
+        /**
+         * Return the name of the symbol referenced as an attribute.
+         */
+        attributeReference: function (symbol) {
+            return 'a_' + symbol;
+        },
+
+
+        /**
+         * Return all uniform symbols
+         */
+        varyings: function () {
+            if (!this._varyings) {
+                this.categorizeSymbols();
+            }
+            return this._varyings;
         },
 
 
@@ -248,7 +250,26 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
          * Return true if symbol is defined as a varying.
          */
         varying: function (symbol) {
-            return this._varyings.indexOf(symbol) !== -1;
+            return this.varyings().indexOf(symbol) !== -1;
+        },
+
+        
+        /**
+         * Return the name of the symbol referenced as a varying.
+         */
+        varyingReference: function (symbol) {
+            return 'v_' + symbol;
+        },
+
+
+        /**
+         * Return all uniform symbols
+         */
+        vertexShaderDefinitions: function () {
+            if (!this._vertexShaderDefinitions) {
+                this.categorizeSymbols();
+            }
+            return this._vertexShaderDefinitions;
         },
 
 
@@ -256,7 +277,26 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
          * Return true if symbol is defined as a vertex shader definition.
          */
         vertexShaderDefinition: function (symbol) {
-            return this._vertexShaderDefinitions.indexOf(symbol) !== -1;
+            return this.vertexShaderDefinitions().indexOf(symbol) !== -1;
+        },
+
+
+        /**
+         * Return the name of the symbol referenced as if defined in vertex shader.
+         */
+        vertexShaderReference: function (symbol) {
+            return 'vs_' + symbol;
+        },
+
+        
+        /**
+         * Return all uniform symbols
+         */
+        fragmentShaderDefinitions: function () {
+            if (!this._fragmentShaderDefinitions) {
+                this.categorizeSymbols();
+            }
+            return this._fragmentShaderDefinitions;
         },
 
 
@@ -264,7 +304,15 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
          * Return true if symbol is defined as a fragment shader definition.
          */
         fragmentShaderDefinition: function (symbol) {
-            return this._fragmentShaderDefinitions.indexOf(symbol) !== -1;
+            return this.fragmentShaderDefinitions().indexOf(symbol) !== -1;
+        },
+
+
+        /**
+         * Return the name of the symbol referenced as if defined in vertex shader.
+         */
+        fragmentShaderReference: function (symbol) {
+            return 'fs_' + symbol;
         },
 
 
@@ -273,95 +321,108 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
          */
         reference: function (symbol, context) {
             if (this.uniform(symbol))
-                return 'u_' + symbol;
+                return this.uniformReference(symbol);
             if (context === 'vertex') {
                 if (this.attribute(symbol)) {
-                    return 'a_' + symbol;
+                    return this.attributeReference(symbol);
                 } else if (this.vertexShaderDefinition(symbol)) {
-                    return 'vs_' + symbol;
+                    return this.vertexShaderReference(symbol);
                 }
                 console.error("Symbol is not defined.");
             } else if (context === 'fragment') {
                 if (this.varying(symbol))
-                    return 'v_' + symbol;
+                    return this.varyingReferene(symbol);
                 if (this.fragmentShaderDefinition(symbol))
-                    return 'fs_' + symbol;
+                    return this.fragmentShaderReference(symbol);
                 console.error("Symbol is not defined.");
             }
             console.error("Invalid context.");
             return '0';
         },
 
-
+        
         /**
-         * Return a set of all the parameter dependent symbols.
+         * Get my glsl formatter! Context may be 'vertex' or 'fragment'
          */
-        /*        parameterDependentSymbols: function () {
-                  if (this._parameterDependentSymbols === null) {
-                  var scope = this;
+        glslFormatter: function (context) {
+            if (!this._glslFormatter) {
+                this._glslFormatter = new GLSL.Formatter();
+            }
+            var glslFormatter = this._glslFormatter;
+            
+            var scope = this;
+            var table = {};
 
-                  var parameters = this.parameterSymbols();
-                  var expressions = this.expressions();
+            this.uniforms().forEach(function (s) {
+                table[s] = scope.uniformReference(s);
+            });
+            
+            if (context === 'vertex') {
+                this.attributes().forEach(function (s) {
+                    table[s] = scope.attributeReference(s);
+                });
+                this.vertexShaderDefinitions().forEach(function (s) {
+                    table[s] = scope.vertexShaderReference(s);
+                });
+            } else if (context === 'fragment') {
+                this.varying().forEach(function (s) {
+                    table[s] = scope.varyingReference(s);
+                });
+                this.fragmentShaderDefinitions().forEach(function (s) {
+                    table[s] = scope.fragmentShaderReference(s);
+                });
+            } else {
+                console.error("invalid context.");
+            }      
+            glslFormatter.translationTable(table);
 
-                  var uniformSymbols = this._uniformSymbols = {};
-                  var parameterDependentSymbols = this._parameterDependentSymbols = {};
+            return glslFormatter;
+        },
 
-                  var graph = new Kalkyl.DependencyGraph(expressions);
-
-                  Object.keys(expressions).forEach(function (symbol) {
-                  if (graph.dependsOnAny(symbol, parameters)) {
-                  parameterDependentSymbols[symbol] = true;
-                  }
-                  });
-                  }
-                  return this._parameterDependentSymbols;
-                  },
-        */
 
         /**
          * Generate vertex shader
          */
         vertexShader: function () {
-
+            var scope = this;
             var glsl = "";
-            this.attributes().forEach(function (s) {
-                glsl += 'attribute float attribute_' + s + ";\n";
+
+            this.uniforms().forEach(function (s) {
+                glsl += 'uniform float ' + scope.uniformReference(s) + ';\n';
             });
 
-            // All attributes need to be interpolated to be referred from fragment shader.
             this.attributes().forEach(function (s) {
-                glsl += 'varying float varying_' + s + ";\n";
+                glsl += 'attribute float ' + scope.attributeReference(s) + ";\n";
             });
 
-            this.varyingExpressions.forEach(function (pair) {
-                glsl += 'varying float varying_' + pair.symbol + ';\n';
+            this.varyings().forEach(function (s) {
+                glsl += 'varying float ' + scope.varyingReference(s) + ";\n";
             });
 
 
             glsl += "void main() {\n";
 
-            var glslFormatter = null;
-            this.varyingExpressions.forEach(function (pair) {
-                var glslFormattedExpr = glslFormatter.format(pair.expression);
-                glsl += 'varying_' + pair.symbol + ' = ' + glslFormattedExpr + ';\n';
+            var formatter = this.glslFormatter('vertex');
+            this.vertexShaderDefinitions().forEach(function (s) {
+                var expr = scope.expressions()[s];
+                glsl += "float " + scope.vertexShaderReference(s) + " = " + formatter.format(expr) + ';\n';
             });
 
-            glsl += "void main() {\n";
+            glsl += "gl_Position = vec4(" +
+                scope.vertexShaderReference('x') + ', ' + 
+                scope.vertexShaderReference('y') + ', ' + 
+                scope.vertexShaderReference('z') + ", 1.0);\n";
 
+            this.varyings().forEach(function (s) {
+                var attr = scope.attributeReference(s);
+                if (attr) {
+                    glsl += scope.varyingReference(s) + " = " + attr + ";\n";
+                }
+            });
 
-            /*
-              var glsl = [
+            glsl += "}\n";
 
-              'attribute float attribute_u;',
-              'attribute float attribute_v;',
-              'varying float varying_u;',
-              'varying float varying_v;',
-
-              'void main() {'].merge(
-
-              ).merge(['   float vec3 position = vec3(varying_x, varying_y, varying_z);
-              '   gl_Position = vec4(u - 0.8*cos(v*4.0), v, u, 1.0);',
-              '}'].join('\n');*/
+            console.log(glsl);
 
             return new Engine.VertexShader(this.gl(), glsl);
         },
@@ -371,11 +432,21 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js'], function(q, Ka
          */
         fragmentShader: function () {
 
-            var glsl = [
-                'precision mediump float;',
-                'varying vec2 vParameters;',
+            var glsl = 'precision mediump float;\n'; 
+            var scope = this;
+
+            this.uniforms().forEach(function (s) {
+                glsl += 'uniform float ' + scope.uniformReference(s) + ';\n';
+            });
+
+            this.varyings().forEach(function (s) {
+                glsl += 'varying float ' + scope.varyingReference(s) + ";\n";
+            });
+
+
+            glsl += [
                 'void main() {',
-                '   gl_FragColor = vec4(vParameters.x, vParameters.y, 0.0, 1.0);',
+                '   gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0);',
                 '}'].join('\n');
 
             return new Engine.FragmentShader(this.gl(), glsl);

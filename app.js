@@ -9,6 +9,7 @@ requirejs.config({
         'kalkyl/format':         './kalkyl/format/package',
         'kalkyl/format/simple':  './kalkyl/format/simple/package',
         'kalkyl/format/sage':    './kalkyl/format/sage/package',
+        'kalkyl/format/glsl':    './kalkyl/format/glsl/package',
         
         'communication':         './communication/package',
         'communication/client':  './communication/client/package',
@@ -165,7 +166,6 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
 
 //    var bridge = new MathGL.ThreeJSBridge(space, renderer)
 
-    console.log(node.get('a'));
     
 
 });

@@ -67,16 +67,10 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             var uDomain = domain[u];
             var vDomain = domain[v];
             
-            console.log(uDomain);
-            console.log(vDomain);
-
             var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 20);
             var vertexData = tessellation.vertexArray();
             var triangleData = tessellation.triangleArray();
             
-            console.log(vertexData);
-            console.log(triangleData);
-
             var vertexBuffer = this._vertexBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, vertexData, gl.STATIC_DRAW);
@@ -114,8 +108,6 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
 
             gl.vertexAttribPointer(this._parameterLocation, 2, gl.FLOAT, false, 0, 0);
             gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
-
-
             //todo!
         }
         

@@ -86,12 +86,6 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
                     triangles[k++] = (i + 1)*m + j + 1;
                 }
             }
-            console.log(k);
-            console.log(n);
-            console.log(m);
-            console.log(6*(n - 1)*(m - 1));
-            
-            console.log(this._triangles);            
             this._tessellated = true;
         },
 
