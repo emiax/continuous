@@ -1,5 +1,5 @@
 define(['kalkyl', 'kalkyl/format/simple'], function(Kalkyl, SimpleFormat) {
-g    return function() {
+    return function() {
 
         describe("Flattener", function() {
 

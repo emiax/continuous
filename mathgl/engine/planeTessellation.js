@@ -48,9 +48,6 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             var uStep = 1/this._uRes;
             var vStep = 1/this._vRes;
             
-            uStep = 0.5;
-            vStep = 0.5;
-
             // Create vertices in four steps like this.
             // aaab
             // aaab

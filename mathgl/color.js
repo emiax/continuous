@@ -19,7 +19,7 @@ define(['quack', 'mathgl/fill.js', 'mathgl/exports.js'], function(q, Fill, MathG
          * Return a set of the symbols that need defined expressions
          * in order to render this apperance node.
          */
-        expressions: function () {
+        symbols: function () {
             return {};
         },
         

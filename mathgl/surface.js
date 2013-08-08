@@ -6,7 +6,7 @@ define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, M
          */
         constructor: function (spec) {
             spec = spec || {};
-            Entity.constructor.apply(this, spec);
+            Entity.constructor.call(this, spec);
             
             this.domain(spec.domain || {
                 u: [0, 1],

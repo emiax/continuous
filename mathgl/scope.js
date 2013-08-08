@@ -328,12 +328,12 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
          */
         updateScope: function () {
             var parent = this.parent();
-
-            this._space = parent.space();
             
             if (!parent) {
                 return;
             }
+
+            this._space = parent.space();
 
             var parentExpressions = this.parent()._expressions;
             var childExpressions = this._expressions;

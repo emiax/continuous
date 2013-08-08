@@ -20,8 +20,8 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             console.log("Initializing " + this.scope().id());
             this.initializeParameterBuffer();
             
-            var shaderGenerator = new Engine.ShaderGenerator(this.gl(), this.scope());
-            this._shaderProgram = shaderGenerator.generate();
+            var programGenerator = new Engine.ShaderProgramGenerator(this.gl(), this.scope());
+            this._shaderProgram = programGenerator.generate();
             this._shaderProgram.link();
             this._parameterLocation = this._shaderProgram.attributeLocation("aParameters");
         },
@@ -70,7 +70,7 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             console.log(uDomain);
             console.log(vDomain);
 
-            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 2);
+            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 20);
             var vertexData = tessellation.vertexArray();
             var triangleData = tessellation.triangleArray();
             
@@ -113,8 +113,6 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             gl.enableVertexAttribArray(this._parameterLocation);
 
             gl.vertexAttribPointer(this._parameterLocation, 2, gl.FLOAT, false, 0, 0);
-
-            console.log(this._triangleCount);
             gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
 
 

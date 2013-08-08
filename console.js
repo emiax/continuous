@@ -31,8 +31,39 @@ requirejs(['kalkyl', 'kalkyl/format', 'kalkyl/format/simple', 'mathgl'], functio
     Parser = simple.Parser;
     var parser = new Parser();
     parse = parser.parse.bind(parser);
-        
 
+
+
+    var expressions = {
+        a: parse('4'), 
+        b: parse('a'), 
+        c: parse('b'), 
+        d: parse('c'), 
+        e: parse('c'),
+        f: parse('d + e')
+    }
+    
+    var ts = new Kalkyl.TopologicalSorter();
+    var order = ts.order(expressions);
+    
+    console.log(order);
+    
+    var dg = new Kalkyl.DependencyGraph();
+    dg.expressions(expressions);
+    order = dg.order();
+    console.log(order);
+    
+    var cDep = dg.dependencies('c');
+    console.log(cDep);
+
+    var dDep = dg.dependencies('d');
+    console.log(dDep);
+
+    dDep = dg.dependencies('d', 'c');
+    console.log(dDep);
+
+
+    
     console.log("Feel free to go nuts!");
 });
 

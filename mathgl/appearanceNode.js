@@ -26,7 +26,7 @@ define(['quack', 'mathgl/exports.js'], function(q, MathGL) {
          * Return a set of the symbols that need defined expressions
          * in order to render this apperance node.
          */
-        expressions: new q.AbstractMethod(),
+        symbols: new q.AbstractMethod(),
 
 
         /**
@@ -53,6 +53,19 @@ define(['quack', 'mathgl/exports.js'], function(q, MathGL) {
          */
         inputs: function () {
             return this._inputs;
+        },
+
+        
+        /**
+         * Invoke f(node) for all nodes in the chain that is input to this.
+         */
+        traverse: function (f) {
+            f(this);
+            this.forEachInput(function (n) {
+                if (n) {
+                    n.traverse(f);
+                }
+            });
         },
 
         

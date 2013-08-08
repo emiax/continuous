@@ -33,7 +33,8 @@ define(['kalkyl/exports.js',
         'kalkyl/variableLister.js',
         'kalkyl/differentiator.js',
         // Misc.
-        'kalkyl/topologicalSorter.js',
+//        'kalkyl/topologicalSorter.js',
+        'kalkyl/dependencyGraph.js',
         'kalkyl/flattener.js',
         // Basic output of expression trees
         'kalkyl/simpleFormatter.js',

@@ -4,7 +4,7 @@ define(['kalkyl', 'kalkyl/format/simple'], function(Kalkyl, SimpleFormat) {
         describe("Topological sorter", function() {
 
             var p = new SimpleFormat.Parser();
-            var sorter = new Kalkyl.TopologicalSorter();
+            var sorter = new Kalkyl.DependencyGraph();
 
             it("should be able to sort expressions", function () {
                 var expressions = {};

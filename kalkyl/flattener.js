@@ -4,7 +4,7 @@ define(['quack', './exports.js', './expression.js'], function(q, Kalkyl, Express
         constructor: function (map) {
             var scope = this;
             this._substitutor = new Kalkyl.Substitutor(map);
-            this._sorter = new Kalkyl.TopologicalSorter();
+            this._graph = new Kalkyl.DependencyGraph(map);
             this._lister = new Kalkyl.VariableLister();
             this._map = map || {};
         },
@@ -23,7 +23,7 @@ define(['quack', './exports.js', './expression.js'], function(q, Kalkyl, Express
          */
         flatten: function (expression) {
             var current = expression;
-            var order = this.sorter().order(this._map);
+            var order = this.graph().order();
             var substitutor = this.substitutor(this._map);
             var lister = this.lister();
             var scope = this;
@@ -55,8 +55,8 @@ define(['quack', './exports.js', './expression.js'], function(q, Kalkyl, Express
         },
         
         
-        sorter: function () {
-            return this._sorter;
+        graph: function () {
+            return this._graph;
         },
 
 
@@ -70,6 +70,7 @@ define(['quack', './exports.js', './expression.js'], function(q, Kalkyl, Express
             if (map !== undefined) {
                 this._map = map;
                 this.substitutor().map(map);
+                this.graph().expressions(map);
             }
             return this._map;
         }

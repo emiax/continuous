@@ -44,27 +44,28 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     view.space(space);
     view.startRendering();
 
-    var node = new MathGL.Scope({
+
+    // BEGIN DEFINING SPACE.
+    
+    var scope = new MathGL.Scope({
         expressions: {
             a: 2,
             b: 'a + a',
-            t: 'u + v + a'
+            t: 'u + v + a',
+            c: 'u*t'
         }
     });
+
+    
+    // surface appearance.
 
     var color = new MathGL.Color(0xffffffff);
     var overlay = new MathGL.Color({
         background: color,
         color: 0x44000000
     });
-    console.log(overlay.inputs());
-
-    
-    
-    // surface appearance.
-
     var gradient = new MathGL.Gradient({
-        parameter: 'x',
+        parameter: 'c',
         background: color, // default
         blendMode: 'normal', // default
         // these will have to be numbers (NOT EXPRESSIONS)
@@ -75,9 +76,27 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
         }
     });
     
-    console.log(gradient.inputs());
+    // surface.
+    var surface = new MathGL.Surface({
+        domain: {
+            u: [0, 0.8],
+            v: [0, 0.8]
+        },
+        expressions: {
+            x: 'u',
+            y: 'v', 
+            z: 'sin(u*v*t)',
+        },
+        appearance: gradient
+    });
 
-    console.log(gradient.inputs());
+    space.add(scope);
+    scope.add(surface);
+
+    // END DEFINING SPACE.
+
+    console.log("INIT SPACE DONE");
+
 
 
 /*
@@ -109,17 +128,6 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     });
 */
 
-    // surface.
-    
-
-    var surface = new MathGL.Surface({
-        domain: {
-            u: [0, 0.8],
-            v: [0, 0.8]
-        },
-        appearance: color
-    });
-
 /*    var surface2 = new MathGL.Surface({
         domain: {
             u: [0, 10],
@@ -132,11 +140,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
 
     
 
-    space.add(node);
-    node.add(surface);
-    surface.appearance(gradient);
-
-    console.log(color);
+/*    console.log(color);
 
     color.color(0x44113322);
     console.log("bg = null");
@@ -152,7 +156,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
 
     console.log(surface);
 
-
+*/
 
 
 

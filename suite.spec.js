@@ -27,10 +27,10 @@ var modules = [
     // Kalkyl
     './test/kalkyl/basic.spec.js',
     './test/kalkyl/substitutor.spec.js',
-    './test/kalkyl/topologicalSorter.spec.js',
+    './test/kalkyl/dependencyGraph.spec.js',
     './test/kalkyl/flattener.spec.js',
     // MathGL
-    './test/mathgl/node.spec.js'
+    './test/mathgl/scope.spec.js'
 
 ];
 
@@ -43,4 +43,3 @@ requirejs(modules, function () {
     }
         
 });
-
