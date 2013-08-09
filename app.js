@@ -50,12 +50,25 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     
     var scope = new MathGL.Scope({
         expressions: {
-            a: 2,
+//            a: 2,
             b: 'a + a',
-            t: 'u + v + a',
-            c: 'u*t'
+            t: '0.001',
+            s: '0.002',
+            c: 'v*u*t*s'
         }
     });
+    
+    var t = 0;
+    function increment() {
+        scope.set('t', 0.5*Math.sin(t)+1.5);
+        t+=0.1;
+    }
+    
+    
+    setInterval(function() {
+        increment();
+    }, 10);
+    
 
     
     // surface appearance.
@@ -80,13 +93,13 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     // surface.
     var surface = new MathGL.Surface({
         domain: {
-            u: [0, 0.8],
-            v: [0, 0.8]
+            u: [0, 1],
+            v: [0, 1]
         },
         expressions: {
-            x: 'u',
-            y: 'v', 
-            z: 'sin(u*v*t)',
+            x: 'cos(u*2*3.14)*v/3',
+            y: 'sin(u*2*3.14)*v/3', 
+            z: 'u*t/2 - 0.25',
         },
         appearance: gradient
     });

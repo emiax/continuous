@@ -38,7 +38,10 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
         tessellate: function () {
             var n = this._n;
             var m = this._m;
-            var vertices = this._vertices = new Float32Array(2*n*m);
+
+            var uData = this._uData = new Float32Array(n*m);
+            var vData = this._vData = new Float32Array(n*m);
+
             var triangles = this._triangles = new Uint16Array(6*(n - 1)*(m - 1));
 
             var uMin = this._uMin;
@@ -57,21 +60,24 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             for (i = 0; i < a; i++) {
                 // a-type vertices
                 for (j = 0; j < b; j++) {
-                    vertices[k++] = uMin + uStep*i;
-                    vertices[k++] = vMin + vStep*j;
+                    uData[k] = uMin + uStep*i;
+                    vData[k] = vMin + vStep*j;
+                    k++;
                 }
                 // b-type vertices
-                vertices[k++] = uMin + uStep*i;
-                vertices[k++] = vMax;
+                uData[k] = uMin + uStep*i;
+                vData[k] = vMax;
+                k++;
             }
             // c-type vertices
             for (j = 0; j < b; j++) {
-                vertices[k++] = uMax;
-                vertices[k++] = vMin + vStep*j;
+                uData[k] = uMax;
+                vData[k] = vMin + vStep*j;
+                k++;
             }
             // d vertex
-            vertices[k++] = uMax;
-            vertices[k++] = vMax;
+            uData[k] = uMax;
+            vData[k] = vMax;
             
             k = 0;
             for (i = 0; i < a; i++) {
@@ -91,13 +97,24 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
 
         
         /**
-         * Get vertex array. Tessellate if not done yet.
+         * Get u array (first paramter). Tessellate if not done yet.
          */
-        vertexArray: function () {
+        uArray: function () {
             if (!this._tessellated) {
                 this.tessellate();
             }
-            return this._vertices;
+            return this._uData;
+        },
+
+
+        /**
+         * Get v array (second paramter). Tessellate if not done yet.
+         */
+        vArray: function () {
+            if (!this._tessellated) {
+                this.tessellate();
+            }
+            return this._vData;
         },
 
 

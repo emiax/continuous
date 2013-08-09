@@ -17,7 +17,6 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             this._gl = gl;
             this._entity = entity;
 
-
             this._uniforms = null;
             this._attributes = null;
             this._varyings = null;
@@ -25,7 +24,6 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             this._fragmentShaderDefinitions = null;
 
             this._glslFormatter = null;
-            
             this._dependencyGraph = null;
         },
 
@@ -96,12 +94,11 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             var vertexSymbols = graph.orderedSubset(vertexSinks);
             var fragmentSymbols = graph.orderedSubset(fragmentSinks);
 
-            var vertexShaderDefinitions = [];
-            var fragmentShaderDefinitions = [];
-
             var uniforms = {};            
             var attributes = [];
             var varyings = [];
+            var vertexShaderDefinitions = [];
+            var fragmentShaderDefinitions = [];
 
             vertexSymbols.forEach(function (s) {
                 if (parameters[s]) {
@@ -380,6 +377,10 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
         },
 
 
+        mvpMatrixReference: function () {
+            return 'mvpMatrix';
+        },
+
         /**
          * Generate vertex shader
          */
@@ -400,6 +401,8 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             });
 
 
+            glsl += 'uniform mat4 mvpMatrix;\n'
+
             glsl += "void main() {\n";
 
             var formatter = this.glslFormatter('vertex');
@@ -408,10 +411,16 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
                 glsl += "float " + scope.vertexShaderReference(s) + " = " + formatter.format(expr) + ';\n';
             });
 
-            glsl += "gl_Position = vec4(" +
-                scope.vertexShaderReference('x') + ', ' + 
-                scope.vertexShaderReference('y') + ', ' + 
-                scope.vertexShaderReference('z') + ", 1.0);\n";
+            glsl += "vec4 spacePosition = vec4(" +
+                scope.reference('x', 'vertex') + ', ' + 
+                scope.reference('y', 'vertex') + ', ' + 
+                scope.reference('z', 'vertex') + ", 1.0);\n";
+
+
+            glsl += "gl_Position = " + this.mvpMatrixReference() + " * spacePosition;\n";
+
+            // PROJECTION BESTORP STYLE:
+            glsl += "gl_Position.z = 1.0;\n";
 
             this.varyings().forEach(function (s) {
                 var attr = scope.attributeReference(s);
@@ -446,9 +455,11 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
 
             glsl += [
                 'void main() {',
-                '   gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0);',
+                '   gl_FragColor = vec4(v_u, v_v, 0.0, 1.0);',
                 '}'].join('\n');
 
+
+            console.log(glsl);
             return new Engine.FragmentShader(this.gl(), glsl);
         },
 

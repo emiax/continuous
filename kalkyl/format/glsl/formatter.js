@@ -99,7 +99,7 @@ define(['quack', 'kalkyl/format/glsl/exports.js', 'kalkyl/visitor.js'], function
          * Visit power.
          */
         visitPower: function (pow) {
-            return "(" + this.format(pow.left()) + ") ^ (" +
+            return "pow(" + this.format(pow.left()) + ", " +
                 this.format(pow.right()) + ")";
         },
 
