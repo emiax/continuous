@@ -14,11 +14,10 @@ Handling sockets, forwarding requests to sage
 Kalkyl + Backend
 ----------------
     
-    continue work on flattener, to proceed with mathgl.node.flat()
     implement arcsin, arccos, arctan
     implement ln, log, sqrt    
     impleement accessor for vectors and matrices (.x, .y, .z) or [0][1] and so on
-
+    Introduce a new format. Simple format should still break ab into a*b, but the new format needs multichar variable names
 
 
 Sage formatter
@@ -44,7 +43,7 @@ Simple parser
 
 3D Engine
 ---------
-
+    Camera
 
 
 

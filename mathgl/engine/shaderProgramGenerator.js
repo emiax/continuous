@@ -420,7 +420,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             glsl += "gl_Position = " + this.mvpMatrixReference() + " * spacePosition;\n";
 
             // PROJECTION BESTORP STYLE:
-            glsl += "gl_Position.z = 1.0;\n";
+//            glsl += "gl_Position.z = 1.0;\n";
 
             this.varyings().forEach(function (s) {
                 var attr = scope.attributeReference(s);
@@ -436,6 +436,40 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             return new Engine.VertexShader(this.gl(), glsl);
         },
 
+
+        nodeReference: function (node) {
+            return 'node' + node.id() + '()';
+        },
+
+
+        appearanceNodes: function () {
+            var nodes = {};
+            this.entity().appearance().traverse(function (node) {
+                var id = node.id();
+                nodes[id] = node;
+            });
+            return nodes;
+        },
+
+
+        formatFloat: function (f) {
+            var f = f + "";
+            if (f.indexOf('.') === -1) {
+                f += '.0';
+            }
+            return f;
+        },
+
+
+        /**
+         * Return glsl code that blends a over b, normal blend mode. a and b are strings (glsl references)
+         */
+        normalBlend: function (a, b) {
+            return 'vec4(' + a + '.rgb + ' + b + '.rgb*(1.0 - ' + a + '.a), '
+                + a + '.a + ' + b + '.a*(1.0 - ' + a + '.a))';
+        },
+
+
         /**
          * Generate fragment shader.
          */
@@ -443,7 +477,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
 
             var glsl = 'precision mediump float;\n'; 
             var scope = this;
-
+            
             this.uniforms().forEach(function (s) {
                 glsl += 'uniform float ' + scope.uniformReference(s) + ';\n';
             });
@@ -451,11 +485,70 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             this.varyings().forEach(function (s) {
                 glsl += 'varying float ' + scope.varyingReference(s) + ";\n";
             });
+            
+            var nodes = this.appearanceNodes();
+            Object.keys(nodes).forEach(function (id) {
+                var node = nodes[id];
+                glsl += "vec4 " + scope.nodeReference(node) + ";\n"
+            });
+            
+            Object.keys(nodes).forEach(function (id) {
+                var node = nodes[id];
+                if (node instanceof MathGL.Color) {
+                    glsl += 'vec4 ' + scope.nodeReference(node) + ' {\n';
+                    
+                    var f = node.floatVector();
+                    var a = scope.formatFloat(f.a);
+                    var r = scope.formatFloat(f.r);
+                    var g = scope.formatFloat(f.g);
+                    var b = scope.formatFloat(f.b);
+                    var background = node.background();
+                    if (background) {
+                        glsl += 'vec4 bg = ' + scope.nodeReference(node.background()) + ';\n';
+                        glsl += "vec4 color = vec4(" + r + ", " + g + " , " + b + ", " +  a + ");\n"
+                        glsl += "return " + scope.normalBlend('color', 'bg') + ";\n";
+                    } else {
+                        glsl += "return vec4(" + r + ", " + g + " , " + b + ", " +  a + ");\n";
+                    }
+                    glsl += "}\n"
+                } else if (node instanceof MathGL.Gradient) {
+                    glsl += 'vec4 ' + scope.nodeReference(node) + ' {\n';
+                    glsl += 'vec4 bg = ' + scope.nodeReference(node.background()) + ';\n';
+                    
+                    var stops = node.stops();
+                    var keys = Object.keys(stops).sort();
+                    var parameter = node.parameter();
+
+                    keys.forEach(function (key, i) {
+                        glsl += 'vec4 color' + i + ' = ' + scope.nodeReference(stops[key]) + ';\n';
+                    });
+                    
+                    glsl += 'vec4 color = color0;\n'
+                    
+                    keys.forEach(function (key, i) {
+                        if (i === 0) return;
+                        var a = stops[i - 1];
+                        var b = stops[i];
+                        console.log(scope.reference(parameter, 'fragment'));
+                        console.log("woot");
+                        
+//                        glsl += "color = mix(color, color" + i + ", " + 
+                    });
+
+                    glsl += "return " + scope.normalBlend('color', 'bg') + ";\n";
+                    glsl += "}\n"                        
+                } else {
+                    console.log("unsupported node");
+                }
+            });
+
+//            console.log(this.entity().appearance());
 
 
             glsl += [
                 'void main() {',
-                '   gl_FragColor = vec4(v_u, v_v, 0.0, 1.0);',
+                '   gl_FragColor = node' + this.entity().appearance().id() + '();\n',
+//                '   gl_FragColor = vec4(v_u, v_v, 0.0. 1.0);\n',
                 '}'].join('\n');
 
 
@@ -493,3 +586,5 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
 
     });
 });
+
+

@@ -76,8 +76,6 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             if (left instanceof KL.Number) {
                 if (!left.value()) {
                     return left;
-                } else {
-                    console.log(left.value());
                 }
                 if (left.value() === 1) {
                     return right;
@@ -122,7 +120,10 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         visitPower: function (expr) {
             var left = expr.left().simplified(this);
             var right = expr.right().simplified(this);
-
+            console.log(expr);
+            console.log(left);
+            console.log(right);
+            
             if (left instanceof KL.Number && right instanceof KL.Number) {
                 return expr.evaluated().simplified(this);
             }

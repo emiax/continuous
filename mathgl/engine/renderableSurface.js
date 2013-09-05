@@ -14,13 +14,13 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             this._uniformLocations = null;
 
             this._r = 0;
-
         },
 
 
         surface: function () {
             return this._scope;
         },
+
 
         /**
          * Initialize.
@@ -108,7 +108,7 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
-            //            var vertexData = tessellation.vertexArray();
+            // var vertexData = tessellation.vertexArray();
             var triangleData = tessellation.triangleArray();
 
 
@@ -119,11 +119,6 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             var vBuffer = this._vBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, vData, gl.STATIC_DRAW);
-
-            /*
-              var vertexBuffer = this._vertexBuffer = gl.createBuffer();
-              gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-              gl.bufferData(gl.ARRAY_BUFFER, vertexData, gl.STATIC_DRAW);*/
 
             var triangleBuffer = this._triangleBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleBuffer);
@@ -136,7 +131,7 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
         /**
          * Render.
          */
-        render: function () {
+        render: function (camera) {
             var gl = this.gl();
             //            this.bindParameterBuffer();
             this.useProgram();
@@ -170,7 +165,7 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             var location = this._mvpMatrixLocation;
 
             var e = new Float32Array(16);
-            var t = 0;
+/*            var t = 0;
             var sin = Math.sin, cos = Math.cos;
 
             var eulerVector = {
@@ -206,7 +201,10 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             e[12] = 0;
             e[13] = 0;
             e[14] = 0;
-            e[15] = 1;
+            e[15] = 1;*/
+
+            e = camera.matrix();
+//            console.log(e);
 
             gl.uniformMatrix4fv(location, false, e);
 

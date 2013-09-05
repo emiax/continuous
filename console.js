@@ -32,7 +32,9 @@ requirejs(['kalkyl', 'kalkyl/format', 'kalkyl/format/simple', 'mathgl'], functio
     var parser = new Parser();
     parse = parser.parse.bind(parser);
 
-
+    
+    console.log(parse('x^2').differentiated());
+/*
 
     var expressions = {
         a: parse('4'), 
@@ -63,7 +65,7 @@ requirejs(['kalkyl', 'kalkyl/format', 'kalkyl/format/simple', 'mathgl'], functio
     console.log(dDep);
 
 
-    
+  */  
     console.log("Feel free to go nuts!");
 });
 

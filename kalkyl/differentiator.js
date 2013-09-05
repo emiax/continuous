@@ -49,7 +49,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                 ),
                 new KL.Multiplication(
                     left.clone(),
-                    right.differentiate(this)
+                    right.differentiated(this)
                 )
             );
         },
@@ -89,7 +89,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                         left.clone(),
                         right.clone()
                     ),
-                    new Multiplication(
+                    new KL.Multiplication(
                         new KL.Ln(left.clone()),
                         right.differentiated(this)
                     )

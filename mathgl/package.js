@@ -5,6 +5,8 @@ define(['mathgl/exports.js',
         'mathgl/space.js',
         'mathgl/surface.js',
 
+        'mathgl/camera.js',
+
         // Appearance nodes
         'mathgl/appearanceNode.js',
         'mathgl/fill.js',

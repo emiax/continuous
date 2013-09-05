@@ -9,6 +9,10 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
             this._renderables = {};
             this._updates = {};
             this._space = null;
+            this._camera = null;
+            
+            gl.enable(gl.DEPTH_TEST);
+
         },
 
         
@@ -33,20 +37,32 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
          */
         clearFrame: function() {
             var gl = this.gl();
-            var c = 0x44/0xff;
-            gl.clearColor(c, c, c, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
+            var c = 0x00;
+            gl.clearColor(c, c, c, 0.0);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         },
 
 
+        camera: function (camera) {
+            if (camera !== undefined) {
+                this._camera = camera;
+            }
+            return this._camera;
+        },
+        
         /**
          * Prepare and render all renderables.
          */
         render: function () {
+            var camera = this.camera();
+            if (!camera) {
+                console.error("Trying to render without camera!");
+                return;
+            }
             this.prepareRenderables();
             this.clearFrame();
             this.forEachRenderable(function (r) {
-                r.render();
+                r.render(camera);
             });
         },
 
@@ -88,7 +104,7 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
          * Refresh a renderable
          */
         refresh: function (id, spec) {
-            console.log("refreshing " + id);
+//            console.log("refreshing " + id);
             this._renderables[id].refresh(spec);
         },
 
@@ -171,7 +187,7 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
                 return;
             }
             var id = scope.id();
-            console.log(id + " sent update '" + type + "'");
+//            console.log(id + " sent update '" + type + "'");
             var slot = this._updates[id];
             if (!slot) {
                 slot = this._updates[id] = {};

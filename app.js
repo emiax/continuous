@@ -4,6 +4,7 @@ requirejs.config({
         // List of all Continuous packages
         'quack':                 './lib/quack',
         'jquery':                './lib/jquery-2.0.3.min',
+        'gl-matrix':             './lib/gl-matrix-min',
         
         'kalkyl':                './kalkyl/package',
         'kalkyl/format':         './kalkyl/format/package',
@@ -37,15 +38,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     var parser = new SimpleFormat.Parser();
 
     var space = new MathGL.Space();
-//    var renderer = new MathGL.Renderer(document.getElementById('canvas'));
- //   renderer.setSpace(space);
     
-//    view.setCamera(...);
-    var view = new Engine.View(document.getElementById('canvas'));
-    view.space(space);
-    view.startRendering();
-
-
     // BEGIN DEFINING SPACE.
     
     var scope = new MathGL.Scope({
@@ -54,33 +47,54 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
             b: 'a + a',
             t: '0.001',
             s: '0.002',
-            c: 'v*u*t*s'
+            c: 'x*y*v*u*t*s'
         }
     });
     
+
+    var camera = new MathGL.Camera({
+        expressions: {
+            x: 0,
+            y: 0,
+            z: 0.4, 
+            a: 0.1,
+            b: 0.2,
+            c: 0.2,
+            u: 0
+        }
+    });
+
+    scope.add(camera);
+    
+
     var t = 0;
     function increment() {
         scope.set('t', 0.5*Math.sin(t)+1.5);
-        t+=0.1;
+        camera.set('x', 0.5*Math.cos(t));
+        camera.set('y', 0.5*Math.sin(t));
+        t+=0.03;
     }
     
     
     setInterval(function() {
-        increment();
+          increment();
     }, 10);
     
 
     
     // surface appearance.
 
-    var color = new MathGL.Color(0xffffffff);
+    var red = new MathGL.Color(0xffff0000);
+    var green = new MathGL.Color(0xff00ff00);
+    var blue = new MathGL.Color(0xff0000ff);
+
     var overlay = new MathGL.Color({
-        background: color,
-        color: 0x44000000
+        background: green,
+        color: 0x55000000
     });
     var gradient = new MathGL.Gradient({
         parameter: 'c',
-        background: color, // default
+        background: red, // default
         blendMode: 'normal', // default
         // these will have to be numbers (NOT EXPRESSIONS)
         stops: {
@@ -93,24 +107,46 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     // surface.
     var surface = new MathGL.Surface({
         domain: {
-            u: [0, 1],
-            v: [0, 1]
+            u: [0, 2*Math.PI],
+            v: [0, 0.5]
         },
         expressions: {
-            x: 'cos(u*2*3.14)*v/3',
-            y: 'sin(u*2*3.14)*v/3', 
-            z: 'u*t/2 - 0.25',
+            x: 'cos(u)*v',
+            y: 'sin(u*2)*v',
+            z: 'u*t/10',
         },
         appearance: gradient
     });
 
+
+    // surface.
+/*    var surface2 = new MathGL.Surface({
+        domain: {
+            u: [0, 1],
+            v: [0, 1]
+        },
+        expressions: {
+            x: 'cos(t*2)*w/15',
+            y: 'sin(t)*w/15', 
+            z: 'sin(v+u)/5',
+        },
+        appearance: gradient
+    });
+*/
     space.add(scope);
     scope.add(surface);
+//    scope.add(surface2);
 
     // END DEFINING SPACE.
 
     console.log("INIT SPACE DONE");
 
+
+//    view.setCamera(...);
+    var view = new Engine.View(document.getElementById('canvas'));
+    view.space(space);
+    view.camera(camera);
+    view.startRendering();
 
 
 /*

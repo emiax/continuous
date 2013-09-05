@@ -90,8 +90,8 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
         /**
          * Get/set camera
          */
-        camera: function () {
-            // TODO
+        camera: function (camera) {
+            return this.renderer().camera(camera);
         },
         
 

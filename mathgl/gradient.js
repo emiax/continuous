@@ -72,7 +72,7 @@ define(['quack', 'mathgl/fill.js', 'mathgl/exports.js'], function(q, Fill, MathG
                     scope.stop(v, stops[v]);
                 });
             }
-            return this._inputs;
+            return this._stops;
         }
 
     });
