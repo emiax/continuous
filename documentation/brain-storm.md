@@ -19,8 +19,9 @@ The scene graph consists of:
 * Constraint nodes - variable relations, eg. *change of basis*. These are used to jack in functions to augment child nodes.
 * (more?)
 
-![scene graph tree]http://placehold.it/800x350
-*Scene graph tree example in Math.GL*
+![scene graph tree][1]
+
+*Scene graph tree example*
 
 **TODO:** ?
 
@@ -95,3 +96,5 @@ Continuous could benefit from being deployed somewhere to test live performance 
 Version- and Project Control
 --------------------------
 It is suggested to move back into a closed repository at GitHub. GitHub has useful features for documentation as well as for issues. We might not use all of them, but it could certainly help to have version- and project control on one platform.
+
+[1]: http://placehold.it/500x250
