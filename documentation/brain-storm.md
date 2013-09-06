@@ -97,4 +97,4 @@ Version- and Project Control
 --------------------------
 It is suggested to move back into a closed repository at GitHub. GitHub has useful features for documentation as well as for issues. We might not use all of them, but it could certainly help to have version- and project control on one platform.
 
-[1]: http://placehold.it/500x250
+[1]: https://github.com/emiax/continuous/blob/master/documentation/mathgl-api1.png
