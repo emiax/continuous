@@ -539,26 +539,6 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
                             glsl += "color = mix(color, " + scope.nodeReference(stops[keys[i]]) + ", " +
                                 "clamp((" + parameter + " - " + lowerKey + ")/" + distance + ", 0.0, 1.0));\n";
                         }
-                    /*
-                        keys.forEach(function (key, i) {
-                            
-                            
-                            
-                            //                        glsl += 'vec4 color' + i + ' = ' + scope.nodeReference(stops[key]) + ';\n';
-                        });
-                        
-                        glsl += 'vec4 color = color0;\n'
-                        
-                        keys.forEach(function (key, i) {
-                            if (i === 0) return;
-                            var a = stops[i - 1];
-                            var b = stops[i];
-                            console.log(scope.reference(parameter, 'fragment'));
-                            console.log("woot");
-                            
-                            //                        glsl += "color = mix(color, color" + i + ", " + 
-                        });
-                        */
                         glsl += scope.nodeReference(node) + " = " + scope.normalBlend('color', 'bg') + ";\n";
                     }
                 }                

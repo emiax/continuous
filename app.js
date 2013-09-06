@@ -70,10 +70,10 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
 
     var t = 0;
     function increment() {
-        scope.set('t', 0.5*Math.sin(t)+1.5);
+        scope.set('t', t);
         camera.set('x', 0.5*Math.cos(t));
         camera.set('y', 0.5*Math.sin(t));
-        t+=0.03;
+        t+=0.001;
     }
     
     
@@ -121,7 +121,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
             v: [0, 0.6]
         },
         expressions: {
-            x: '3cos(u)*v',
+            x: '3cos(u)*v + sin(4*u+10t)',
             y: '3sin(u)*v',
             z: '6v^2',
         },
