@@ -16,7 +16,7 @@ The scene graph consists of:
 
 * A root node - represents the *Scope*, this carries a mathematical expression (eg. *f = 3sin(5x)cos(x)*) to be rendered.
 * Surface nodes - surface definitions, such as boundaries.
-* Constraint nodes - variable relations, eg. *change of basis*. These are used to jack in functions to augment child nodes.
+* Scope nodes - variable relations, eg. *change of basis*. These are used to jack in functions to augment child nodes.
 * (more?)
 
 ![scene graph tree][1]
