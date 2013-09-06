@@ -308,8 +308,6 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
          * Find an unmarked node. 'nodes' is an optional array to be used as filter.
          */
         findUnmarkedNode: function(nodes) {
-            var unmarkedNode = null;
-            
             var graph = this.graph();
             
             nodes = nodes || Object.keys(graph);

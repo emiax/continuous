@@ -33,10 +33,18 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl/scope.js', 'mathgl/exports.js'],
             var mat4 = gm.mat4, vec3 = gm.vec3;
 
             var mat = mat4.create();
-            mat4.lookAt(mat,
+            var mv = mat4.create();
+            var ortho = mat4.create();
+
+            mat4.lookAt(mv,
                         vec3.fromValues(x, y, z),
                         vec3.fromValues(a, b, c),
                         vec3.fromValues(u, v, w));
+
+            mat4.ortho(ortho, -4, 4, -4, 4, -4, 4);
+
+            mat4.multiply(mat, ortho, mv);
+
             return mat;
         },
 

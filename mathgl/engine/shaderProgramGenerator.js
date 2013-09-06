@@ -362,7 +362,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
                     table[s] = scope.vertexShaderReference(s);
                 });
             } else if (context === 'fragment') {
-                this.varying().forEach(function (s) {
+                this.varyings().forEach(function (s) {
                     table[s] = scope.varyingReference(s);
                 });
                 this.fragmentShaderDefinitions().forEach(function (s) {
@@ -438,17 +438,19 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
 
 
         nodeReference: function (node) {
-            return 'node' + node.id() + '()';
+            return 'node' + node.id() + '';
         },
 
 
         appearanceNodes: function () {
             var nodes = {};
-            this.entity().appearance().traverse(function (node) {
+            return this.entity().appearance().bottomUp();
+
+            /*this.entity().appearance().traverse(function (node) {
                 var id = node.id();
                 nodes[id] = node;
             });
-            return nodes;
+            return nodes;*/
         },
 
 
@@ -487,16 +489,20 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             });
             
             var nodes = this.appearanceNodes();
-            Object.keys(nodes).forEach(function (id) {
-                var node = nodes[id];
-                glsl += "vec4 " + scope.nodeReference(node) + ";\n"
-            });
+
+            glsl += "void main() {\n";
             
-            Object.keys(nodes).forEach(function (id) {
-                var node = nodes[id];
+            var formatter = this.glslFormatter('fragment');
+            scope.fragmentShaderDefinitions().forEach(function (s) {
+                var expr = scope.expressions()[s];
+                glsl += "float " + scope.fragmentShaderReference(s) + " = " + formatter.format(expr) + ";\n";
+            });
+
+            nodes.forEach(function (node) {
+                var id = node.id();
+
+                glsl += "vec4 " + scope.nodeReference(node) + ";\n{\n";
                 if (node instanceof MathGL.Color) {
-                    glsl += 'vec4 ' + scope.nodeReference(node) + ' {\n';
-                    
                     var f = node.floatVector();
                     var a = scope.formatFloat(f.a);
                     var r = scope.formatFloat(f.r);
@@ -506,51 +512,62 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
                     if (background) {
                         glsl += 'vec4 bg = ' + scope.nodeReference(node.background()) + ';\n';
                         glsl += "vec4 color = vec4(" + r + ", " + g + " , " + b + ", " +  a + ");\n"
-                        glsl += "return " + scope.normalBlend('color', 'bg') + ";\n";
+                        glsl += scope.nodeReference(node) + " = " + scope.normalBlend('color', 'bg') + ";\n";
                     } else {
-                        glsl += "return vec4(" + r + ", " + g + " , " + b + ", " +  a + ");\n";
+                        glsl += scope.nodeReference(node) + " = vec4(" + r + ", " + g + " , " + b + ", " +  a + ");\n";
                     }
-                    glsl += "}\n"
+
                 } else if (node instanceof MathGL.Gradient) {
-                    glsl += 'vec4 ' + scope.nodeReference(node) + ' {\n';
-                    glsl += 'vec4 bg = ' + scope.nodeReference(node.background()) + ';\n';
+                    var background = node.background();
+                    if (background) {
+                        glsl += 'vec4 bg = ' + scope.nodeReference(background) + ';\n';
+                    } else {
+                        glsl += 'vec4 bg = vec4(0.0, 0.0, 0.0, 0.0);\n';
+                    }
                     
                     var stops = node.stops();
                     var keys = Object.keys(stops).sort();
-                    var parameter = node.parameter();
+                    var parameter = scope.reference(node.parameter(), 'fragment');
+                    var nKeys = keys.length;
 
-                    keys.forEach(function (key, i) {
-                        glsl += 'vec4 color' + i + ' = ' + scope.nodeReference(stops[key]) + ';\n';
-                    });
-                    
-                    glsl += 'vec4 color = color0;\n'
-                    
-                    keys.forEach(function (key, i) {
-                        if (i === 0) return;
-                        var a = stops[i - 1];
-                        var b = stops[i];
-                        console.log(scope.reference(parameter, 'fragment'));
-                        console.log("woot");
+                    if (nKeys > 0) {
+                        glsl += "vec4 color = " + scope.nodeReference(stops[keys[0]]) + ";\n";
                         
-//                        glsl += "color = mix(color, color" + i + ", " + 
-                    });
+                        for (var i = 1; i < nKeys; i++) {
+                            var lowerKey = scope.formatFloat(keys[i - 1]);
+                            var distance = scope.formatFloat(keys[i] - keys[i - 1]);
+                            glsl += "color = mix(color, " + scope.nodeReference(stops[keys[i]]) + ", " +
+                                "clamp((" + parameter + " - " + lowerKey + ")/" + distance + ", 0.0, 1.0));\n";
+                        }
+                    /*
+                        keys.forEach(function (key, i) {
+                            
+                            
+                            
+                            //                        glsl += 'vec4 color' + i + ' = ' + scope.nodeReference(stops[key]) + ';\n';
+                        });
+                        
+                        glsl += 'vec4 color = color0;\n'
+                        
+                        keys.forEach(function (key, i) {
+                            if (i === 0) return;
+                            var a = stops[i - 1];
+                            var b = stops[i];
+                            console.log(scope.reference(parameter, 'fragment'));
+                            console.log("woot");
+                            
+                            //                        glsl += "color = mix(color, color" + i + ", " + 
+                        });
+                        */
+                        glsl += scope.nodeReference(node) + " = " + scope.normalBlend('color', 'bg') + ";\n";
+                    }
+                }                
+                glsl += "}\n"
 
-                    glsl += "return " + scope.normalBlend('color', 'bg') + ";\n";
-                    glsl += "}\n"                        
-                } else {
-                    console.log("unsupported node");
-                }
             });
 
-//            console.log(this.entity().appearance());
-
-
-            glsl += [
-                'void main() {',
-                '   gl_FragColor = node' + this.entity().appearance().id() + '();\n',
-//                '   gl_FragColor = vec4(v_u, v_v, 0.0. 1.0);\n',
-                '}'].join('\n');
-
+            glsl += 'gl_FragColor = ' + this.nodeReference(this.entity().appearance()) + ';\n';
+            glsl += "}";
 
             console.log(glsl);
             return new Engine.FragmentShader(this.gl(), glsl);

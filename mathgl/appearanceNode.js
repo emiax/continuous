@@ -67,6 +67,87 @@ define(['quack', 'mathgl/exports.js'], function(q, MathGL) {
             });
         },
 
+
+        /**
+         * Return all appearance nodes that are inputs, bottom layers first, top layers last. 
+         */
+        bottomUp: function () {
+            var graph = this.graph();
+            var marks = {};
+            var list = [];
+            
+            // Topological sorting of appearance nodes.
+            // (algoritm is based on http://en.wikipedia.org/wiki/Topological_sorting#Algorithms)
+
+            // Find unmarked node
+            function findUnmarkedNode() {
+                nodeIds = Object.keys(graph);
+                for (var i = 0, n = nodeIds.length; i < n; i++) {
+                    var nodeId = nodeIds[i];
+                    if (!marks[nodeId]) {
+                        return graph[nodeId].node;
+                    }
+                }
+                return null;
+            }
+            
+            // Visit node
+            function visit(node) {
+                var nodeId = node.id();
+                if (marks[nodeId] === 'temporary') {
+                    return false; // not a DAG
+                }
+                if (!marks[nodeId]) {
+                    marks[nodeId] = 'temporary';
+                    var inputs = Object.keys(graph[nodeId]);
+                    if (inputs) {
+                        for (var i = 0, n = inputs.length; i < n; i++) {
+                            var id = inputs[i];
+                            if (id === 'node') continue;
+                            if (!visit(graph[id].node)) {
+                                return false;
+                            }
+                        }
+                        marks[nodeId] = 'permanent';
+                        list.push(node);
+                    }
+                }
+                return true;
+            }
+            
+            var node;
+            // Main routine
+            while (node = findUnmarkedNode()) {
+                if (!visit(node)) {
+                    return null;
+                }
+            }
+            
+            return list;
+        },
+
+
+        /**
+         * Create a graph that describes the connectivity of appearance nodes.
+         */
+        graph: function () {
+            var graph = {};
+            this.traverse(function (node) {
+                var nodeId = node.id();
+                if (!graph[nodeId]) {
+                    graph[nodeId] = {};
+                }
+                node.forEachInput(function (input) {
+                    if (input) {
+                        var inputId = input.id();
+                        graph[nodeId][inputId] = true;
+                    }
+                });
+                graph[nodeId].node = node;
+            });
+            return graph;
+        },
+
         
         /**
          * Return array of outputs.

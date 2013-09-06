@@ -47,7 +47,8 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
             b: 'a + a',
             t: '0.001',
             s: '0.002',
-            c: 'x*y*v*u*t*s'
+            c: '0',
+            r: "(x^2 + y^2)"
         }
     });
     
@@ -57,9 +58,9 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
             x: 0,
             y: 0,
             z: 0.4, 
-            a: 0.1,
-            b: 0.2,
-            c: 0.2,
+            a: 0.0,
+            b: 0.0,
+            c: 0.0,
             u: 0
         }
     });
@@ -93,14 +94,23 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
         color: 0x55000000
     });
     var gradient = new MathGL.Gradient({
-        parameter: 'c',
-        background: red, // default
+        parameter: 'x',
         blendMode: 'normal', // default
         // these will have to be numbers (NOT EXPRESSIONS)
         stops: {
-            0: overlay,
-            0.5: new MathGL.Color(0xbbbbbb),
-            1: new MathGL.Color(0xffffff),
+            0: blue,
+            '-1': red,
+            1: green
+        }
+    });
+    var radialGradient = new MathGL.Gradient({
+        parameter: 'r',
+        background: gradient, // default
+        blendMode: 'normal', // default
+        // these will have to be numbers (NOT EXPRESSIONS)
+        stops: {
+            4: new MathGL.Color(0),
+            0: new MathGL.Color(0xff111111)
         }
     });
     
@@ -108,34 +118,18 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     var surface = new MathGL.Surface({
         domain: {
             u: [0, 2*Math.PI],
-            v: [0, 0.5]
+            v: [0, 0.6]
         },
         expressions: {
-            x: 'cos(u)*v',
-            y: 'sin(u*2)*v',
-            z: 'u*t/10',
+            x: '3cos(u)*v',
+            y: '3sin(u)*v',
+            z: '6v^2',
         },
-        appearance: gradient
+        appearance: radialGradient
     });
 
-
-    // surface.
-/*    var surface2 = new MathGL.Surface({
-        domain: {
-            u: [0, 1],
-            v: [0, 1]
-        },
-        expressions: {
-            x: 'cos(t*2)*w/15',
-            y: 'sin(t)*w/15', 
-            z: 'sin(v+u)/5',
-        },
-        appearance: gradient
-    });
-*/
     space.add(scope);
     scope.add(surface);
-//    scope.add(surface2);
 
     // END DEFINING SPACE.
 
