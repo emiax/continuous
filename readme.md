@@ -1,3 +1,4 @@
+__License__
 Copyright 2012 - 2013, The Continuous Team
 All Rights Reserved
 
