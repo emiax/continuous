@@ -68,12 +68,6 @@ There is next to no documentation of Continuous. Some documentation could be val
 * System overview - a collection of images describing the application.
 * Use case flow chats
 
-Olof & George
---------------------------
-Olof Svensson and George Baravdish have, sice project start, had the role of "clients". That has become somewhat awkward now that Continuous is aiming to be a stand-alone, full featured application. The suggestion is that they remain in the project, but as product owners, helping the team to develop a realistic, commercial product.
-
-**TODO:** Find a way to bring this issue up in a nice manner.
-
 Marketing
 --------------------------
 
