@@ -20,9 +20,31 @@ requirejs.config({
 
 
 requirejs(['kalkyl', 'communication/server', 'server'], function(Kalkyl, ServerCommunication, Server) {
+ 
+    /**
+     * HTTP Server
+     */
     
-    var sage = new Server.SageWrapper();
-    var router = new Server.Router(sage);
-    var socketServer = new ServerCommunication.SocketServer(8080, router);
+    var express = require('express');
+    var expressServer = express();
     
+    expressServer.configure('development', function() {
+        expressServer.use(express.static(__dirname));
+        expressServer.use(express.errorHandler({dumpExceptions: true, showStack: true}));
+    });
+
+    expressServer.listen(80);
+ 
+    setTimeout(function () {
+    /**
+     * WebSocket Server
+     */
+        
+        var sage = new Server.SageWrapper();
+        var router = new Server.Router(sage);
+        var socketServer = new ServerCommunication.SocketServer(443, router);
+
+    }, 10000);
+        
+   
 });
