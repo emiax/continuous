@@ -1,0 +1,28 @@
+{
+  "name": "continuous",
+  "version": "0.0.1",
+  "description": "WebGL Math Visualizations",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "ws": "~0.4.30",
+    "requirejs": "~2.1.8",
+    "express": "3.x"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emiax/continuous.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/emiax/continuous/issues"
+  }
+}
