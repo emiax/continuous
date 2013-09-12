@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: '/continuous/',
+    baseUrl: './',
     paths: {
         // List of all Continuous packages
         'quack':                 './lib/quack',

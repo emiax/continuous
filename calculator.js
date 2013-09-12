@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: '/continuous/',
+    baseUrl: '/',
     paths: {
         // List of all Continuous packages
         'quack':                 './lib/quack',
@@ -26,7 +26,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
         parse($(this).val());
     });
 
-    var port = 8080;
+    var port = 443;
 
 
     var connection = new Client.Connection('ws://localhost:' + port);
