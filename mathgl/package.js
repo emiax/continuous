@@ -12,6 +12,7 @@ define(['mathgl/exports.js',
         'mathgl/fill.js',
         'mathgl/color.js',
         'mathgl/gradient.js',
+        'mathgl/checkerPattern.js',
         
         // Misc
         'mathgl/spaceObserver.js'],

@@ -59,6 +59,7 @@ define(['quack', 'mathgl/fill.js', 'mathgl/exports.js'], function(q, Fill, MathG
                 this._stops[value] = node;
             }
             this.input(value, node);
+            return this._stops[value];
         },
         
         /**

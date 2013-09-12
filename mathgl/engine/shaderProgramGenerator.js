@@ -75,6 +75,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
                     });
                 });
             }
+            console.log(symbols);
             return symbols;
         },
 
@@ -93,6 +94,9 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
 
             var vertexSymbols = graph.orderedSubset(vertexSinks);
             var fragmentSymbols = graph.orderedSubset(fragmentSinks);
+
+
+            console.log(fragmentSymbols);
 
             var uniforms = {};            
             var attributes = [];
@@ -495,6 +499,8 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
             var formatter = this.glslFormatter('fragment');
             scope.fragmentShaderDefinitions().forEach(function (s) {
                 var expr = scope.expressions()[s];
+                console.log(s);
+                console.log(expr);
                 glsl += "float " + scope.fragmentShaderReference(s) + " = " + formatter.format(expr) + ";\n";
             });
 
@@ -541,7 +547,37 @@ define(['quack', 'kalkyl', 'kalkyl/format/glsl', 'mathgl', 'mathgl/engine/export
                         }
                         glsl += scope.nodeReference(node) + " = " + scope.normalBlend('color', 'bg') + ";\n";
                     }
-                }                
+                } else if (node instanceof MathGL.CheckerPattern) {
+                    var background = node.background();
+                    if (background) {
+                        glsl += 'vec4 bg = ' + scope.nodeReference(background) + ';\n';
+                    } else {
+                        glsl += 'vec4 bg = vec4(0.0, 0.0, 0.0, 0.0);\n';
+                    }
+
+                    var inputA = node.inputA();
+                    var inputB = node.inputB();
+                    var parameters = node.parameters();
+                    
+
+                    var aRef = inputA ? scope.nodeReference(inputA) : "vec4(0.0, 0.0, 0.0, 0.0);";
+                    var bRef = inputB ? scope.nodeReference(inputB) : 'vec4(0.0, 0.0, 0.0, 0.0);';
+                    
+                    glsl += "vec4 color = mix(" + aRef + ", " + bRef + ", floor(mod(0.0 ";
+
+                    Object.keys(parameters).forEach(function (parameter) {
+                        var stepSize = parameters[parameter];
+
+                        
+                        glsl += "+ floor(mod(" + scope.reference(parameter, 'fragment') + "/" + scope.formatFloat(stepSize) + ", 2.0))";
+                    });
+                        
+                    glsl += ", 2.0)));\n";
+                    
+                    glsl += scope.nodeReference(node) + " = " + scope.normalBlend('bg', 'color') + ";\n";
+                    
+
+                }
                 glsl += "}\n"
 
             });

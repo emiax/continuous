@@ -43,6 +43,10 @@ Simple parser
 
 3D Engine
 ---------
+    Allow for both primitives and Kalkyl trees as variables in MathGL.Scopes.
+    Find out when shaders need recompilation
+    Remove stuff and Reset stuff.
+    
     Camera
 
 

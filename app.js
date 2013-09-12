@@ -46,17 +46,20 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
 //            a: 2,
             b: 'a + a',
             t: '0.001',
-            s: '0.002',
+            s: '2',
             c: '0',
-            r: "(x^2 + y^2)"
+            r: "(x^2 + y^2)",
+            d: "r*(cos(t*10)+1.5)*2"
         }
     });
-    
+
+   
+
 
     var camera = new MathGL.Camera({
         expressions: {
-            x: 0,
-            y: 0,
+            x: 'sin(s)*cos(t)',
+            y: 'cos(s)*sin(t)',
             z: 0.4, 
             a: 0.0,
             b: 0.0,
@@ -71,8 +74,9 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     var t = 0;
     function increment() {
         scope.set('t', t);
-        camera.set('x', 0.5*Math.cos(t));
-        camera.set('y', 0.5*Math.sin(t));
+        scope.set('s', scope.get('s').value() + 0.01);
+//        camera.set('x', 0.5*Math.cos(t));
+//        camera.set('y', 0.5*Math.sin(t));
         t+=0.001;
     }
     
@@ -98,8 +102,8 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
         blendMode: 'normal', // default
         // these will have to be numbers (NOT EXPRESSIONS)
         stops: {
-            0: blue,
             '-1': red,
+//            0: blue,
             1: green
         }
     });
@@ -109,9 +113,17 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
         blendMode: 'normal', // default
         // these will have to be numbers (NOT EXPRESSIONS)
         stops: {
-            4: new MathGL.Color(0),
-            0: new MathGL.Color(0xff111111)
+            4: new MathGL.Color(0x00000000),
+            0: new MathGL.Color(0x88111111)
         }
+    });
+
+    var checker = new MathGL.CheckerPattern({
+        parameters: {
+            d: 0.4
+        },
+        inputB: radialGradient,
+        inputA: gradient
     });
     
     // surface.
@@ -121,11 +133,11 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
             v: [0, 0.6]
         },
         expressions: {
-            x: '3cos(u)*v + sin(4*u+10t)',
-            y: '3sin(u)*v',
-            z: '6v^2',
+            x: '2cos(u)*v + sin(5t)*0.3sin(8u)',
+            y: '2sin(u)*v + cos(8t)*0.3sin(6u)',
+            z: '2v',
         },
-        appearance: radialGradient
+        appearance: checker
     });
 
     space.add(scope);

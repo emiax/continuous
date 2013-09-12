@@ -60,7 +60,6 @@ define(['quack', 'mathgl/exports.js'], function(q, MathGL) {
          * Invoke f(node) for this and all nodes in the chain that is input to this.
          */
         traverse: function (f) {
-            console.log(this.id());
             f(this);
             this.forEachInput(function (n) {
                 if (n) n.traverse(f);

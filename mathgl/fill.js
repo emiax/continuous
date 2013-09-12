@@ -32,6 +32,5 @@ define(['quack', 'mathgl/appearanceNode.js', 'mathgl/exports.js'], function(q, A
         background: function (node) {
             return this.input('background', node);
         }
-        
     });
 });
