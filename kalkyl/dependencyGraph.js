@@ -102,7 +102,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                 sources = [sources];
             }
             
-            // block sources. Tell the algorithm that they already have been visited.
+            // Block sources. Tell the algorithm that they already have been visited.
             var scope = this;
             sources.forEach(function(s) {
                 scope.markPermanently(s);
@@ -193,6 +193,9 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
          */
         dependsOnAny: function (symbols, dependencies) {
             var dep = this.orderedSubset(symbols);
+            if (!dep) {
+                console.error("Circular dependency!");
+            }
             var map = {};
             dep.forEach(function (d) {
                 map[d] = true;

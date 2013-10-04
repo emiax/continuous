@@ -27,7 +27,7 @@ define(['kalkyl'], function(KL) {
                 expect(result.identicalTo(reference)).toBe(true);
             }
             
-
+            
             it("should be able to perform addition of scalars", function () {
                 testPlus(234, 45, 234+45);
                 testPlus(234, -45, 234+(-45));
@@ -47,6 +47,26 @@ define(['kalkyl'], function(KL) {
                 testMatrixMultiplication(a, b, reference);
             });
 
+            
+            it("should be able to access in matrixes", function () {
+                var a = [[1, 2, 3], [4, 5, 6], [1, 2, 3]];
+                var matrix = new KL.MatrixNM(a);
+                var accessor = new KL.Accessor(matrix, 0);
+                var reference = (new KL.VectorN([1, 2, 3])).toSpecificDim();     
+                expect(accessor.evaluated().identicalTo(reference)).toBe(true);
+
+                a = [1, 2, 3];
+                matrix = new KL.VectorN(a);
+                accessor = new KL.Accessor(matrix, 1);
+                reference = 2;
+                expect(accessor.evaluated().value()).toEqual(reference);
+
+                matrix = matrix.transposed();
+                accessor = new KL.Accessor(matrix, 2);
+                reference = 3;
+                expect(accessor.evaluated().value()).toEqual(reference);
+                
+            });
 
 
         });

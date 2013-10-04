@@ -25,6 +25,7 @@ define(['kalkyl/exports.js',
         'kalkyl/vector3.js',
         'kalkyl/vectorN.js',
 
+        'kalkyl/accessor.js',
         'kalkyl/derivative.js',
         
         // Visitors

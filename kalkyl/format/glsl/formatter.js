@@ -4,6 +4,9 @@ define(['quack', 'kalkyl/format/glsl/exports.js', 'kalkyl/visitor.js'], function
          * Get String.
          */
         format: function (expr) {
+            if (!expr) {
+                console.error("expr is not set");
+            }
             return expr.accept(this);
         },
 

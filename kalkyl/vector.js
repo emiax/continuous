@@ -26,6 +26,17 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
         },
 
 
+        /**
+         * Access.
+         */
+        access: function (index) {
+            return this.argument(index);
+        },
+        
+
+        /**
+         * Accept.
+         */
         accept: function (visitor) {
             return visitor.visitVector(this);
         }

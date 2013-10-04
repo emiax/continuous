@@ -34,6 +34,29 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
             }
         },
 
+        
+        /**
+         * Return row i
+         */
+        access: function (i) {
+            var nRows = this.dim().x().value();
+            var rows = this._rows;
+            if (nRows === 1) {
+                var row = rows[0];
+                if (i >= 0 && i < row.length) {
+                    return row[i];
+                }
+            } else if (i >= 0 && i < nRows) {
+                var vector = new KL.VectorN(rows[i]);
+                if (vector.isScalar()) {
+                    return vector.element(0);
+                } else {
+                    return vector.toSpecificDim();
+                }
+            }
+            console.error("accessing outside bounds.");
+        },
+
 
         /*
          * Get or set argument. Index is a number

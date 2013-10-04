@@ -36,7 +36,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
             return this._z;
         },
 
-
+        
         /*
          * Get or set number. Index is a number.
          */

@@ -10,6 +10,8 @@ define(['quack', './exports.js', './expression.js'], function(q, KL, Expression)
             } else {
                 console.log(expr.simpleFormat());
             }
+
+
         }
 
     });

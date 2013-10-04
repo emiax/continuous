@@ -142,6 +142,32 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
 
         
         
+
+
+        /*****************************************************
+         * Public methods for handling expressions
+         *****************************************************/
+
+        primitive: function (key, value) {
+            
+        }, 
+
+
+        primitives: function (map) {
+
+        },
+
+        
+        expression: function (key, value) {
+
+        },
+
+        
+        expressions: function () {
+
+        },
+        
+
         /*****************************************************
          * Public methods for handling expressions
          *****************************************************/

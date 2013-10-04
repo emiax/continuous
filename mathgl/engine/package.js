@@ -20,8 +20,21 @@ define(['mathgl/engine/exports.js',
         // Shader generators
         'mathgl/engine/shaderProgramGenerator.js',
         'mathgl/engine/vertexShaderGenerator.js',
-        'mathgl/engine/fragmentShaderGenerator.js'
+        'mathgl/engine/fragmentShaderGenerator.js',
 
+        'mathgl/engine/symbolCategorization.js',
+        'mathgl/engine/shaderSymbolDictionary.js',
+
+        'mathgl/engine/shaderFormatter.js',
+        'mathgl/engine/fragmentShaderFormatter.js',
+        'mathgl/engine/vertexShaderFormatter.js',
+
+        // Shadelets
+        'mathgl/engine/shadelet.js',
+        'mathgl/engine/colorShadelet.js',
+        'mathgl/engine/gradientShadelet.js',
+        'mathgl/engine/checkerPatternShadelet.js'
+        
        ],
        function(exports) {
            console.log("loaded mathgl.engine");

@@ -6,6 +6,11 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          */
         constructor: function(elements) {
             this._elements = elements;
+            var scope = this;
+            this.forEachElement(function (v, k) {
+                scope.element(k, KL.Number.boxNumber(v));
+            });
+
         },
 
 

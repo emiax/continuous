@@ -29,38 +29,128 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             console.log("Initializing " + this.scope().id());
             this.initializeParameterBuffer();
 
-            var programGenerator = new Engine.ShaderProgramGenerator(this.gl(), this.scope());
-            this._shaderProgram = programGenerator.generate();
+            this._shaderProgram = this.generateShaderProgram();//programGenerator.generate();
             this._shaderProgram.link();
 
-            var attributes = programGenerator.attributes();
+            var cat = this.symbolCategorization();
+            var dict = new Engine.ShaderSymbolDictionary();
+
+            var attributes = cat.attributes();
+
+            var symbol
             var scope = this;
 
             var s, ref;
             if (attributes.length === 2) {
                 s = attributes[0];
-                ref = programGenerator.attributeReference(s);
+                ref = dict.attributeName(s);
                 scope._uLocation = scope._shaderProgram.attributeLocation(ref);
 
-                console.log(scope._uLocation);
-
                 s = attributes[1];
-                ref = programGenerator.attributeReference(s);
+                ref = dict.attributeName(s);
                 scope._vLocation = scope._shaderProgram.attributeLocation(ref);
             } else {
                 console.log("should not have more than 2 attribs.");
             }
 
-            var uniforms = programGenerator.uniforms();
+            var uniforms = cat.uniforms();
             this._uniformLocations = {};
             uniforms.forEach(function (s) {
-                ref = programGenerator.uniformReference(s);
+                ref = dict.uniformName(s);
                 scope._uniformLocations[s] = scope._shaderProgram.uniformLocation(ref);
             });
 
-            ref = programGenerator.mvpMatrixReference();
+            ref = dict.mvpMatrixName();
             this._mvpMatrixLocation = scope._shaderProgram.uniformLocation(ref)
 
+        },
+
+        /**
+         * Return the set of symbols required by the vertex shader. Shallow.
+         */
+        vertexShaderSinks: function () {
+            return {
+                x: true,
+                y: true,
+                z: true
+            };
+        },
+
+
+        /**
+         * Return the set of symbols required by the fragment shader. Shallow.
+         */
+        fragmentShaderSinks: function () {
+            var a = this.appearance();
+            var symbols = {};
+            if (a) {
+                a.traverse(function (node) {
+                    var newSymbols = node.symbols();
+                    Object.keys(newSymbols).forEach(function (k) {
+                        symbols[k] = true;
+                    });
+                });
+            }
+            return symbols;
+        },
+
+
+
+        /**
+         * ParameterSymbols. (set of symbols)
+         */
+        parameterSymbols: function () {
+            var set = {};
+            this.surface().parameters().forEach(function (s) {
+                set[s] = true;
+            });
+            return set;
+        },
+
+
+        symbolCategorization: function () {
+            if (this._symbolCategorization == undefined) {
+                this._symbolCategorization = new Engine.SymbolCategorization(this.vertexShaderSinks(),            
+                                                                         this.fragmentShaderSinks(),
+                                                                         this.parameterSymbols(),
+                                                                         this.expressions());
+            } 
+            return this._symbolCategorization;
+        },
+
+
+        expressions: function () {
+            return this.surface().getAll();
+        },
+
+        
+        appearance: function () {
+            return this.surface().appearance();
+        },
+
+        /**
+         * Generate shader program.
+         */
+        generateShaderProgram: function () {
+            var gl = this.gl();
+
+          
+            var vertexShaderFormatter = new Engine.VertexShaderFormatter(this.expressions(),
+                                                                      this.symbolCategorization());
+
+            var fragmentShaderFormatter = new Engine.FragmentShaderFormatter(this.expressions(),
+                                                                             this.symbolCategorization(),
+                                                                             this.appearance());
+
+            var vertexShaderGLSL = vertexShaderFormatter.format();
+            console.log(vertexShaderGLSL);
+            var fragmentShaderGLSL = fragmentShaderFormatter.format()
+            console.log(fragmentShaderGLSL);
+
+            var vs = new Engine.VertexShader(gl, vertexShaderGLSL);
+            var fs = new Engine.FragmentShader(gl, fragmentShaderGLSL);
+
+            return new Engine.ShaderProgram(vs, fs);
         },
 
 
@@ -156,59 +246,19 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             var surface = this.surface();
 
             Object.keys(this._uniformLocations).forEach(function (s) {
+
                 var location = scope._uniformLocations[s];
                 var value = surface.flat(s).evaluated().value();
-
+                
                 gl.uniform1f(location, value);
             });
 
             var location = this._mvpMatrixLocation;
 
             var e = new Float32Array(16);
-/*            var t = 0;
-            var sin = Math.sin, cos = Math.cos;
-
-            var eulerVector = {
-                x: this._r*0.3,
-                y: this._r+=0.01,
-                z: this._r*0.8
-            }
-
-            var x = eulerVector.x, y = eulerVector.y, z = eulerVector.z;
-            var cos = Math.cos, sin = Math.sin;
-
-            var cx = cos(x), sx = sin(x),
-            cy = cos(y), sy = sin(y),
-            cz = cos(z), sz = sin(z);
-
-            var cxcz = cx*cz, cxsz = cx*sz, sxcz = sx*cz, sxsz = sx*sz;
-
-            e[0] = cy * cz;
-            e[1] = cxsz + sxcz * sy;
-            e[2] = sxsz - cxcz * sy;
-            e[4] = 0;
-
-            e[4] = - cy * sz;
-            e[5] = cxcz - sxsz * sy;
-            e[6] = sxcz + cxsz * sy;
-            e[7] = 0;
-
-            e[8] = sy;
-            e[9] = - sx * cy;
-            e[10] = cx * cy;
-            e[11] = 0;
-
-            e[12] = 0;
-            e[13] = 0;
-            e[14] = 0;
-            e[15] = 1;*/
 
             e = camera.matrix();
-//            console.log(e);
-
             gl.uniformMatrix4fv(location, false, e);
-
-
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
             gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);

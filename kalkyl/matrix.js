@@ -11,6 +11,8 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
 
         forEachElement: new q.AbstractMethod(),
 
+        access: new q.AbstractMethod(),
+        
         /**
          * Return transposed matrix.
          */
