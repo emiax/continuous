@@ -35,6 +35,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     var scope = new MathGL.Scope({
         expressions: {
             r: "(u^2 + v^2)",
+            j: 0
         }
     });
 
@@ -60,6 +61,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
         setTimeout(function () {
             camera.set('x', Math.cos(t));
             camera.set('y', Math.sin(t));
+            camera.set('j', 2*Math.sin(t));
             camera.set('z', Math.sin(0.2*t));
             update();
         }, 10);
@@ -73,13 +75,15 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
 
     var red = new MathGL.Color(0xffff0000);
     var green = new MathGL.Color(0xff00ff00);
+    var blue = new MathGL.Color(0xff0000ff);
 
     var gradient = new MathGL.Gradient({
-        parameter: 'r',
+        parameter: 'z',
         blendMode: 'normal', 
         stops: {
-            0: red,
-            1: green
+            '-1': blue,
+            0: green,
+            1: red
         }
     });
 
@@ -106,7 +110,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
         expressions: {
             x: 'u*2',
             y: 'v*2',
-            z: 'r^2',
+            z: 'r^2*j',
         },
         appearance: checker
     });
