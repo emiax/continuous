@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" class="ng-app">
+	<head>
+		<title>Angular-RequireJS sample app</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<link rel="stylesheet" type="text/css" media="all" 
+			href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+		<link rel="stylesheet" type="text/css" media="all" 
+			href="app/css/app.css" />
+	</head>
+	<body class="no-scroll">
+		<div id="main-navbar" class="row">
+			<div id="logo" class="col-xs-3">
+				<p>Continuous</p>
+			</div>
+		</div>
+		<div ng-view></div>
+		<script data-main="app/js/main" src="bower_components/requirejs/require.js"></script>
+		<script src="bower_components/jquery/jquery.min.js"></script>
+		<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	</body>
+</html>
