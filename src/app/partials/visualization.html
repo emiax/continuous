@@ -1,14 +1,22 @@
-<div class="row full-height no-margin">
+<div id="visualization-container" class="flexbox">
 
-<canvas id="canvas" class="col-xs-8 full-height"></canvas>
+<div id="canvas-wrapper">
+    <canvas id="canvas"></canvas>
+</div>
 
-<div id="card-bar" class="col-xs-4 right full-height">
+<div id="card-bar" class="right">
 
     <ul>
-        <li ng-repeat="card in cards" class="row card">
-            <p class="col-xs-12">{{card.text}}</p>
+        <li ng-repeat="card in cards" class="card">
+            <p>{{card.text}}</p>
+            <input
+                ng-repeat="input in card.inputs"
+                type={{input.type}}
+                ng-model=input.data >
+            </input>
         </li>
     </ul>
+
 </div>
 
 </div>

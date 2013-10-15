@@ -3,7 +3,15 @@ define([], function() {
 		// You can access the scope of the controller from here
 		$scope.welcomeMessage = 'hello from visualization controller!';
         $scope.cards = [
-            {text: "hello card 1!"},
+            {
+                text: "hello card 1!",
+                inputs: [
+                    {
+                        type: 'number',
+                        data: 0
+                    }
+                ]
+            },
             {text: "hello card 2!"},
             {text: "hello card 3!"},
             {text: "hello card 4!"},
@@ -11,8 +19,6 @@ define([], function() {
             {text: "hello card 6!"},
             {text: "hello card 7!"}
         ];
-
-
 
 		// because this has happened asynchroneusly we've missed
 		// Angular's initial call to $apply after the controller has been loaded

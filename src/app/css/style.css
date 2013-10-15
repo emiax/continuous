@@ -1,0 +1,86 @@
+@import url(http://fonts.googleapis.com/css?family=Pacifico); /* Logo font */
+
+/**
+ * Normalize
+ */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/**
+ * Helpers
+ */
+.right {
+  right: 0;
+}
+
+.flexbox {
+  display: -webkit-box; display: -moz-box; display: box;
+}
+
+/**
+ * Navbar layout
+ */
+#main-navbar {
+  height: 50px;
+  color: #f4f4f4;
+  background: #222222;
+  border-bottom: 1px solid #111111;
+}
+
+#logo {
+  font-family: "Pacifico";
+  font-size: 1.5em;
+  margin-left: 1em;
+}
+
+/**
+ * Visualization layout
+ */
+#visualization-container {
+  height: 100%;
+}
+
+#canvas-wrapper {
+  -webkit-box-flex: 3;
+  -moz-box-flex: 3;
+  -ms-box-flex: 3;
+  box-flex: 3;
+  height: 100%;
+  overflow: hidden;
+}
+
+#canvas {
+  height: 100%;
+  width: 100%;
+  background: #333333;
+}
+
+/**
+ * Card Bar layout
+ */
+#card-bar {
+  width: 400px;
+  position: relative;
+  /*-webkit-box-flex: 2;
+  -moz-box-flex: 2;
+  -ms-box-flex: 2;
+  box-flex: 2;*/
+  background: #202020;
+}
+#card-bar ul {
+  height: 100%;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.card {
+  margin: 10px;
+  padding: 5px;
+  min-height: 100px;
+  background: #f4f4f4;
+}
