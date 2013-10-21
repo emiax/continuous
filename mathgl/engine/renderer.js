@@ -64,7 +64,7 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
             this.prepareRenderables();
             this.clearFrame();
             this.forEachRenderable(function (r) {
-                r.render(camera);
+                r.renderIfVisible(camera);                    
             });
         },
 
@@ -79,7 +79,7 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
             });
         },
 
-        
+
         /**
          * Prepare renderables. Makes calls to 'attach', 'detach' and 'refresh'
          */

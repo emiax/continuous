@@ -48,6 +48,15 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
         
 
         /**
+         * Render if entity is visible.
+         */
+        renderIfVisible: function (camera) {
+            if (this.entity().chainVisible()) {
+                this.render(camera);
+            }
+        },
+
+        /**
          * Render.
          */
         render: new q.AbstractMethod(),

@@ -24,6 +24,10 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             this._parent = null;
             this._space = null;
 
+
+            var visible = spec.visible;
+            this.visible(visible !== undefined ? visible : true);
+
             /**
              * Map from scope id to child.
              */
@@ -44,6 +48,31 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
         /*****************************************************
          * Public 'scene graph' methods
          *****************************************************/
+        
+        /**
+         * Get/Set visibility
+         */
+        visible: function (visibility) {
+            if (visibility !== undefined) {
+                this._visible = visibility;
+            }
+            return this._visible;
+        },
+
+
+        /**
+         * All parents visible
+         */
+        chainVisible: function () {
+            var parent = this.parent();
+            if (!this.visible()) {
+                return false;
+            }
+            if (parent) {
+                return this.parent().chainVisible();
+            }
+            return true;
+        },
         
 
         /**
