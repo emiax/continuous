@@ -27,8 +27,8 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
         /**
          * Get/set dimensions of rendering context.
          */
-        dimensions: function () {
-            // TODO
+        dimensions: function (width, height) {
+            //TODO
         },
 
 

@@ -22,7 +22,11 @@ requirejs.config({
 });
 
 
-requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'communication', 'communication/client', 'mathgl', 'mathgl/engine'], function($, Kalkyl, SimpleFormat, SageFormat, Communication, Client, MathGL, Engine) {
+define(['jquery', 'kalkyl', 'kalkyl/format/simple', 
+    //'kalkyl/format/sage',
+    'communication', 'communication/client', 'mathgl', 'mathgl/engine'], function($, Kalkyl, SimpleFormat,
+    //SageFormat,
+    Communication, Client, MathGL, Engine) {
               
     var port = 8080;
     var connection = new Client.Connection('ws://localhost:' + port);
@@ -59,18 +63,13 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     var t = 0;
     function update() {
         setTimeout(function () {
-            camera.set('x', Math.cos(t));
-            camera.set('y', Math.sin(t));
-            camera.set('j', 2*Math.sin(t));
-            camera.set('z', Math.sin(0.2*t));
+            scope.set('j', t/10);
             update();
         }, 10);
-        t += 0.01;
     }
 
     update();
-      
-    
+
     // surface appearance.
 
     var red = new MathGL.Color(0xffff0000);
@@ -110,7 +109,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
         expressions: {
             x: 'u*2',
             y: 'v*2',
-            z: 'r^2*j',
+            z: 'cos(j * x)sin(j * y)',
         },
         appearance: checker
     });
@@ -127,6 +126,16 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/sage', 'co
     var view = new Engine.View(document.getElementById('canvas'));
     view.space(space);
     view.camera(camera);
-    view.startRendering();    
+    view.startRendering();
+
+    return {
+        frequency: function(data) {
+            t = data;
+        },
+        cameraAngle: function(angle) {
+            camera.set('x', Math.cos(2*Math.PI * angle / 100) + 0.01);
+            camera.set('y', Math.sin(2*Math.PI * angle / 100) + 0.01);
+        }
+    };
 
 });

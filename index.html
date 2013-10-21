@@ -1,4 +1,4 @@
-<!doctype html>
+<!--<!doctype html>
 <html lang="en">
   <head>
     <title>Continuous, develop mode</title>
@@ -8,7 +8,7 @@
   </head>
   <body>
 
-    <canvas id="canvas" width="1920" height="1600"></canvas>
+    <canvas id="canvas" width="800" height="400"></canvas>
     <input id="input"></input>
     <div id="console"></div>
 
@@ -16,5 +16,39 @@
       
     
   </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en" class="ng-app">
+  <head>
+    <title>Angular-RequireJS sample app</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- stylesheets -->
+    <!-- <link 
+      rel="stylesheet"
+      type="text/css"
+      media="all" 
+      href="bower_components/bootstrap/dist/css/bootstrap.min.css" /> -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="all" 
+      href="src/app/css/style.css" />
+    <!-- /stylesheets -->
+  </head>
+  <body>
+    <div id="main-navbar">
+      <div id="logo">
+        <p>continuous</p>
+      </div>
+    </div>
+
+    <div ng-view resize ng-style="style()"></div>
+
+    <script data-main="src/app/js/main" src="src/bower_components/requirejs/require.js"></script>
+
+    <!-- <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+  </body>
 </html>
-  

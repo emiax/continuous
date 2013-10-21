@@ -97,13 +97,14 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
 
 
         /** 
-         * Update dimensions.
+         * Get/set dimensions.
          */
-        updateDimensions: function () {
+        dimensions: function (width, height) {
             var renderer = this.renderer();
             if (renderer) {
-                renderer.dimensions(canvas.width, canvas.height);
+                return renderer.dimensions(width, height);
             }
+            return renderer.dimensions();
         },
         
         
@@ -116,7 +117,6 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
                 var gl = canvas.getContext("experimental-webgl");
                 if (gl) {
                     var renderer = this._renderer = new Engine.Renderer(gl);
-                    this.updateDimensions();
                 } else {
                     throw "WebGL not available."
                 }

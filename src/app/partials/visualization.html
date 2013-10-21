@@ -1,7 +1,11 @@
 <div id="visualization-container" class="flexbox">
 
 <div id="canvas-wrapper">
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" 
+        resize
+        width={{getWindowDimensions().w}}
+        height={{getWindowDimensions().h}}>
+    </canvas>
 </div>
 
 <div id="card-bar" class="right">
@@ -9,10 +13,11 @@
     <ul>
         <li ng-repeat="card in cards" class="card">
             <p>{{card.text}}</p>
-            <input
-                ng-repeat="input in card.inputs"
+            <input ng-repeat="input in card.inputs"
                 type={{input.type}}
-                ng-model=input.data >
+                placeholder={{input.placeholder}}
+                ng-model="input.data"
+                ng-change="input.updates(input.data)">
             </input>
         </li>
     </ul>
