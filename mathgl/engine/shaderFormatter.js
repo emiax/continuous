@@ -39,9 +39,16 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/exports.js'], function(q, 
         expressions: function () {
             return this._expressions;
         },
-
-
         
+        /**
+         * Get/Set Entity Strategy (instance of EntityShaderStrategy. SurfaceShaderStragey, CurveShaderStrategy etc)
+         */
+        entityStrategy: function (strategy) {
+            if (strategy !== undefined) {
+                this._entityStrategy = strategy;
+            }
+            return this._entityStrategy;
+        },
 
         /*****************************************
          * Kalkyl GLSL Formatters for internal use

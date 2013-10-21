@@ -1,6 +1,6 @@
 define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, MathGL) {
 
-    return MathGL.Surface = q.createClass(Entity, {
+    return MathGL.Curve = q.createClass(Entity, {
         /**
          * Constructor
          */
@@ -9,35 +9,34 @@ define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, M
             Entity.constructor.call(this, spec);
             
             this.domain(spec.domain || {
-                u: [0, 1],
-                v: [0, 1]
+                t: [0, 1]
             });
             
             this.appearance(spec.appearance || null);
         }, 
 
-
-        /**
-         * Get/set domain (map from symbols to arrays with two values, start and end)
-         */
         domain: function (domain) {
             if (domain !== undefined) {
-                if (Object.keys(domain).length === 2) {
+                if (Object.keys(domain).length === 1) {
                     this._domain = domain;
                 } else {
-                    console.error("Surface must have two domain variables");
+                    console.error("Curve must have excacly one domain variable");
                 }
             }
             return this._domain;
         },
         
-        
-        parameters: function () {
-            console.log(Object.keys(this._domain));
-            return Object.keys(this._domain);
+
+        parameter: function () {
+            return this.parameters()[0];
         },
 
         
+        parameters: function () {
+            return Object.keys(this._domain);
+        },
+
+
         xExpr: function () {
             return this.flat('x');
         },
@@ -50,7 +49,20 @@ define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, M
 
         zExpr: function () {
             return this.flat('z');
-        }
+        },
+        
+        /**
+         * Tangent expression map
+         */
+        tangentExpressions: function () {
+            var parameter = this.parameter();
+            var map = {}
 
+            var xDeriv = "dxd" + parameter, yDeriv = "dyd" + parameter, zDeriv = "dzd" + parameter;
+            map[xDeriv] = this.get(xDeriv) || this.flatExpression('x').differentiated(parameter);
+            map[yDeriv] = this.get(yDeriv) || this.flatExpression('y').differentiated(parameter);
+            map[zDeriv] = this.get(zDeriv) || this.flatExpression('z').differentiated(parameter);
+            return map;
+        }
     });
 });

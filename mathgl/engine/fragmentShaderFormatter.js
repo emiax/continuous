@@ -30,6 +30,10 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
             var glsl = "";
             var cat = this.symbolCategorization();
             var dict = this.shaderSymbolDictionary();
+
+
+            glsl += this.entityStrategy().uniformDeclarations();
+            glsl += this.entityStrategy().varyingDeclatations();
             
             
             cat.uniforms().forEach(function (s) {
@@ -45,16 +49,16 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
             return glsl;
         },
         
-        
+
+        /**
+         * Return a new shadelet instance that corresponds to the AppearanceNode 'node'.
+         */
         shadelet: function (node) {
             var scope = this;
-            console.log(node);
             var shadelet = (function () {
-                switch (true) {
-                case (node instanceof MathGL.Color): return new Engine.ColorShadelet(scope, node);
-                case (node instanceof MathGL.Gradient): return new Engine.GradientShadelet(scope, node);
-                case (node instanceof MathGL.CheckerPattern): return new Engine.CheckerPatternShadelet(scope, node);
-                }
+                if (node instanceof MathGL.Color) return new Engine.ColorShadelet(scope, node);
+                if (node instanceof MathGL.Gradient) return new Engine.GradientShadelet(scope, node);
+                if (node instanceof MathGL.CheckerPattern) return new Engine.CheckerPatternShadelet(scope, node);
             })();
             
             if (shadelet) {
@@ -79,11 +83,12 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
 
             cat.fragmentDefinitions().forEach(function (s) {
                 var expr = scope.expressions()[s];
+                console.log(s);
                 glsl += "float " + dict.fragmentName(s, cat) + " = " + formatter.format(expr) + ";\n";
             });
             
             var sinkNode = this.appearance();
-            var nodes = sinkNode.bottomUp();
+            var nodes = sinkNode ? sinkNode.bottomUp() : [];
             var shadelets = [];
 
             nodes.forEach(function (node) {

@@ -23,6 +23,7 @@ define(['quack', 'mathgl/engine/exports.js'], function (q, Engine) {
         },
 
 
+
         /**
          * Return glsl identifier of node.
          * If no node is specified, then get name of this node.

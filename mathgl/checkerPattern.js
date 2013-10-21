@@ -12,8 +12,6 @@ define(['quack', 'mathgl/fill.js', 'mathgl/exports.js'], function(q, Fill, MathG
             this.inputB(spec.inputB === undefined ? 0xffff0000 : spec.inputB);
             
             this.parameters(spec.parameters || {});
-
-            console.log(spec.parameters);
         },
 
         

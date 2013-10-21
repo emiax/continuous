@@ -61,7 +61,13 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         },
 
         visitUnaryMinus: function (expr) {
-            return expr.arg().simplified().negated();
+            var negated = expr.arg().simplified().negated();
+            if (negated instanceof KL.UnaryMinus) {
+                if (!negated.arg()) {
+                    negated = negated.arg();
+                }
+            }
+            return negated;
         },
 
 
@@ -120,9 +126,6 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         visitPower: function (expr) {
             var left = expr.left().simplified(this);
             var right = expr.right().simplified(this);
-            console.log(expr);
-            console.log(left);
-            console.log(right);
             
             if (left instanceof KL.Number && right instanceof KL.Number) {
                 return expr.evaluated().simplified(this);

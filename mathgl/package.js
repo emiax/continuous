@@ -4,6 +4,7 @@ define(['mathgl/exports.js',
         'mathgl/entity.js',
         'mathgl/space.js',
         'mathgl/surface.js',
+        'mathgl/curve.js',
 
         'mathgl/camera.js',
 

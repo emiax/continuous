@@ -51,8 +51,6 @@ define(['quack', 'mathgl/fill.js', 'mathgl/exports.js'], function(q, Fill, MathG
             var r = (0xff0000 & color) >>> 16;
             var g = (0xff00 & color) >>> 8;
             var b = (0xff & color);
-            console.log(color);
-            console.log(r);
             return {
                 a: a/255,
                 r: r/255,

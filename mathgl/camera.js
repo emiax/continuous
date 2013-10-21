@@ -1,4 +1,4 @@
-define(['quack', 'gl-matrix', 'kalkyl', 'mathgl/scope.js', 'mathgl/exports.js'], function (q, gm, Kalkyl, Scope, MathGL) {
+define(['quack', 'gl-matrix', 'kalkyl', 'kalkyl/glmatrix', 'mathgl/scope.js', 'mathgl/exports.js'], function (q, gm, Kalkyl, GLMatrix, Scope, MathGL) {
     /**
      * Until vectors and matrices are fully supprted by Kalkyl:
      * x, y, z determine position
@@ -15,33 +15,31 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl/scope.js', 'mathgl/exports.js'],
             spec = spec || {};
             Scope.constructor.call(this, spec);
         },
-
-
+        
+        
+        
         matrix: function () {
-            var x = this.xExpr().evaluated().value();
-            var y = this.yExpr().evaluated().value();
-            var z = this.zExpr().evaluated().value();
+            var position = this.positionExpr(); 
+            var subject = this.subjectExpr();
+            var up = this.upExpr();
 
-            var a = this.aExpr().evaluated().value();
-            var b = this.bExpr().evaluated().value();
-            var c = this.cExpr().evaluated().value();
-
-            var u = this.uExpr().evaluated().value();
-            var v = this.vExpr().evaluated().value();
-            var w = this.wExpr().evaluated().value();
-            
             var mat4 = gm.mat4, vec3 = gm.vec3;
+
+            var converter = GLMatrix.Converter;
+            
+            
+            var p = converter.vec3(position);
+            var s = converter.vec3(subject);
+            var u = converter.vec3(up);
 
             var mat = mat4.create();
             var mv = mat4.create();
             var ortho = mat4.create();
 
-            mat4.lookAt(mv,
-                        vec3.fromValues(x, y, z),
-                        vec3.fromValues(a, b, c),
-                        vec3.fromValues(u, v, w));
+            mat4.lookAt(mv, p, s, u);
 
-            mat4.ortho(ortho, -4, 4, -4, 4, -4, 4);
+//            mat4.ortho(ortho, -4, 4, -4, 4, -4, 4);
+            mat4.perspective(ortho, 1, 16/9, 0.1, 10);
 
             mat4.multiply(mat, ortho, mv);
 
@@ -49,49 +47,23 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl/scope.js', 'mathgl/exports.js'],
         },
 
 
-        xExpr: function () {
-            return this.flat('x');
-        },
-
-        
-        yExpr: function () {
-            return this.flat('y');
-        },
-
-
-        zExpr: function () {
-            return this.flat('z');
-        },
+        positionExpr: function () {
+//            var start = new Date();
+            var p = this.flat('position').evaluated()
+//            var end = new Date();
+//            console.log(end - start);
+            return p;
+        }, 
 
 
-        aExpr: function () {
-            return this.flat('a');
-        },
+        subjectExpr: function () {
+            return this.flat('subject').evaluated();
+        }, 
+
+        upExpr: function () {
+            return this.flat('up').evaluated();
+        }, 
 
 
-        bExpr: function () {
-            return this.flat('b');
-        },
-
-
-        cExpr: function () {
-            return this.flat('c');
-        },
-
-        
-        uExpr: function () {
-            return this.flat('u') || new Kalkyl.Number(0);
-        },
-
-
-        vExpr: function () {
-            return this.flat('v') || new Kalkyl.Number(0);
-        },
-
-
-        wExpr: function () {
-            return this.flat('w') || new Kalkyl.Number(1);
-        }
-        
     });
 });

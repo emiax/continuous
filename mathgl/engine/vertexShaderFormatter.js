@@ -3,7 +3,7 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
     /**
      * Vertex shader formatter
      */
-    return Engine.VertexShaderFormatter = q.createClass(ShaderFormatter, {
+    return Engine.VertexShaderFormatter = q.createAbstractClass(ShaderFormatter, {
         /**
          * Return glsl code for variable declarations outside main function.
          */
@@ -12,6 +12,13 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
             var cat = this.symbolCategorization();
             var dict = this.shaderSymbolDictionary();
 
+            console.log(this.entityStrategy());
+            
+            glsl += this.entityStrategy().uniformDeclarations();
+            glsl += this.entityStrategy().attributeDeclarations();
+            
+//            glsl += this.entitySpecificAttributeDefinitions();
+            
             cat.uniforms().forEach(function (s) {
                 glsl += 'uniform float ' + dict.uniformName(s) + ";\n";
             });
@@ -40,18 +47,24 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
             
             var glsl = "void main() {\n";
             var scope = this;
+
             console.log(cat.vertexDefinitions());
             cat.vertexDefinitions().forEach(function (s) {
                 var expr = scope.expressions()[s];
 
                 glsl += "float " + dict.vertexName(s, cat) + " = " + formatter.format(expr) + ";\n";
             });
-
+            
+            glsl += "vec4 spacePosition;\n";
+            glsl += this.entityStrategy().spacePosition(cat, dict);
+/*
             glsl += "vec4 spacePosition = vec4(" +
-                dict.vertexName('x', cat) + ', ' + 
+                dict.vertexName('x', cat) + '+theta/100.0' + ', ' + 
                 dict.vertexName('y', cat) + ', ' + 
                 dict.vertexName('z', cat) + ", 1.0);\n";
 
+            glsl += this.entityStrategy().displace('spacePosition');
+*/
 
             glsl += "gl_Position = " + dict.mvpMatrixName() + " * spacePosition;\n";
 

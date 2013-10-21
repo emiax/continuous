@@ -1,10 +1,10 @@
 define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/renderable.js'], function(q, gm, Kalkyl, MathGL, Engine, Renderable) {
-    return Engine.RenderableSurface = q.createClass(Renderable, {
+    return Engine.RenderableCurve = q.createClass(Renderable, {
         /**
          * Initialize.
          */
         initialize: function () {
-            console.log("Initializing " + this.entity().id());
+//            console.log("Initializing " + this.scope().id());
             this.initializeParameterBuffer();
 
             this._shaderProgram = this.generateShaderProgram();
@@ -18,16 +18,17 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var scope = this;
 
             var s, ref;
-            if (attributes.length === 2) {
+            if (attributes.length === 1) {
                 s = attributes[0];
                 ref = dict.attributeName(s);
                 scope._uLocation = scope._shaderProgram.attributeLocation(ref);
 
                 s = attributes[1];
-                ref = dict.attributeName(s);
+                ref = 'theta';//dict.attributeName(s);
                 scope._vLocation = scope._shaderProgram.attributeLocation(ref);
+                console.log(scope._vLocation);
             } else {
-                console.log("should have excactly 2 attribs, got " + attributes.length);
+                console.log("should have excactly 1 attribs, got " + attributes.length);
             }
 
             var uniforms = cat.uniforms();
@@ -41,28 +42,6 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             this._mvpMatrixLocation = scope._shaderProgram.uniformLocation(ref)
 
         },
-
-        /**
-         * Return the set of symbols required by the vertex shader.
-         */
-        vertexShaderSinks: function () {
-            return {
-                x: true,
-                y: true,
-                z: true
-            }
-        },
-
-
-
-
-        entityShaderStrategy: function () {
-            if (this._entitiyShaderStrategy === undefined) {
-                this._entityShaderStrategy = new Engine.SurfaceShaderStrategy();
-            }
-            return this._entityShaderStrategy;
-        },
-
 
 
         /**
@@ -93,19 +72,106 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
         },
 
 
+        /**
+         * Return the set of symbols required by the vertex shader.
+         * Make sure that derivative (tangent) expressions get evaluated in the shader.
+         */
+        vertexShaderSinks: function () {
+            var sinks = {
+                x: true,
+                y: true,
+                z: true
+            };
+            
+            var scope = this;
+            
+            var tangentExpressions = this.tangentExpressions();
+            Object.keys(tangentExpressions).forEach(function (s) {
+                if (!scope.expressions[s]) {
+                    sinks[s] = true;
+                }
+            });
 
+            return sinks;
+        },
+
+
+        /**
+         * tangentExpressions
+         */
+        tangentExpressions: function () {
+            if (this._tangentExpressions === undefined) {
+                this._tangentExpressions = this.entity().tangentExpressions();
+          //      return this.entity().tangentExpressions();
+            }
+            return this._tangentExpressions;
+        },
+
+
+
+        /**
+         * Entity Shader Strategy
+         */
+        entityShaderStrategy: function () {
+            if (this._entitiyShaderStrategy === undefined) {
+                var parameters = this.entity().parameters();
+                var parameter = parameters[0];
+                if (parameter) {
+                    this._entityShaderStrategy = new Engine.CurveShaderStrategy(parameter);
+                } else {
+                    console.error("missing parameter");
+                }
+            }
+            return this._entityShaderStrategy;
+        },
+
+        
+        /**
+         * Symbol categorization.
+         */
+        symbolCategorization: function () {
+            if (this._symbolCategorization == undefined) {
+                this._symbolCategorization = new Engine.SymbolCategorization(this.vertexShaderSinks(),            
+                                                                         this.fragmentShaderSinks(),
+                                                                         this.parameterSymbols(),
+                                                                         this.expressions());
+            } 
+            return this._symbolCategorization;
+        },
+
+
+        /**
+         * Overrides expressions is base class.
+         * Also incldues tangent expressions.
+         */
+        expressions: function () {
+            var curve = this.entity();
+            var expressions = curve.getAll();
+            var tangentExpressions = this.tangentExpressions();
+            
+            Object.keys(tangentExpressions).forEach(function (s) {
+                if (!expressions[s]) {
+                    expressions[s] = tangentExpressions[s];
+                }
+            });
+            
+            return expressions;
+        },
+
+        /**
+         * Initialize Parameter buffer
+         */
         initializeParameterBuffer: function () {
             var gl = this.gl();
 
-            var surface = this.entity();
+            var curve = this.entity();
 
-            var parameters = surface.parameters();
-            var domain = surface.domain();
-            var u = parameters[0], v = parameters[1];
+            var parameters = curve.parameters();
+            var domain = curve.domain();
+            var u = parameters[0];
             var uDomain = domain[u];
-            var vDomain = domain[v];
 
-            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 30);
+            var tessellation = new Engine.TubeTessellation(uDomain, 30);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
@@ -129,35 +195,9 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
 
             var triangleSorter = new Engine.TriangleSorter(uData, vData);
 
-//            var triangleU = tessellation.triangleU();
-//            var triangleV = tessellation.triangleV();
-            
-//            var expressions = this.surface().getAll();
-            
- //           console.log(triangleData);
-            
- //           var start = new Date();
-            //triangleSorter.sortTriangles(direction, expressions, parameters, triangleData);
- //           var end = new Date();
-
-  //          console.log("Sorting triangles took " + (end-start) + "ms");
-
-
             this.updateTriangleBuffer(triangleData)
 
             this._triangleCount = triangleData.length;
-        },
-
-
-        updateTriangleBuffer: function (triangleData) {
-            var start = new Date();
-            var gl = this.gl();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, triangleData, gl.STATIC_DRAW);
-            var end = new Date();
-            
-            console.log("Updating buffer");
-            console.log(end - start);
         },
 
 
@@ -167,7 +207,6 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
         render: function (camera) {
 
             var gl = this.gl();
-            //            this.bindParameterBuffer();
             this.useProgram();
 
             /*
@@ -189,13 +228,24 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var scope = this;
             var entity = this.entity();
 
+            var te = this.tangentExpressions();
+//            console.log(te.dydd);
             Object.keys(this._uniformLocations).forEach(function (s) {
                 var location = scope._uniformLocations[s];
-                var value = entity.flat(s).evaluated().value();
+                
+                var flat = entity.flat(s);
+                var value;
+                if (flat) {
+                    value = entity.flat(s).evaluated().value();
+                } else {
+                    value = te[s].value();
+                }
+
                 gl.uniform1f(location, value);
             });
 
             var location = this._mvpMatrixLocation;
+
             var e = new Float32Array(16);
 
             e = camera.matrix();
@@ -207,5 +257,6 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
 
         }
 
+      
     });
 });

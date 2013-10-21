@@ -40,6 +40,12 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
             );
         },
 
+
+        visitUnaryMinus: function (expr) {
+            return new KL.UnaryMinus(expr.arg().differentiated(this));
+        },
+
+
         visitMultiplication: function (expr) {
             var left = expr.left(), right = expr.right();
             return new KL.Plus(
@@ -142,7 +148,11 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
 
     q.patch(Expression, {
-
+        /**
+         * 
+         * Patch all expressions with differentiated-method.
+         * Takes a symbol (string) or a differentiator (Differentiator instance)
+         */
         differentiated: function (symbolOrDifferentiator) {
             var differentiator;
             if (symbolOrDifferentiator instanceof KL.Differentiator) {

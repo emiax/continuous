@@ -239,7 +239,6 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
         /**
          * Get expression and substitute symbols with definitions in outer scopes
          */
-
         flat: function (symbol) {
             var expr = this.get(symbol);
             var expressions = this.getAll();
@@ -251,6 +250,27 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             return null;
         },
         
+
+        /**
+         * Get expression and substitute symbols with definitions in outer scopes
+         */
+        flatExpression: function (symbol) {
+            var expr = this.get(symbol);
+            var expressions = this.getAll();
+            Object.keys(expressions).forEach(function (s) {
+                if (expressions[s] instanceof Kalkyl.Number) {
+                    delete expressions[s];
+                }
+            });
+            if (expr) {
+                if (flat = expr.flattened(expressions)) {
+                    return flat;
+                }
+            }
+            return null;
+        },
+
+
 
         /**
          * Set one expression or multiple expressions.

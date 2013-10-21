@@ -1,4 +1,4 @@
-define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
+define(['quack', 'mathgl/engine/exports.js', 'stats'], function(q, Engine, Stats) {
     return Engine.View = q.createClass({
         /**
          * Constructor.
@@ -9,6 +9,15 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             this._renderer = null;
             this._active = false;
             this._requestAnimationFrame = null;
+            this._renderLoop = null;
+            
+            var stats = this._stats = new Stats();
+            //this._stats.setMode(0);
+            document.body.appendChild(stats.domElement);
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.left = '0px';
+            stats.domElement.style.top = '0px';
+
         },
 
 
@@ -32,10 +41,11 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
         /**
          * Start rendering.
          */
-        startRendering: function () {
+        startRendering: function (renderLoop) {
             var scope = this;
             console.log("render!");
-
+            this._renderLoop = renderLoop;
+            
             var renderer = this.renderer();
             if (renderer) {
                 this.active(true);
@@ -53,15 +63,20 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
 
 
         /**
-         * Render, until active flag is offx.
+         * Render, until active flag is off.
          */
         render: function () {
             var scope = this;
             var raf = this.requestAnimationFrameFn();
             (function render () {
                 if (scope.active()) {
+                    scope._stats.begin();
+                    if (scope._renderLoop) {
+                        scope._renderLoop();
+                    }
                     scope.renderer().render();
                     raf(render);
+                    scope._stats.end();
                 }
             })();
         },
@@ -102,7 +117,7 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
         updateDimensions: function () {
             var renderer = this.renderer();
             if (renderer) {
-                renderer.dimensions(canvas.width, canvas.height);
+                renderer.dimensions(this._canvas.width, this._canvas.height);
             }
         },
         
