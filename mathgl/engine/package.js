@@ -19,11 +19,6 @@ define(['mathgl/engine/exports.js',
         'mathgl/engine/fragmentShader.js',
         'mathgl/engine/shaderProgram.js',
         
-        // Shader generators
-        'mathgl/engine/shaderProgramGenerator.js',
-        'mathgl/engine/vertexShaderGenerator.js',
-        'mathgl/engine/fragmentShaderGenerator.js',
-
         'mathgl/engine/symbolCategorization.js',
         'mathgl/engine/shaderSymbolDictionary.js',
 
