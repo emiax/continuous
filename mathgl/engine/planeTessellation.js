@@ -7,14 +7,17 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
          * vDomain = [min, max]
          * res = [uRes, vRes] or only one number to be used as both uRes and vRes. Res is the number of vertices per length unit.
          */
-        constructor: function (uDomain, vDomain, res) {
-            if (typeof res === 'number') {
-                this._uRes = res;
-                this._vRes = res;
+        constructor: function (uDomain, vDomain, stepSize) {
+            if (typeof stepSize === 'number') {
+                this._uStep = stepSize;
+                this._vStep = stepSize;
+            } else if (stepSize.length === 2) {
+                this._uStep = stepSize[0];
+                this._vStep = stepSize[1];
             } else {
-                this._uRes = res[0];
-                this._vRes = res[1];
+                console.error("Invalid step size.");
             }
+
             var uMin = this._uMin = uDomain[0];
             var uMax = this._uMax = uDomain[1];
             var vMin = this._vMin = vDomain[0];
@@ -23,10 +26,12 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             var uDist = uMax - uMin;
             var vDist = vMax - vMin;
             
+            
+            var n = this._n = Math.ceil(uDist / this._uStep) + 1;
+            var m = this._m = Math.ceil(vDist / this._vStep) + 1;
 
-            var n = this._n = Math.ceil(uDist * this._uRes) + 1;
-            var m = this._m = Math.ceil(vDist * this._vRes) + 1;
-
+            console.log(n + ", " + m);
+            
             this._tessellated = false;
             
         },
@@ -38,7 +43,7 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
         tessellate: function () {
             var n = this._n;
             var m = this._m;
-
+            
             var uData = this._uData = new Float32Array(n*m);
             var vData = this._vData = new Float32Array(n*m);
 
@@ -56,8 +61,8 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             var uMax = this._uMax;
             var vMin = this._vMin;
             var vMax = this._vMax;
-            var uStep = 1/this._uRes;
-            var vStep = 1/this._vRes;
+            var uStep = this._uStep;
+            var vStep = this._vStep;
             
             // Create vertices in four steps like this.
             // aaab

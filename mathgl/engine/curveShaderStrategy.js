@@ -15,6 +15,11 @@ define(['quack', 'mathgl/engine/entityShaderStrategy.js', 'mathgl/engine/exports
             return "attribute float theta;\n";
         },
 
+        
+        uniformDeclarations: function () {
+            return "uniform float thickness;\n"
+        },
+
 
         /**
          * Return the code nessesary to set space position
@@ -40,7 +45,7 @@ define(['quack', 'mathgl/engine/entityShaderStrategy.js', 'mathgl/engine/exports
             glsl += "vec3 u = normalize(cross(tangent, nonParallel));\n";
             glsl += "vec3 v = normalize(cross(tangent, u));\n";
             
-            glsl += "vec3 displacement = 0.01*cos(theta)*u + 0.01*sin(theta)*v;\n";
+            glsl += "vec3 displacement = thickness*(cos(theta)*u + sin(theta)*v);\n";
 
 
             glsl +=  "spacePosition = vec4(" + 

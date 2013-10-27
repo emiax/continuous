@@ -10,6 +10,7 @@ define(['mathgl/exports.js',
 
         // Appearance nodes
         'mathgl/appearanceNode.js',
+        'mathgl/threshold.js',
         'mathgl/fill.js',
         'mathgl/color.js',
         'mathgl/gradient.js',

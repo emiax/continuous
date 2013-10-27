@@ -12,8 +12,12 @@ define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, M
                 t: [0, 1]
             });
             
+//            console.log(spec.stepSize);
+            this.stepSize(spec.stepSize || 0.2);
+            this.thickness(spec.thickness || 0.1);
             this.appearance(spec.appearance || null);
         }, 
+
 
         domain: function (domain) {
             if (domain !== undefined) {
@@ -26,6 +30,27 @@ define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, M
             return this._domain;
         },
         
+
+        thickness: function (thickness) {
+            if (thickness !== undefined) {
+                this._thickness = thickness;
+            }
+            return this._thickness;
+        },
+
+
+        stepSize: function(stepSize) {
+            if (stepSize !== undefined) {
+                if (typeof stepSize === 'object') {
+                    this._stepSize = stepSize;
+                } else if (typeof stepSize === 'number') {
+                    this._stepSize = {};
+                    this._stepSize[this.parameter()] = stepSize;
+                }
+            }
+            return this._stepSize;
+        },
+
 
         parameter: function () {
             return this.parameters()[0];

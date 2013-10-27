@@ -50,21 +50,14 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/javascript
     
     var scope = new MathGL.Scope({
         expressions: {
-            r: "(x^2 + y^2)",
-            x: 'R*sin(T)*cos(P)',
-            y: 'R*sin(T)*sin(P)',
-            z: '5 - r^(1/2)',
+            R: "(sin(10*t)+1)*(x^2 + y^2)^(1/2)",
             t: 0
         }
     });
    
     var camera = new MathGL.Camera({
         expressions: {
-//            position: '[5*cos(t), 5*sin(t), sin(t)]',
-            //R: 2,
-            //T: '2*t',
-            //P: 't/2',
-            position: '[sin(10*t), cos(10*t), 0]',
+            position: '[0.5sin(10*t), 0.5cos(10*t), 0]',
             subject: '[0, 0, 0]',
             up: '[0, 0, 1]'
         }
@@ -96,8 +89,8 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/javascript
 
     var checker = new MathGL.CheckerPattern({
         parameters: {
-            v: 1,
-            u: 1
+            x: 0.25,
+            y: 0.25
         },
         inputA: gradient,
         inputB: darkOverlay
@@ -106,18 +99,18 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/javascript
 
     var surface = new MathGL.Surface({
         domain: {
-            u: [-0.5, 0.5],
-            v: [-0.5, 0.5]
+            x: [-1, 1],
+            y: [-1, 1]
         },
         expressions: {
-            x: 'u-1',
-            z: 'v',
-            y: 'sin(u)*cos(v)'
+            a: 1,
+            b: 2,
+            z: 'x^2/a^2 + y^2/b^2'
         },
         appearance: checker
     });
 
-
+/*
     var surface2 = new MathGL.Surface({
         domain: {
             u: [-0.5, 0.5],
@@ -130,18 +123,35 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/javascript
         },
         appearance: checker
     });
-
+*/
   
     
 
     var curveGradient = new MathGL.Gradient({
         stops: {
             0: red,
-            6: blue
+            2: green,
+            3: blue,
+            5: green,
+            6: red
         },
         parameter: 'd'
     })
-    
+  
+
+    var clip = new MathGL.Threshold({
+        parameter: 'd',
+        value: 'b',
+        below: curveGradient
+    });
+
+    var clip2 = new MathGL.Threshold({
+        parameter: 'd',
+        value: 'c',
+        above: clip
+    });
+
+
 
 /*    var curve = new MathGL.Curve({
         domain: {
@@ -155,25 +165,34 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/javascript
         appearance: curveGradient
     });*/
 
-    var curve = new MathGL.Curve({
-        domain: {
-            d: [0, 2*Math.PI]
-        },
-        expressions: {
-            p: 3,
-            q: -7,
-            r: 'cos(qd) + 2',
-            x: 'r*cos(pd) * 0.2 * (sin(t*50) + 2)/4',
-            y: 'r*sin(pd) * 0.2',
-            z: '-sin(qd) * 0.2'
-        },
-        appearance: curveGradient
-    });
+    
+    for (var i = 2; i < 4; i++) {
+        var curve = new MathGL.Curve({
+            domain: {
+                d: [0, 2*Math.PI]
+            },
+            stepSize: 0.01,
+            thickness: i*0.0002,
+            expressions: {
+                b: '(sin(p^2*t/10)+1)/2*((sin(t*8)+1)*3.14)',
+                c: '(sin(p^2*t/10)+1)/2*((sin(t*8)+1)*3.14)-0.2',
+                p: i,
+                q: -7,
+                r: 'cos(qd) + 2',
+                x: 'r*cos(pd + tp) * (cos(20*t)+2.1)*0.1',
+                y: 'r*sin(pd) * (cos(20*t)+2.1)*0.1',
+//                z: '(-sin(qd) + cos(dt30)/2) * (cos(20*t)+1.1)*0.1'
+                z: '(-sin(qd)) * (cos(20*t)+2.1)*0.1'
+            },
+            //        visible: false,
+            appearance: clip2
+        });
+    
+        scope.add(curve);
+    }
 
 
-
-    scope.add(curve);
-  
+        
 //    scope.add(surface);
 //    scope.add(surface2);
     space.add(scope);    
@@ -188,6 +207,7 @@ requirejs(['jquery', 'kalkyl', 'kalkyl/format/simple', 'kalkyl/format/javascript
     function update() {
         scope.set('t', t);
 //        camera.set('t', t);
+
         t += 0.001;
     }
 

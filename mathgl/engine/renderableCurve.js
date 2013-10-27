@@ -22,13 +22,8 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
                 s = attributes[0];
                 ref = dict.attributeName(s);
                 scope._uLocation = scope._shaderProgram.attributeLocation(ref);
-
-                s = attributes[1];
-                ref = 'theta';//dict.attributeName(s);
-                scope._vLocation = scope._shaderProgram.attributeLocation(ref);
-                console.log(scope._vLocation);
             } else {
-                console.log("should have excactly 1 attribs, got " + attributes.length);
+                console.log("should have excactly 1 attrib, got " + attributes.length);
             }
 
             var uniforms = cat.uniforms();
@@ -37,6 +32,13 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
                 ref = dict.uniformName(s);
                 scope._uniformLocations[s] = scope._shaderProgram.uniformLocation(ref);
             });
+
+            ref = 'theta';
+            scope._vLocation = scope._shaderProgram.attributeLocation(ref);
+
+            ref = 'thickness';
+            scope._thicknessLocation = scope._shaderProgram.uniformLocation(ref);
+            
 
             ref = dict.mvpMatrixName();
             this._mvpMatrixLocation = scope._shaderProgram.uniformLocation(ref)
@@ -170,8 +172,12 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var domain = curve.domain();
             var u = parameters[0];
             var uDomain = domain[u];
+            var stepSize = curve.stepSize()[u];
+            
+            console.log("stepSize:" + stepSize);
+            
 
-            var tessellation = new Engine.TubeTessellation(uDomain, 30);
+            var tessellation = new Engine.TubeTessellation(uDomain, stepSize);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
@@ -244,6 +250,9 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
                 gl.uniform1f(location, value);
             });
 
+            var thicknessLocation = this._thicknessLocation;
+            gl.uniform1f(thicknessLocation, this.entity().thickness());
+
             var location = this._mvpMatrixLocation;
 
             var e = new Float32Array(16);
@@ -252,7 +261,9 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             gl.uniformMatrix4fv(location, false, e);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
-            gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
+
+                gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
+            
             //todo!
 
         }
