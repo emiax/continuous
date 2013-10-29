@@ -55,12 +55,12 @@ define(['quack', 'mathgl/engine/exports.js'], function (q, Engine) {
         /**
          * Return glsl code that blends a over b, normal blend mode. a and b are strings (glsl references)
          *
-         * color = back.rgb + front.rgb*(1.0 - back.a)
-         * alpha = back.a + front.a*(1.0 - back.a)
+         * color = front.rgb + back.rgb*(1.0 - front.a)*back.a
+         * alpha = front.a + back.a*(1.0 - front.a)
          *
          */
         normalBlend: function (a, b) {
-            return 'vec4(' + a + '.rgb + ' + b + '.rgb*(1.0 - ' + a + '.a), '
+            return 'vec4(' + a + '.rgb + ' + b + '.rgb*(1.0 - ' + a + '.a)* ' + b + '.a , '
                 + a + '.a + ' + b + '.a*(1.0 - ' + a + '.a))';
         },
 
