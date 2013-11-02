@@ -22,6 +22,11 @@ define(['quack', './exports.js', './expression.js'], function(q, Kalkyl, Express
          *  => 3 + 3 + 4
          */
         flatten: function (expression) {
+            if (!(expression instanceof Kalkyl.Expression)) {
+                console.error("cannot flatten expression, which is " + expression);
+                return;
+            }
+            
             var current = expression;
             var order = this.graph().order();
             var substitutor = this.substitutor(this._map);

@@ -84,9 +84,9 @@ define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, M
             var map = {}
 
             var xDeriv = "dxd" + parameter, yDeriv = "dyd" + parameter, zDeriv = "dzd" + parameter;
-            map[xDeriv] = this.get(xDeriv) || this.flatExpression('x').differentiated(parameter);
-            map[yDeriv] = this.get(yDeriv) || this.flatExpression('y').differentiated(parameter);
-            map[zDeriv] = this.get(zDeriv) || this.flatExpression('z').differentiated(parameter);
+            map[xDeriv] = this.expression(xDeriv) || this.flatExpression('x').differentiated(parameter);
+            map[yDeriv] = this.expression(yDeriv) || this.flatExpression('y').differentiated(parameter);
+            map[zDeriv] = this.expression(zDeriv) || this.flatExpression('z').differentiated(parameter);
             return map;
         }
     });

@@ -86,7 +86,6 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             };
             
             var scope = this;
-            
             var tangentExpressions = this.tangentExpressions();
             Object.keys(tangentExpressions).forEach(function (s) {
                 if (!scope.expressions[s]) {
@@ -99,7 +98,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
 
 
         /**
-         * tangentExpressions
+         * TangentExpressions. 
          */
         tangentExpressions: function () {
             if (this._tangentExpressions === undefined) {
@@ -136,6 +135,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
                 this._symbolCategorization = new Engine.SymbolCategorization(this.vertexShaderSinks(),            
                                                                          this.fragmentShaderSinks(),
                                                                          this.parameterSymbols(),
+                                                                         this.primitiveSymbols(),
                                                                          this.expressions());
             } 
             return this._symbolCategorization;
@@ -148,7 +148,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
          */
         expressions: function () {
             var curve = this.entity();
-            var expressions = curve.getAll();
+            var expressions = curve.allExpressions();
             var tangentExpressions = this.tangentExpressions();
             
             Object.keys(tangentExpressions).forEach(function (s) {
@@ -239,12 +239,10 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             Object.keys(this._uniformLocations).forEach(function (s) {
                 var location = scope._uniformLocations[s];
                 
-                var flat = entity.flat(s);
-                var value;
-                if (flat) {
-                    value = entity.flat(s).evaluated().value();
-                } else {
+                if (te[s]) {
                     value = te[s].value();
+                } else {
+                    value = entity.value(s);
                 }
 
                 gl.uniform1f(location, value);

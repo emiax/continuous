@@ -24,7 +24,7 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                         b: 0
                     }
                 });
-                node.set({
+                node.expressions({
                     a: '3 + 6',
                     b: 'sin(y)'
                 });
@@ -33,8 +33,8 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                 var a = p.parse('3 + 6');
                 var b = p.parse('sin(y)');
 
-                expect(node.get('a').identicalTo(a)).toBe(true);
-                expect(node.get('b').identicalTo(b)).toBe(true);
+                expect(node.expression('a').identicalTo(a)).toBe(true);
+                expect(node.expression('b').identicalTo(b)).toBe(true);
             });
 
             it("can set one variable using strings", function () {
@@ -45,18 +45,18 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                 });
                 var p = new SimpleFormat.Parser();
                 
-                node.set('a', '100 / 3');
+                node.expression('a', '100 / 3');
                 var a = p.parse('100 / 3');
 
-                expect(node.get('a').identicalTo(a)).toBe(true);
+                expect(node.expression('a').identicalTo(a)).toBe(true);
             });
 
             
             it("can define expressions", function () {
                 var node = new MathGL.Scope({});
-                node.define('x', 3);
+                node.defineExpression('x', 3);
                 var p = new SimpleFormat.Parser();
-                expect(node.get('x').identicalTo(p.parse(3))).toBe(true);
+                expect(node.expression('x').identicalTo(p.parse(3))).toBe(true);
                 
             });
             
@@ -69,7 +69,7 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                 });
                 var p = new SimpleFormat.Parser();
 
-                node.set({
+                node.expressions({
                     a: p.parse('100 / 4'),
                     b: p.parse('sin(y)')
                 });
@@ -77,8 +77,8 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                 var a = p.parse('100 / 4');
                 var c = p.parse('cos(x)');
 
-                expect(node.get('a').identicalTo(a)).toBe(true);
-                expect(node.get('b').identicalTo(c)).toBe(false);
+                expect(node.expression('a').identicalTo(a)).toBe(true);
+                expect(node.expression('b').identicalTo(c)).toBe(false);
             });
 
 
@@ -91,10 +91,10 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                 });
                 var p = new SimpleFormat.Parser();
                 
-                node.set('a', p.parse('100 / 4'));
+                node.expression('a', p.parse('100 / 4'));
                 var a = p.parse('100 / 4');
 
-                expect(node.get('a').identicalTo(a)).toBe(true);
+                expect(node.expression('a').identicalTo(a)).toBe(true);
             });
             
             it("can have children and one parent", function () {
@@ -120,40 +120,40 @@ define(['mathgl', 'kalkyl/format/simple'], function(MathGL, SimpleFormat) {
                 var b = new MathGL.Scope();
                 a.add(b);
                 var p = new SimpleFormat.Parser();
-                expect(b.get('x').identicalTo(p.parse('4'))).toBe(true);
-                expect(b.get('x').identicalTo(a.get('x'))).toBe(true);
+                expect(b.expression('x').identicalTo(p.parse('4'))).toBe(true);
+                expect(b.expression('x').identicalTo(a.expression('x'))).toBe(true);
                 
-                b.define('x', 10);
-                expect(a.get('x').identicalTo(b.get('x'))).toBe(false);
+                b.defineExpression('x', 10);
+                expect(a.expression('x').identicalTo(b.expression('x'))).toBe(false);
                 b.undefine('x');
 
                 var c = new MathGL.Scope();
                 b.add(c);
-                expect(c.get('x').identicalTo(p.parse('4'))).toBe(true);
-                expect(c.get('x').identicalTo(b.get('x'))).toBe(true);
-                expect(c.get('x').identicalTo(a.get('x'))).toBe(true);
+                expect(c.expression('x').identicalTo(p.parse('4'))).toBe(true);
+                expect(c.expression('x').identicalTo(b.expression('x'))).toBe(true);
+                expect(c.expression('x').identicalTo(a.expression('x'))).toBe(true);
 
-                a.set('x', 5);
+                a.expression('x', 5);
 
-                expect(c.get('x').identicalTo(p.parse('4'))).toBe(false);
-                expect(c.get('x').identicalTo(p.parse('5'))).toBe(true);
-                expect(c.get('x').identicalTo(b.get('x'))).toBe(true);
-                expect(c.get('x').identicalTo(a.get('x'))).toBe(true);
+                expect(c.expression('x').identicalTo(p.parse('4'))).toBe(false);
+                expect(c.expression('x').identicalTo(p.parse('5'))).toBe(true);
+                expect(c.expression('x').identicalTo(b.expression('x'))).toBe(true);
+                expect(c.expression('x').identicalTo(a.expression('x'))).toBe(true);
 
-                c.define('x', 'y - 5');
+                c.defineExpression('x', 'y - 5');
                 a.undefine('x');
                 
-                expect(a.get('x')).toBe(undefined);
-                expect(b.get('x')).toBe(undefined);
-                expect(c.get('x').identicalTo(p.parse('y - 5'))).toBe(true);
-                expect(c.get('x').identicalTo(p.parse('y - 6'))).toBe(false);
+                expect(a.expression('x')).toBe(undefined);
+                expect(b.expression('x')).toBe(undefined);
+                expect(c.expression('x').identicalTo(p.parse('y - 5'))).toBe(true);
+                expect(c.expression('x').identicalTo(p.parse('y - 6'))).toBe(false);
                 
-                b.define('x', 2);
+                b.defineExpression('x', 2);
                 c.undefine('x')
-                expect(c.get('x').identicalTo(b.get('x'))).toBe(true);
+                expect(c.expression('x').identicalTo(b.expression('x'))).toBe(true);
                 
                 b.undefine('x');
-                expect(c.get('x')).toBe(undefined);
+                expect(c.expression('x')).toBe(undefined);
                 
                 
             });
