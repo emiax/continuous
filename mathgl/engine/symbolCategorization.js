@@ -46,12 +46,6 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
             var vertexDefinitions = this._vertexDefinitions = [];
             var fragmentDefintions = this._fragmentDefinitions = [];
             
-
-            // Primitives are sent in as uniforms
-            Object.keys(primitiveSources).forEach(function (s) {
-                uniforms[s] = true;
-            })
-            
             // All symbols required to determine the values of the vertex sinks.
             vertexSymbols.forEach(function (s) {
                 if (parameterSources[s]) {
