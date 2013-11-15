@@ -44,8 +44,6 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
                 glsl += 'varying float ' + dict.varyingName(s) + ";\n";
             });
             
-            glsl += 'uniform mat4 mvpMatrix;\n';
-            
             return glsl;
         },
         

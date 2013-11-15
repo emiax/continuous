@@ -85,7 +85,7 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
          * Format shader.
          */        
         format: function () {
-            var glsl = "";
+            var glsl = "precision mediump float;\n"; 
             glsl += this.declarations();
             glsl += this.mainFunction();
             return glsl;
