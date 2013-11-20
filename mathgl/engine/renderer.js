@@ -12,6 +12,8 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
             this._camera = null;
             
             gl.enable(gl.DEPTH_TEST);
+            gl.enable (gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         },
 
@@ -116,9 +118,14 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
             var id = scope.id();
             if (scope instanceof MathGL.Surface) {
                 this._renderables[id] = new Engine.RenderableSurface(this.gl(), scope);
-                this._renderables[id].initialize();
+            } else if (scope instanceof MathGL.Curve) {
+                this._renderables[id] = new Engine.RenderableCurve(this.gl(), scope);
             }
             // ADD MORE ENTITY TYPES HERE.
+
+            if (this._renderables[id]) {
+                this._renderables[id].initialize();
+            }
         }, 
         
         /**

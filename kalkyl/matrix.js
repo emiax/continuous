@@ -29,13 +29,13 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
          * To primitive.
          */
         toPrimitive: function () { 
-            if (!expr.isEvaluated()) {
+            if (!this.isEvaluated()) {
                 console.error("kalkyl internal error");
             }
             
             var primitive = [];
-            expr.forEachElement(function (v, k) {
-                var r = k.x(), c = k.y();
+            this.forEachElement(function (v, k) {
+                var r = k.x().value(), c = k.y().value();
                 if (primitive[c] === undefined) {
                     primitive[c] = [];
                 }

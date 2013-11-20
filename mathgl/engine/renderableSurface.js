@@ -1,35 +1,13 @@
-define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/renderable.js'], function(q, Kalkyl, MathGL, Engine, Renderable) {
+define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/renderable.js'], function(q, gm, Kalkyl, MathGL, Engine, Renderable) {
     return Engine.RenderableSurface = q.createClass(Renderable, {
-        /**
-         * Constructor.
-         */
-        constructor: function (gl, scope) {
-            this._scope = scope;
-            this._gl = gl;
-            this._uBuffer = null;
-            this._vBuffer = null;
-            this._uLocation = null;
-            this._vLocation = null;
-
-            this._uniformLocations = null;
-
-            this._r = 0;
-        },
-
-
-        surface: function () {
-            return this._scope;
-        },
-
-
         /**
          * Initialize.
          */
         initialize: function () {
-            console.log("Initializing " + this.scope().id());
+            console.log("Initializing " + this.entity().id());
             this.initializeParameterBuffer();
 
-            this._shaderProgram = this.generateShaderProgram();//programGenerator.generate();
+            this._shaderProgram = this.generateShaderProgram();
             this._shaderProgram.link();
 
             var cat = this.symbolCategorization();
@@ -37,7 +15,6 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
 
             var attributes = cat.attributes();
 
-            var symbol
             var scope = this;
 
             var s, ref;
@@ -50,7 +27,7 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
                 ref = dict.attributeName(s);
                 scope._vLocation = scope._shaderProgram.attributeLocation(ref);
             } else {
-                console.log("should not have more than 2 attribs.");
+                console.log("should have excactly 2 attribs, got " + attributes.length);
             }
 
             var uniforms = cat.uniforms();
@@ -66,92 +43,26 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
         },
 
         /**
-         * Return the set of symbols required by the vertex shader. Shallow.
+         * Return the set of symbols required by the vertex shader.
          */
         vertexShaderSinks: function () {
             return {
                 x: true,
                 y: true,
                 z: true
-            };
-        },
-
-
-        /**
-         * Return the set of symbols required by the fragment shader. Shallow.
-         */
-        fragmentShaderSinks: function () {
-            var a = this.appearance();
-            var symbols = {};
-            if (a) {
-                a.traverse(function (node) {
-                    var newSymbols = node.symbols();
-                    Object.keys(newSymbols).forEach(function (k) {
-                        symbols[k] = true;
-                    });
-                });
             }
-            return symbols;
         },
 
 
 
-        /**
-         * ParameterSymbols. (set of symbols)
-         */
-        parameterSymbols: function () {
-            var set = {};
-            this.surface().parameters().forEach(function (s) {
-                set[s] = true;
-            });
-            return set;
+
+        entityShaderStrategy: function () {
+            if (this._entitiyShaderStrategy === undefined) {
+                this._entityShaderStrategy = new Engine.SurfaceShaderStrategy();
+            }
+            return this._entityShaderStrategy;
         },
 
-
-        symbolCategorization: function () {
-            if (this._symbolCategorization == undefined) {
-                this._symbolCategorization = new Engine.SymbolCategorization(this.vertexShaderSinks(),            
-                                                                         this.fragmentShaderSinks(),
-                                                                         this.parameterSymbols(),
-                                                                         this.expressions());
-            } 
-            return this._symbolCategorization;
-        },
-
-
-        expressions: function () {
-            return this.surface().getAll();
-        },
-
-        
-        appearance: function () {
-            return this.surface().appearance();
-        },
-
-        /**
-         * Generate shader program.
-         */
-        generateShaderProgram: function () {
-            var gl = this.gl();
-
-          
-            var vertexShaderFormatter = new Engine.VertexShaderFormatter(this.expressions(),
-                                                                      this.symbolCategorization());
-
-            var fragmentShaderFormatter = new Engine.FragmentShaderFormatter(this.expressions(),
-                                                                             this.symbolCategorization(),
-                                                                             this.appearance());
-
-            var vertexShaderGLSL = vertexShaderFormatter.format();
-            console.log(vertexShaderGLSL);
-            var fragmentShaderGLSL = fragmentShaderFormatter.format()
-            console.log(fragmentShaderGLSL);
-
-            var vs = new Engine.VertexShader(gl, vertexShaderGLSL);
-            var fs = new Engine.FragmentShader(gl, fragmentShaderGLSL);
-
-            return new Engine.ShaderProgram(vs, fs);
-        },
 
 
         /**
@@ -186,7 +97,7 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
         initializeParameterBuffer: function () {
             var gl = this.gl();
 
-            var surface = this.scope();
+            var surface = this.entity();
 
             var parameters = surface.parameters();
             var domain = surface.domain();
@@ -194,13 +105,11 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             var uDomain = domain[u];
             var vDomain = domain[v];
 
-            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 50);
+            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 30);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
             // var vertexData = tessellation.vertexArray();
-            var triangleData = tessellation.triangleArray();
-
 
             var uBuffer = this._uBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, uBuffer);
@@ -211,10 +120,44 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
             gl.bufferData(gl.ARRAY_BUFFER, vData, gl.STATIC_DRAW);
 
             var triangleBuffer = this._triangleBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, triangleBuffer);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, triangleData, gl.STATIC_DRAW);
+
+            
+            var vec3 = gm.vec3;
+            var direction = vec3.create();
+            var triangleData = tessellation.triangleArray();
+            
+
+            var triangleSorter = new Engine.TriangleSorter(uData, vData);
+
+//            var triangleU = tessellation.triangleU();
+//            var triangleV = tessellation.triangleV();
+            
+//            var expressions = this.surface().getAll();
+            
+ //           console.log(triangleData);
+            
+ //           var start = new Date();
+            //triangleSorter.sortTriangles(direction, expressions, parameters, triangleData);
+ //           var end = new Date();
+
+  //          console.log("Sorting triangles took " + (end-start) + "ms");
+
+
+            this.updateTriangleBuffer(triangleData)
 
             this._triangleCount = triangleData.length;
+        },
+
+
+        updateTriangleBuffer: function (triangleData) {
+            var start = new Date();
+            var gl = this.gl();
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, triangleData, gl.STATIC_DRAW);
+            var end = new Date();
+            
+            console.log("Updating buffer");
+            console.log(end - start);
         },
 
 
@@ -222,6 +165,7 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
          * Render.
          */
         render: function (camera) {
+
             var gl = this.gl();
             //            this.bindParameterBuffer();
             this.useProgram();
@@ -243,18 +187,15 @@ define(['quack', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/
 
 
             var scope = this;
-            var surface = this.surface();
+            var entity = this.entity();
 
             Object.keys(this._uniformLocations).forEach(function (s) {
-
                 var location = scope._uniformLocations[s];
-                var value = surface.flat(s).evaluated().value();
-                
+                var value = entity.flat(s).evaluated().value();
                 gl.uniform1f(location, value);
             });
 
             var location = this._mvpMatrixLocation;
-
             var e = new Float32Array(16);
 
             e = camera.matrix();

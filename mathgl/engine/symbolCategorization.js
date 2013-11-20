@@ -2,9 +2,8 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
     
     /**
      * Symbol Categorization.
-     * Some kalkyl symbols need to be passed to shaders (or calculated in shaders) in different ways, namely:
+     * Kalkyl symbols need to be passed to shaders (or calculated in shaders) in different ways, namely:
      *
-     (
      * uniform (if independent from parameters)
      * attribute (if used in vertex shader and is a parameter)
      * varying (if used in fragment shader and is a parameter)
@@ -33,8 +32,6 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
             
 
             var independents = this.independents(dependencyGraph, symbols, Object.keys(parameterSources));
-
-            console.log(independents);
 
             var vertexSymbols = dependencyGraph.orderedSubset(Object.keys(vertexSinks));
             var fragmentSymbols = dependencyGraph.orderedSubset(Object.keys(fragmentSinks));
@@ -89,9 +86,9 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
          * Return the subset of all symbols in expressionMap that are independent from parameters
          */
         independents: function (graph, symbols, parameters) {
-            console.log(graph);
-            console.log(symbols);
-            console.log(parameters);
+            //console.log(graph);
+            //console.log(symbols);
+            //console.log(parameters);
 
             var independents = {};
             Object.keys(symbols).forEach(function (symbol) {

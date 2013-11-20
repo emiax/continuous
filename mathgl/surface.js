@@ -16,6 +16,10 @@ define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, M
             this.appearance(spec.appearance || null);
         }, 
 
+
+        /**
+         * Get/set domain (map from symbols to arrays with two values, start and end)
+         */
         domain: function (domain) {
             if (domain !== undefined) {
                 if (Object.keys(domain).length === 2) {

@@ -1,6 +1,6 @@
 define([
 	'angular',
-	'filters',
+	// 'filters',
 	'services',
 	'directives',
 	'controllers',
@@ -11,7 +11,7 @@ define([
 		return angular.module('myApp', [
 			'ngRoute',
 			'myApp.controllers',
-			'myApp.filters',
+			// 'myApp.filters',
 			'myApp.services',
 			'myApp.directives'
 		]);

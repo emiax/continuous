@@ -27,8 +27,16 @@
   color: #f4f4f4;
   background: #222222;
   border-bottom: 1px solid #111111;
+  list-style: none;
 }
-
+#main-navbar>li {
+  margin-left: 1em;
+  float: left;
+}
+#main-navbar>li a {
+  text-decoration: none;
+  color: #f4f4f4;
+}
 #logo {
   font-family: "Pacifico";
   font-size: 1.5em;
@@ -43,10 +51,10 @@
 }
 
 #canvas-wrapper {
-  -webkit-box-flex: 3;
+/*  -webkit-box-flex: 3;
   -moz-box-flex: 3;
   -ms-box-flex: 3;
-  box-flex: 3;
+  box-flex: 3;*/
   height: 100%;
   overflow: hidden;
 }
@@ -83,4 +91,31 @@
   padding: 5px;
   min-height: 100px;
   background: #f4f4f4;
+}
+
+/**
+ * Kartotek layout
+ */
+.kartotek {
+
+}
+#kartotek-info-wrapper {
+  position: absolute;
+  padding: 10px;
+  min-width: 400px;
+  left: 50%;
+  top: 51px;
+  text-align: center;
+}
+#kartotek-title {
+  color: #f4f4f4;
+  position: relative;
+  width: 100%;
+  left: -50%;
+}
+#kartotek-expression {
+  color: #f4f4f4;
+  width: 100%;
+  position: absolute;
+  left: -50%;
 }

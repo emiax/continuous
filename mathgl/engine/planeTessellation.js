@@ -13,7 +13,7 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
                 this._vRes = res;
             } else {
                 this._uRes = res[0];
-                this._vRes = res[0];
+                this._vRes = res[1];
             }
             var uMin = this._uMin = uDomain[0];
             var uMax = this._uMax = uDomain[1];
@@ -42,8 +42,16 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             var uData = this._uData = new Float32Array(n*m);
             var vData = this._vData = new Float32Array(n*m);
 
-            var triangles = this._triangles = new Uint16Array(6*(n - 1)*(m - 1));
+            // Two triangles form a quad. There are (n - 1)(m - 1) quads.
+            var nTriangles = 2*(n - 1)*(m - 1);
 
+            //Indices to uData, vData
+            var triangleIndices = this._triangleIndices = new Uint16Array(nTriangles*3);
+
+            // x, y, z of the centroids of the triangles.
+            var triangleU = this._triangeleU = new Float32Array(nTriangles);
+            var triangleV = this._triangeleV = new Float32Array(nTriangles);
+            
             var uMin = this._uMin;
             var uMax = this._uMax;
             var vMin = this._vMin;
@@ -79,17 +87,27 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             uData[k] = uMax;
             vData[k] = vMax;
             
-            k = 0;
+            t = 0;
             for (i = 0; i < a; i++) {
                 for (j = 0; j < b; j++) {
-                    
-                    triangles[k++] = i*m + j;
-                    triangles[k++] = i*m + j + 1;
-                    triangles[k++] = (i + 1)*m + j;
+                    var indexA = i*m + j;
+                    var indexB = i*m + j + 1;
+                    var indexC = (i + 1)*m + j;
+                    var indexD = (i + 1)*m + j + 1;
+
+                    triangleIndices[t*3] = indexA; //i*m + j;
+                    triangleIndices[t*3 + 1] = indexB; //i*m + j + 1;
+                    triangleIndices[t*3 + 2] = indexC; //(i + 1)*m + j;
+                    triangleU[t] = (uData[indexA] + uData[indexB] + uData[indexC])/3;
+                    triangleV[t] = (vData[indexA] + vData[indexB] + vData[indexC])/3;
+                    t++;
                   
-                    triangles[k++] = (i + 1)*m + j;
-                    triangles[k++] = i*m + j + 1;
-                    triangles[k++] = (i + 1)*m + j + 1;
+                    triangleIndices[t*3] = indexC; //(i + 1)*m + j;
+                    triangleIndices[t*3 + 1] = indexB; //i*m + j + 1;
+                    triangleIndices[t*3 + 2] = indexD; //(i + 1)*m + j + 1;
+                    triangleU[t] = (uData[indexC] + uData[indexB] + uData[indexD])/3;
+                    triangleV[t] = (vData[indexC] + vData[indexB] + vData[indexD])/3;
+                    t++;
                 }
             }
             this._tessellated = true;
@@ -125,7 +143,29 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
             if (!this._tessellated) {
                 this.tessellate();
             }
-            return this._triangles;
+            return this._triangleIndices;
+        },
+
+        
+        /**
+         * Get u values for triangles
+         */
+        triangleUArray: function () {
+            if (!this._tessellated) {
+                this.tessellate();
+            }
+            return this._triangleU;
+        },
+
+
+        /**
+         * Get v values for triangles
+         */
+        triangleVArray: function () {
+            if (!this._tessellated) {
+                this.tessellate();
+            }
+            return this._triangleV;
         }
     });
     

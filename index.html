@@ -23,13 +23,6 @@
   <head>
     <title>Angular-RequireJS sample app</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- stylesheets -->
-    <!-- <link 
-      rel="stylesheet"
-      type="text/css"
-      media="all" 
-      href="bower_components/bootstrap/dist/css/bootstrap.min.css" /> -->
     <link
       rel="stylesheet"
       type="text/css"
@@ -38,17 +31,21 @@
     <!-- /stylesheets -->
   </head>
   <body>
-    <div id="main-navbar">
-      <div id="logo">
-        <p>continuous</p>
-      </div>
-    </div>
+    <ul id="main-navbar">
+      <li id="logo">
+        <a href="#">continuous</a>
+      </li>
+      <li>
+        <a href="#/visualization/paraboloid">Paraboloid</a>
+      </li>
+      <li>
+        <a href="#/visualization/torus_knot">Torus-knot</a>
+      </li>
+    </ul>
 
     <div ng-view resize ng-style="style()"></div>
 
     <script data-main="src/app/js/main" src="src/bower_components/requirejs/require.js"></script>
-
-    <!-- <script src="bower_components/jquery/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+    
   </body>
 </html>

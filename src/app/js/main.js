@@ -2,33 +2,18 @@ require.config({
 	paths: {
 
 		//angular
-		angular: '../../bower_components/angular/angular',
-		angularRoute: '../../bower_components/angular-route/angular-route',
-		angularMocks: '../../bower_components/angular-mocks/angular-mocks',
-		text: '../../bower_components/requirejs-text/text',
-		
-		graphics: '../../../app'
-
-		// //continuous
-		// 'quack':                 '../../core/lib/quack',
-  //       'jquery':                '../../core/lib/jquery-2.0.3.min',
-  //       'gl-matrix':             '../../core/lib/gl-matrix-min',
-        
-  //       'kalkyl':                '../../core/kalkyl/package',
-  //       'kalkyl/format':         '../../core/kalkyl/format/package',
-  //       'kalkyl/format/simple':  '../../core/kalkyl/format/simple/package',
-  //       'kalkyl/format/sage':    '../../core/kalkyl/format/sage/package',
-  //       'kalkyl/format/glsl':    '../../core/kalkyl/format/glsl/package',
-        
-  //       'communication':         '../../core/communication/package',
-  //       'communication/client':  '../../core/communication/client/package',
-        
-  //       'mathgl':                '../../core/mathgl/package',
-  //       'mathgl/engine':         '../../core/mathgl/engine/package',
-  //       'errors':                '../../core/errors/package'
+		angular: 'src/bower_components/angular/angular',
+        app: 'src/app/js/app',
+        routes: 'src/app/js/routes',
+        directives: 'src/app/js/directives',
+        controllers: 'src/app/js/controllers',
+        services: 'src/app/js/services',
+		angularRoute: 'src/bower_components/angular-route/angular-route',
+		angularMocks: 'src/bower_components/angular-mocks/angular-mocks',
+		text: 'src/bower_components/requirejs-text/text'
 	},
 
-	baseUrl: 'src/app/js',
+	baseUrl: '',
 	shim: {
 		'angular' : {'exports' : 'angular'},
 		'angularRoute': ['angular'],
@@ -42,7 +27,7 @@ require.config({
 	]
 });
 
-// hey Angular, we're bootstrapping manually!
+// bootstrap manually!
 window.name = "NG_DEFER_BOOTSTRAP!";
 
 require( [

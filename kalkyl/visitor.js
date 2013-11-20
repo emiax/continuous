@@ -2,31 +2,31 @@ define(['quack', './exports.js'], function(q, KL) {
     return KL.Visitor = q.createClass({
 
         visitExpression: function (expr) {
-            throw "abstract function call";
+            console.error("abstract function call");
         },
 
         visitFunction: function (expr) {
-            throw "abstract function call";
+            console.error("abstract function call");
         },
 
         visitNumber: function (expr) {
-            throw "abstract function call";
+            console.error("abstract function call");
         },
 
         visitUnaryOperator: function (expr) {
-            throw "abstract function call";
+            console.error("abstract function call");
         },
 
         visitBinaryOperator: function (expr) {
-            throw "abstract function call";
+            console.error("abstract function call");
         },
 
         visitVariable: function (expr) {
-            throw "abstract function call";
+            console.error("abstract function call");
         },
 
         visitMatrix: function (expr) {
-            throw "abstract function call";
+            console.error("abstract function call");
         },
 
         visitVector: function (expr) {

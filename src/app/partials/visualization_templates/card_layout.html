@@ -1,0 +1,37 @@
+<div id="canvas-wrapper">
+    <canvas id="canvas" 
+        resize
+        width={{getWindowDimensions().w}}
+        height={{getWindowDimensions().h}} >
+    </canvas>
+</div>
+
+<div id="card-bar" class="right">
+    <ul>
+
+        <!-- <select ng-model="selected_type" class="select-box">
+            <option selected="selected" disabled="disabled">Select surface</option>
+            <option ng-repeat="card in cards" value="{{card.surface_type}}">{{card.surface_type}}</option>
+        </select>
+        
+        | selected_visualization:selected_type -->
+
+        <!-- <li ng-repeat="card in cards" class="card">
+            <p>{{card.text}}</p>
+            <input ng-repeat="input in card.inputs"
+                type={{input.type}}
+                placeholder={{input.placeholder}}
+                ng-model="input.data"
+                ng-change="input.updates(input.data)">
+                
+            </input>
+        </li> -->
+        
+        <li class="card">
+            <p>This is the card layout</p>
+        </li>
+
+        <li class="card"><p>{{state.t}}</p></li>
+    </ul>
+
+</div>
