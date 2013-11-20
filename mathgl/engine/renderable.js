@@ -3,12 +3,9 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
         /**
           * Constructor.
           */
-        constructor: function (gl, scope) {
-            this._scope = scope;
+        constructor: function (gl, entity) {
+            this._entity = entity;
             this._gl = gl;
-            this._tBuffer = null;
-            this._angleBuffer = null;
-            this._uLocation = null;
             this._uniformLocations = null;
         },
 
@@ -25,7 +22,7 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
          * Return my entity in the scene.
          */
         entity: function () {
-            return this._scope;
+            return this._entity;
         },
 
 
@@ -48,6 +45,15 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
         
 
         /**
+         * Render if entity is visible.
+         */
+        renderIfVisible: function (camera) {
+            if (this.entity().chainVisible()) {
+                this.render(camera);
+            }
+        },
+
+        /**
          * Render.
          */
         render: new q.AbstractMethod(),
@@ -65,6 +71,18 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
         parameterSymbols: function () {
             var set = {};
             this.entity().parameters().forEach(function (s) {
+                set[s] = true;
+            });
+            return set;
+        },
+
+
+        /**
+         * PrimitiveSymbols. (set of symbols)
+         */
+        primitiveSymbols: function () {
+            var set = {};
+            Object.keys(this.entity().allPrimitives()).forEach(function (s) {
                 set[s] = true;
             });
             return set;
@@ -103,6 +121,7 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
                 this._symbolCategorization = new Engine.SymbolCategorization(this.vertexShaderSinks(),            
                                                                          this.fragmentShaderSinks(),
                                                                          this.parameterSymbols(),
+                                                                         this.primitiveSymbols(),
                                                                          this.expressions());
             } 
             return this._symbolCategorization;
@@ -113,7 +132,7 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
          * Return all expressions available in the entity.
          */
         expressions: function () {
-            return this.entity().getAll();
+            return this.entity().allExpressions();
         },
         
 
@@ -188,6 +207,8 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
             }
             return this._shaderProgram;
         },
+
+
 
         render: new q.AbstractMethod()
 

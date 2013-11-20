@@ -46,9 +46,15 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
 
             if (!vs.isCompiled()) {
                 vs.compile();
+                if (vs.isCompiled) {
+                    console.log("Compile error, vertex shader");
+                }
             }
             if (!fs.isCompiled()) {
                 fs.compile();
+                if (fs.isCompiled) {
+                    console.log("Compile error, fragment shader");
+                }
             }
             
             gl.attachShader(handle, vs.handle());

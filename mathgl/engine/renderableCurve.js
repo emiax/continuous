@@ -22,13 +22,8 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
                 s = attributes[0];
                 ref = dict.attributeName(s);
                 scope._uLocation = scope._shaderProgram.attributeLocation(ref);
-
-                s = attributes[1];
-                ref = 'theta';//dict.attributeName(s);
-                scope._vLocation = scope._shaderProgram.attributeLocation(ref);
-                console.log(scope._vLocation);
             } else {
-                console.log("should have excactly 1 attribs, got " + attributes.length);
+                console.log("should have excactly 1 attrib, got " + attributes.length);
             }
 
             var uniforms = cat.uniforms();
@@ -37,6 +32,13 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
                 ref = dict.uniformName(s);
                 scope._uniformLocations[s] = scope._shaderProgram.uniformLocation(ref);
             });
+
+            ref = 'theta';
+            scope._vLocation = scope._shaderProgram.attributeLocation(ref);
+
+            ref = 'thickness';
+            scope._thicknessLocation = scope._shaderProgram.uniformLocation(ref);
+            
 
             ref = dict.mvpMatrixName();
             this._mvpMatrixLocation = scope._shaderProgram.uniformLocation(ref)
@@ -84,7 +86,6 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             };
             
             var scope = this;
-            
             var tangentExpressions = this.tangentExpressions();
             Object.keys(tangentExpressions).forEach(function (s) {
                 if (!scope.expressions[s]) {
@@ -97,7 +98,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
 
 
         /**
-         * tangentExpressions
+         * TangentExpressions. 
          */
         tangentExpressions: function () {
             if (this._tangentExpressions === undefined) {
@@ -134,6 +135,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
                 this._symbolCategorization = new Engine.SymbolCategorization(this.vertexShaderSinks(),            
                                                                          this.fragmentShaderSinks(),
                                                                          this.parameterSymbols(),
+                                                                         this.primitiveSymbols(),
                                                                          this.expressions());
             } 
             return this._symbolCategorization;
@@ -146,7 +148,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
          */
         expressions: function () {
             var curve = this.entity();
-            var expressions = curve.getAll();
+            var expressions = curve.allExpressions();
             var tangentExpressions = this.tangentExpressions();
             
             Object.keys(tangentExpressions).forEach(function (s) {
@@ -170,8 +172,12 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var domain = curve.domain();
             var u = parameters[0];
             var uDomain = domain[u];
+            var stepSize = curve.stepSize()[u];
+            
+            console.log("stepSize:" + stepSize);
+            
 
-            var tessellation = new Engine.TubeTessellation(uDomain, 30);
+            var tessellation = new Engine.TubeTessellation(uDomain, stepSize);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
@@ -233,16 +239,17 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             Object.keys(this._uniformLocations).forEach(function (s) {
                 var location = scope._uniformLocations[s];
                 
-                var flat = entity.flat(s);
-                var value;
-                if (flat) {
-                    value = entity.flat(s).evaluated().value();
-                } else {
+                if (te[s]) {
                     value = te[s].value();
+                } else {
+                    value = entity.value(s);
                 }
 
                 gl.uniform1f(location, value);
             });
+
+            var thicknessLocation = this._thicknessLocation;
+            gl.uniform1f(thicknessLocation, this.entity().thickness());
 
             var location = this._mvpMatrixLocation;
 
@@ -252,7 +259,9 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             gl.uniformMatrix4fv(location, false, e);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
-            gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
+
+                gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
+            
             //todo!
 
         }

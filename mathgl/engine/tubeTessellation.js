@@ -7,10 +7,10 @@ define(['quack', 'mathgl/engine/exports.js', 'mathgl/engine/planeTessellation.js
          * Constructor.
          *
          * domain = [min, max]
-         * res = resolution
+         * Step size. the step size for the parameter.
          */
-        constructor: function (domain, res) {
-            PlaneTessellation.constructor.call(this, domain, [0, 2*Math.PI], [res, 1]);
+        constructor: function (domain, stepSize) {
+            PlaneTessellation.constructor.call(this, domain, [0, 2*Math.PI], [stepSize, 1]);
         },
     });
     

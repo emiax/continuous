@@ -36,6 +36,7 @@ define(['mathgl/engine/exports.js',
         'mathgl/engine/colorShadelet.js',
         'mathgl/engine/gradientShadelet.js',
         'mathgl/engine/checkerPatternShadelet.js',
+        'mathgl/engine/thresholdShadelet.js',
 
 
         // Utilities

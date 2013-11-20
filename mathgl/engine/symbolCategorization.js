@@ -22,8 +22,10 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
          *
          * 
          */
-        constructor: function (vertexSinks, fragmentSinks, parameterSources, expressionMap) {
+        constructor: function (vertexSinks, fragmentSinks, parameterSources, primitiveSources, expressionMap) {
             var dependencyGraph = new Kalkyl.DependencyGraph(expressionMap);
+
+            
 
             var symbols = {};
             Object.keys(expressionMap).forEach(function (s) {
@@ -32,6 +34,8 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
             
 
             var independents = this.independents(dependencyGraph, symbols, Object.keys(parameterSources));
+
+            console.log(independents);
 
             var vertexSymbols = dependencyGraph.orderedSubset(Object.keys(vertexSinks));
             var fragmentSymbols = dependencyGraph.orderedSubset(Object.keys(fragmentSinks));
@@ -42,23 +46,25 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
             var vertexDefinitions = this._vertexDefinitions = [];
             var fragmentDefintions = this._fragmentDefinitions = [];
             
+            // All symbols required to determine the values of the vertex sinks.
             vertexSymbols.forEach(function (s) {
                 if (parameterSources[s]) {
-                    attributes.push(s);
-                } else if (independents[s]) {
-                    uniforms[s] = true;
+                    attributes.push(s); // Parameters are sent in as attributes
+                } else if (independents[s] || primitiveSources[s]) {
+                    uniforms[s] = true; // Expressions that are not dependent on the parameters are sent in as uniforms
                 } else {
-                    vertexDefinitions.push(s);
+                    vertexDefinitions.push(s); // Expressions that depdend on attributes are calculated on the vertex shader
                 }
             });
 
+            // All symbols required to determine the values of the fragment sinks.
             fragmentSymbols.forEach(function (s) {
                 if (parameterSources[s]) {
-                    varyings.push(s);
-                } else if (independents[s]) {
-                    uniforms[s] = true;
+                    varyings.push(s); // Parameters are sent in as attributes
+                } else if (independents[s] || primitiveSources[s]) {
+                    uniforms[s] = true; // Expressions that are not dependent on the parameters are sent in as uniforms
                 } else {
-                    fragmentDefintions.push(s);
+                    fragmentDefintions.push(s); // Expressions that depend on varyings are calculated on the fragment shader
                }
             });
 
@@ -184,6 +190,25 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
          */
         fragmentDefinition: function (symbol) {
             return this._fragmentDefinitions.indexOf(symbol) !== -1;
+        },
+
+
+        dump: function () {
+            console.trace();
+            console.log("uniforms");
+            console.log(this.uniforms());
+
+            console.log("attributes");
+            console.log(this.attributes());
+
+            console.log("varyings");
+            console.log(this.varyings());
+
+            console.log("vertex definitions");
+            console.log(this.vertexDefinitions());
+
+            console.log("fragment definitions");
+            console.log(this.fragmentDefinitions());
         }
     });
 });

@@ -44,8 +44,6 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
                 glsl += 'varying float ' + dict.varyingName(s) + ";\n";
             });
             
-            glsl += 'uniform mat4 mvpMatrix;\n';
-            
             return glsl;
         },
         
@@ -59,6 +57,7 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
                 if (node instanceof MathGL.Color) return new Engine.ColorShadelet(scope, node);
                 if (node instanceof MathGL.Gradient) return new Engine.GradientShadelet(scope, node);
                 if (node instanceof MathGL.CheckerPattern) return new Engine.CheckerPatternShadelet(scope, node);
+                if (node instanceof MathGL.Threshold) return new Engine.ThresholdShadelet(scope, node);
             })();
             
             if (shadelet) {
@@ -112,6 +111,10 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
             } else {
                 glsl += "gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);\n"        
             }
+
+            glsl += 'if (gl_FragColor.a < 0.01) {\n';
+            glsl += 'discard;\n';
+            glsl += '}\n';
 
             glsl += "}\n"
             return glsl;

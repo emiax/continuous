@@ -105,7 +105,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var uDomain = domain[u];
             var vDomain = domain[v];
 
-            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 30);
+            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 0.01);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
@@ -167,7 +167,6 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
         render: function (camera) {
 
             var gl = this.gl();
-            //            this.bindParameterBuffer();
             this.useProgram();
 
             /*
@@ -177,6 +176,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
               gl.vertexAttribPointer(this._parameterLocations[s], 1, gl.FLOAT, false, 0, 0);
               });
             */
+
             gl.bindBuffer(gl.ARRAY_BUFFER, this._uBuffer);
             gl.enableVertexAttribArray(this._uLocation);
             gl.vertexAttribPointer(this._uLocation, 1, gl.FLOAT, false, 0, 0);
@@ -191,7 +191,13 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
 
             Object.keys(this._uniformLocations).forEach(function (s) {
                 var location = scope._uniformLocations[s];
-                var value = entity.flat(s).evaluated().value();
+//                var evaluated = entity.value(s);//flat(s).evaluated();
+/*                if (!evaluated.value) {
+                    console.log('could not evaluate ' + s);
+                    console.log('expr gave ' + entity.get(s).simpleFormat());
+                    console.log('flattened gave ' + entity.flat(s).simpleFormat());
+                }*/
+                var value = entity.value(s);
                 gl.uniform1f(location, value);
             });
 
