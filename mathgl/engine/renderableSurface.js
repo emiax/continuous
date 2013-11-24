@@ -105,7 +105,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var uDomain = domain[u];
             var vDomain = domain[v];
 
-            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 0.01);
+            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 0.1);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 

@@ -78,9 +78,8 @@ define([
             camera.primitive('x', Math.cos(2*Math.PI * t / 1000) + 0.01);
             camera.primitive('y', Math.sin(2*Math.PI * t / 1000) + 0.01);
             ++State.t;
-            angularScope.$apply();
+            // angularScope.$apply();
         }
-
 
         // surface appearance.
         var red = new MathGL.Color(0xffff0000);
@@ -88,44 +87,43 @@ define([
         var blue = new MathGL.Color(0xff0000ff);
 
         var gradient = new MathGL.Gradient({
-            parameter: 'z',
+            parameter: 's',
             blendMode: 'normal', 
             stops: {
-                '0.8': red,
-                '0': blue,
-                '-0.8': green
+                '0.5': red,
+                '0': blue
             }
         });
 
-        var darkOverlay = new MathGL.Color({
-            color: 0x55000000,
-            background: gradient
-        });
+        // var darkOverlay = new MathGL.Color({
+        //     color: 0x55000000,
+        //     background: gradient
+        // });
 
-        var checker = new MathGL.CheckerPattern({
-            parameters: {
-                v: 0.25,
-                u: 0.25
-            },
-            inputA: gradient,
-            inputB: darkOverlay
-        });
+        // var checker = new MathGL.CheckerPattern({
+        //     parameters: {
+        //         t: 0.25
+        //     },
+        //     inputA: gradient,
+        //     inputB: darkOverlay
+        // });
 
 
-        var surface = new MathGL.Surface({
+        var curve = new MathGL.Curve({
             domain: {
-                u: [-0.5, 0.5],
-                v: [-0.5, 0.5]
+                s: [0, 1]
             },
             expressions: {
-                x: 'u',
-                y: 'v',
-                z: 'x^2 + y^2',
+                x: 's',
+                y: 's',
+                z: 'sin(x)',
             },
-            appearance: checker
+            thickness: 0.2,
+            stepSize: 0.5,
+            appearance: gradient
         });
 
-        scope.add(surface);
+        scope.add(curve);
         space.add(scope);    
 
         view.space(space);

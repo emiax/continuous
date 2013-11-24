@@ -78,7 +78,7 @@ define([
             camera.primitive('x', Math.cos(2*Math.PI * t / 1000) + 0.01);
             camera.primitive('y', Math.sin(2*Math.PI * t / 1000) + 0.01);
             ++State.t;
-            angularScope.$apply();
+            // angularScope.$apply();
         }
 
 
@@ -104,8 +104,8 @@ define([
 
         var checker = new MathGL.CheckerPattern({
             parameters: {
-                v: 0.25,
-                u: 0.25
+                T: Math.PI / 2,
+                P: Math.PI / 2
             },
             inputA: gradient,
             inputB: darkOverlay
@@ -114,13 +114,16 @@ define([
 
         var surface = new MathGL.Surface({
             domain: {
-                u: [-0.5, 0.5],
-                v: [-0.5, 0.5]
+                T: [0, Math.PI],
+                P: [0, 2*Math.PI]
+            },
+            primitives: {
+                r: 0.5,
             },
             expressions: {
-                x: 'u',
-                y: 'v',
-                z: 'x^2 + y^2',
+                x: 'r*sin(T)*cos(P)',
+                y: 'r*sin(T)*sin(P)',
+                z: 'r*cos(T)',
             },
             appearance: checker
         });

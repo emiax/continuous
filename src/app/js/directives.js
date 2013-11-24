@@ -1,12 +1,7 @@
 define(['angular', 'services'], function(angular, services) {
 	'use strict';
 
-	angular.module('myApp.directives', ['myApp.services'])
-		.directive('appVersion', ['version', function(version) {
-			return function(scope, elm, attrs) {
-				elm.text(version);
-            };
-        }])
+	angular.module('continuous.directives', ['continuous.services'])
         .directive('resize', function($window) {
             return function (scope, element) {
                 var w = angular.element($window);
@@ -19,7 +14,7 @@ define(['angular', 'services'], function(angular, services) {
 
                     scope.style = function () {
                         return {
-                            'height': (newValue.h - 51) + 'px',
+                            'height': (newValue.h) + 'px',
                             'width': (newValue.w) + 'px'
                         };
                     };
@@ -29,7 +24,7 @@ define(['angular', 'services'], function(angular, services) {
                 w.bind('resize', function () {
                     scope.$apply();
                 });
-            }        
+            }
         })
         .directive('visualization', ['$compile', '$http', '$templateCache', 
             function($compile, $http, $templateCache) {
@@ -39,7 +34,7 @@ define(['angular', 'services'], function(angular, services) {
                     baseUrl = 'src/app/partials/visualization_templates/',
                     templateMap = {
                         card_layout:'card_layout.html',
-                        kartotek_layout: 'kartotek_layout.html',
+                        kartotek_layout: 'showroom_layout.html',
                         no_layout: 'no_layout.html'
                     };
 

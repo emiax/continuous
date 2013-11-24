@@ -1,27 +1,25 @@
 require.config({
+	baseUrl: '',
+
 	paths: {
 
-		//angular
 		angular: 'src/bower_components/angular/angular',
         app: 'src/app/js/app',
         routes: 'src/app/js/routes',
+        
         directives: 'src/app/js/directives',
         controllers: 'src/app/js/controllers',
         services: 'src/app/js/services',
-		angularRoute: 'src/bower_components/angular-route/angular-route',
-		angularMocks: 'src/bower_components/angular-mocks/angular-mocks',
-		text: 'src/bower_components/requirejs-text/text'
-	},
+        filters: 'src/app/js/filters',
 
-	baseUrl: '',
+		angularRoute: 'src/bower_components/angular-route/angular-route',
+	},
+	
 	shim: {
 		'angular' : {'exports' : 'angular'},
-		'angularRoute': ['angular'],
-		'angularMocks': {
-			deps:['angular'],
-			'exports':'angular.mock'
-		}
+		'angularRoute': ['angular']
 	},
+	
 	priority: [
 		"angular"
 	]

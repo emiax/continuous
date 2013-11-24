@@ -1,6 +1,6 @@
 define([
 	'angular',
-	// 'filters',
+	'filters',
 	'services',
 	'directives',
 	'controllers',
@@ -8,11 +8,11 @@ define([
 	], function (angular, filters, services, directives, controllers) {
 		'use strict';
 
-		return angular.module('myApp', [
+		return angular.module('continuous', [
 			'ngRoute',
-			'myApp.controllers',
-			// 'myApp.filters',
-			'myApp.services',
-			'myApp.directives'
+			'continuous.controllers',
+			'continuous.filters',
+			'continuous.services',
+			'continuous.directives'
 		]);
 });
