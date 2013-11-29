@@ -1,18 +1,19 @@
-define([
-	'angular',
-	'filters',
-	'services',
-	'directives',
-	'controllers',
-	'angularRoute',
-	], function (angular, filters, services, directives, controllers) {
-		'use strict';
+var continuousApp = angular.module(
+	'continuousApp', 
+	[
+		'ngRoute'
+	]
+);
 
-		return angular.module('continuous', [
-			'ngRoute',
-			'continuous.controllers',
-			'continuous.filters',
-			'continuous.services',
-			'continuous.directives'
-		]);
+continuousApp.config(function(
+	$routeProvider,
+	$controllerProvider,
+	$compileProvider){
+
+	continuousApp.controllerProvider = $controllerProvider;
+    continuousApp.compileProvider    = $compileProvider;
+    continuousApp.routeProvider      = $routeProvider;
+    // continuousApp.filterProvider     = $filterProvider;
+    // continuousApp.provide            = $provide;
+
 });

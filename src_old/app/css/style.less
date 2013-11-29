@@ -1,0 +1,34 @@
+@import url(http://fonts.googleapis.com/css?family=Pacifico);
+@color-midBlack: #333333;
+@color-cardBarBg: #282828;
+@color-navBg: #222222;
+@color-almostWhite: #f4f4f4;
+@color-almostBlack: #111111;
+
+/**
+ * Normalize
+ */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/**
+ * Helpers
+ */
+.right {
+  right: 0;
+}
+
+.flexbox {
+  display: flex;
+  flex-direction: column;
+}
+.subflexer {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+@import "visualization_style.less";
+@import "navbar_style.less";

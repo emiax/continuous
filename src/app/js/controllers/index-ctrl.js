@@ -1,6 +1,4 @@
-define([], function() {
-    return ['$scope', '$http', function($scope, $http) {
-        console.log("IndexCtrl loaded");
-
-    }];
+angular.module('continuousApp').controllerProvider.register(
+    'IndexCtrl', function ($scope) {
+    console.log("IndexCtrl loaded");
 });

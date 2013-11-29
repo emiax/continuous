@@ -29,21 +29,16 @@ define([
     'kalkyl',
     'kalkyl/format/simple',
     'mathgl',
-    'mathgl/engine',
-    'angular',
-    'jquery'], 
+    'mathgl/engine'], 
 
     function(
         require,
-        Kalkyl, SimpleFormat, MathGL, Engine, Angular, $) {
+        Kalkyl, SimpleFormat, MathGL, Engine) {
 
     var scene = function() {
         var State = require('./state');
 
         var view = new Engine.View(document.getElementById('canvas'));
-
-        //bläääsch
-        var angularScope = Angular.element($('#canvas')).scope();
 
         var space = new MathGL.Space();
         
@@ -78,7 +73,6 @@ define([
             camera.primitive('x', Math.cos(2*Math.PI * t / 1000) + 0.01);
             camera.primitive('y', Math.sin(2*Math.PI * t / 1000) + 0.01);
             ++State.t;
-            angularScope.$apply();
         }
 
 
