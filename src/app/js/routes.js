@@ -29,7 +29,8 @@ continuousApp.config(function($routeProvider){
             var dependencies = [
                 'src/app/js/controllers/visualization-ctrl.js',
                 'src/app/js/directives/visualization-dir.js',
-                'src/app/js/directives/resize-dir.js'
+                'src/app/js/directives/resize-dir.js',
+                'src/app/js/directives/subscribe-dir.js'
             ];
  
             require(dependencies, function () {

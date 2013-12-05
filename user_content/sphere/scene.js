@@ -67,12 +67,21 @@ define([
 
         scope.add(camera);
 
-        var t;
+        var t = 0
+        var a, aString;
         function update() {
-            t = State.t;
             camera.primitive('x', Math.cos(2*Math.PI * t / 1000) + 0.01);
             camera.primitive('y', Math.sin(2*Math.PI * t / 1000) + 0.01);
-            ++State.t;
+
+            a = Math.abs(Math.sin(t/200));
+            aString = Math.round( a * 10 ) / 10;
+
+            State.set( 'theta', '[ 0, ' + (aString).toFixed(1) + 'π ]' );
+            State.set( 'phi', '[ 0, ' + (aString*2).toFixed(1) + 'π ]');
+
+            surface.primitive( 'a', a );
+
+            ++t;
         }
 
 
@@ -98,8 +107,8 @@ define([
 
         var checker = new MathGL.CheckerPattern({
             parameters: {
-                T: Math.PI / 2,
-                P: Math.PI / 2
+                b: Math.PI / 2,
+                c: Math.PI / 2
             },
             inputA: gradient,
             inputB: darkOverlay
@@ -113,11 +122,14 @@ define([
             },
             primitives: {
                 r: 0.5,
+                a: 1
             },
             expressions: {
-                x: 'r*sin(T)*cos(P)',
-                y: 'r*sin(T)*sin(P)',
-                z: 'r*cos(T)',
+                b: 'T*a',
+                c: 'P*a',
+                x: 'r*sin(b)*cos(c)',
+                y: 'r*sin(b)*sin(c)',
+                z: 'r*cos(b)',
             },
             appearance: checker
         });
@@ -127,6 +139,14 @@ define([
 
         view.space(space);
         view.camera(camera);
+
+        var updateDimensions = function (key) {
+            if(key == 'canvasDim') {
+                console.log("Scene detected canvas dimensions update");
+            }
+        }
+
+        State.subscribe(updateDimensions);
 
         view.startRendering(update, stats);
 

@@ -2,7 +2,7 @@ angular.module('continuousApp').compileProvider.directive(
     'visualization', ['$compile', '$http', '$templateCache', 
     function($compile, $http, $templateCache) {
 
-        var getTemplate = function(layout) {
+        var getTemplate = function (layout) {
             var templateLoader,
             baseUrl = 'src/app/partials/visualization_templates/',
             templateMap = {
@@ -17,7 +17,7 @@ angular.module('continuousApp').compileProvider.directive(
             return templateLoader;
         }
 
-        var linker = function(scope, element, attrs) {
+        var linker = function (scope, element, attrs) {
             if(scope.gui.layout === undefined) {
                 console.log("Layout :: No layout specified, fetching canvas only");
                 var loader = getTemplate("no_layout");

@@ -2,37 +2,20 @@
     <canvas id="canvas" 
         resize
         width={{getWindowDimensions().w}}
-        height={{getWindowDimensions().h}} >
-    <!-- <canvas id="canvas">
-    </canvas> -->
+        height={{getWindowDimensions().h}}
+        publish={{publishDimensions()}}>
+    </canvas>
 </div>
 
 <div id="card-bar" class="right">
     <ul>
-
-        <!-- <select ng-model="selected_type" class="select-box">
-            <option selected="selected" disabled="disabled">Select surface</option>
-            <option ng-repeat="card in cards" value="{{card.surface_type}}">{{card.surface_type}}</option>
-        </select>
-        
-        | selected_visualization:selected_type -->
-
-        <!-- <li ng-repeat="card in cards" class="card">
-            <p>{{card.text}}</p>
-            <input ng-repeat="input in card.inputs"
-                type={{input.type}}
-                placeholder={{input.placeholder}}
-                ng-model="input.data"
-                ng-change="input.updates(input.data)">
-                
-            </input>
-        </li> -->
-        
         <li class="card">
             <p>Here's my card</p>
         </li>
 
-        <li class="card"><p>{{state.t}}</p></li>
+        <li class="card" subscribe="state">
+            <p>theta: {{publisher.theta}}</p>
+            <p>phi: {{publisher.phi}}</p>
+        </li>
     </ul>
-
 </div>

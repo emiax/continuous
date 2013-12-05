@@ -18,11 +18,10 @@ function ($scope, $http, $routeParams) {
         $scope.state = bootstrapper.state;
         $scope.guis = [bootstrapper.gui]; //is this an angular bug?
 
-        $scope.$apply();
+        $scope.$digest();
 
         require(['user_content/' + $routeParams.visualizationId +'/scene.js'], function(trigger) {
             trigger();
-            $scope.$apply();
         });
     });
 }]);
