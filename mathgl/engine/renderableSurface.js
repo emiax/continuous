@@ -1,5 +1,13 @@
-define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/renderable.js'], function(q, gm, Kalkyl, MathGL, Engine, Renderable) {
-    return Engine.RenderableSurface = q.createClass(Renderable, {
+define(function (require) {
+
+    var q = require('quack');
+    var gm = require('gl-matrix');
+    var Kalkyl = require('kalkyl');
+    var MathGL = require('mathgl');
+    var Renderable = require('./renderable');
+    var exports = require('./exports');
+
+    return exports.RenderableSurface = q.createClass(Renderable, {
         /**
          * Initialize.
          */
@@ -11,7 +19,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             this._shaderProgram.link();
 
             var cat = this.symbolCategorization();
-            var dict = new Engine.ShaderSymbolDictionary();
+            var dict = new exports.ShaderSymbolDictionary();
 
             var attributes = cat.attributes();
 
@@ -58,7 +66,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
 
         entityShaderStrategy: function () {
             if (this._entitiyShaderStrategy === undefined) {
-                this._entityShaderStrategy = new Engine.SurfaceShaderStrategy();
+                this._entityShaderStrategy = new exports.SurfaceShaderStrategy();
             }
             return this._entityShaderStrategy;
         },
@@ -105,7 +113,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var uDomain = domain[u];
             var vDomain = domain[v];
 
-            var tessellation = new Engine.PlaneTessellation(uDomain, vDomain, 0.01);
+            var tessellation = new exports.PlaneTessellation(uDomain, vDomain, 0.01);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
@@ -127,7 +135,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var triangleData = tessellation.triangleArray();
             
 
-            var triangleSorter = new Engine.TriangleSorter(uData, vData);
+            var triangleSorter = new exports.TriangleSorter(uData, vData);
 
 //            var triangleU = tessellation.triangleU();
 //            var triangleV = tessellation.triangleV();
@@ -164,7 +172,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
         /**
          * Render.
          */
-        render: function (camera) {
+        render: function (renderer) {
 
             var gl = this.gl();
             this.useProgram();
@@ -204,7 +212,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var location = this._mvpMatrixLocation;
             var e = new Float32Array(16);
 
-            e = camera.matrix();
+            e = renderer.matrix();
             gl.uniformMatrix4fv(location, false, e);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);

@@ -1,5 +1,10 @@
-define(['quack', 'mathgl/engine/entityShaderStrategy.js', 'mathgl/engine/exports.js'], function (q, EntityShaderStrategy, Engine) {
-    return Engine.CurveShaderStrategy = q.createClass(EntityShaderStrategy, {
+define(function (require) {
+
+    var q = require('quack');
+    var EntityShaderStrategy = require('./entityShaderStrategy');
+    var exports = require('./exports');
+
+    return exports.CurveShaderStrategy = q.createClass(EntityShaderStrategy, {
         /**
          * Constructor
          */
@@ -40,9 +45,10 @@ define(['quack', 'mathgl/engine/entityShaderStrategy.js', 'mathgl/engine/exports
 
             var glsl = "";
             glsl += "vec3 tangent = vec3(" + dxdt + ", " + dydt + ", " + dzdt + ");\n";
-            glsl += "vec3 nonParallel = vec3(" + dzdt + ", " + dxdt + ", -" + dydt + ");\n";
+            glsl += "vec3 u = normalize(vec3(" + dydt + " + " + dzdt + ", -" + dxdt + " + " + dzdt + ", -" + dxdt + " - " + dydt + "));\n";
+//            glsl += "vec3 nonParallel = vec3(" + dzdt + ", " + dxdt + ", -" + dydt + ");\n";
             
-            glsl += "vec3 u = normalize(cross(tangent, nonParallel));\n";
+//            glsl += "vec3 u = normalize(cross(tangent, nonParallel));\n";
             glsl += "vec3 v = normalize(cross(tangent, u));\n";
             
             glsl += "vec3 displacement = thickness*(cos(theta)*u + sin(theta)*v);\n";

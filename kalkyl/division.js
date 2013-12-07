@@ -1,11 +1,15 @@
-define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryOperator) {
-    return KL.Division = q.createClass(BinaryOperator, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var BinaryOperator = require('./binaryOperator');
+
+    return exports.Division = q.createClass(BinaryOperator, {
         /**
          * Constructor.
          */
         constructor: function (left, right) {
-            this.left(KL.Number.boxNumber(left));
-            this.right(KL.Number.boxNumber(right));
+            this.left(exports.Number.boxNumber(left));
+            this.right(exports.Number.boxNumber(right));
             if (!this.dim()) {
                 console.error("Can only divide by scalars");
             }
@@ -26,7 +30,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
             var type = this.type();
 
             if (type === 'ss') {
-                return new KL.Number(left.value() / right.value());
+                return new exports.Number(left.value() / right.value());
             } else if (type === 'Ms') {
                 return this.evaluateMatrixAndScalar(left, right, map);
             } else {
@@ -38,7 +42,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
         evaluateMatrixAndScalar: function (matrix, scalar, map) {
             var output = matrix.toMatrixNM();
             output.forEachElement(function (v, k) {
-                var div = new KL.Division(v, scalar);
+                var div = new exports.Division(v, scalar);
                 output.element(k, div.evaluated(map));
             });
             return output.toSpecificDim();
@@ -74,7 +78,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
             var type = this.type();
 
             if (type === 'ss') {
-                return new KL.Vector2(1, 1);
+                return new exports.Vector2(1, 1);
             } else if (type === 'Ms') {
                 return this.left().dim();
             } else {

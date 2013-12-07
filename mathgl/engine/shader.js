@@ -1,5 +1,9 @@
-define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
-    return Engine.Shader = q.createAbstractClass({
+define(function (require) {
+
+    var q = require('quack');
+    var exports = require('./exports');
+
+    return exports.Shader = q.createAbstractClass({
         /**
          * Constructor.
          */
@@ -79,6 +83,5 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
                 return false;
             }
         }
-
     });
 });

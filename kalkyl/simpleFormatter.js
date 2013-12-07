@@ -1,5 +1,10 @@
-define(['quack', './exports.js', './visitor.js', './expression.js'], function(q, KL, Visitor, Expression) {
-    KL.SimpleFormatter = q.createClass(Visitor, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Visitor = require('./visitor');
+    var Expression = require('./expression');
+
+    exports.SimpleFormatter = q.createClass(Visitor, {
         /**
          * Get String.
          */
@@ -208,16 +213,15 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         }
     });
 
-
     q.patch(Expression, {
         simpleFormat: function(formatter) {
             if (!formatter) {
-                formatter = new KL.SimpleFormatter();
+                formatter = new exports.SimpleFormatter();
             }
             return formatter.format(this);
         }
     });
     
-    return KL.SimpleFormatter;
+    return exports.SimpleFormatter;
 });
     

@@ -1,9 +1,14 @@
-define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'mathgl/engine/exports.js'], function(q, GLSL, ShaderFormatter, Engine) {
-    
+define(function (require) {
+
+    var q = require('quack');
+    var GLSL = require('kalkyl/format/glsl');
+    var ShaderFormatter = require('./shaderFormatter');
+    var exports = require('./exports');
+
     /**
      * Vertex shader formatter
      */
-    return Engine.VertexShaderFormatter = q.createAbstractClass(ShaderFormatter, {
+    return exports.VertexShaderFormatter = q.createAbstractClass(ShaderFormatter, {
         /**
          * Return glsl code for variable declarations outside main function.
          */
@@ -85,7 +90,9 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
          * Format shader.
          */        
         format: function () {
-            var glsl = "precision mediump float;\n"; 
+            var glsl = '#ifdef GL_ES\n';
+            glsl += 'precision mediump float;\n'
+            glsl += '#endif\n';
             glsl += this.declarations();
             glsl += this.mainFunction();
             return glsl;

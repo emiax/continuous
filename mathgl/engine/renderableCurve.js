@@ -1,17 +1,24 @@
-define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'mathgl/engine/renderable.js'], function(q, gm, Kalkyl, MathGL, Engine, Renderable) {
-    return Engine.RenderableCurve = q.createClass(Renderable, {
+define(function (require) {
+
+    var q = require('quack');
+    var gm = require('gl-matrix');
+    var Kalkyl = require('kalkyl');
+    var MathGL = require('mathgl');
+    var Renderable = require('./renderable');
+    var exports = require('./exports');
+
+    return exports.RenderableCurve = q.createClass(Renderable, {
         /**
          * Initialize.
          */
         initialize: function () {
-//            console.log("Initializing " + this.scope().id());
             this.initializeParameterBuffer();
 
             this._shaderProgram = this.generateShaderProgram();
             this._shaderProgram.link();
 
             var cat = this.symbolCategorization();
-            var dict = new Engine.ShaderSymbolDictionary();
+            var dict = new exports.ShaderSymbolDictionary();
 
             var attributes = cat.attributes();
 
@@ -102,7 +109,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
          */
         tangentExpressions: function () {
             if (this._tangentExpressions === undefined) {
-                this._tangentExpressions = this.entity().tangentExpressions();
+               this._tangentExpressions = this.entity().tangentExpressions();
           //      return this.entity().tangentExpressions();
             }
             return this._tangentExpressions;
@@ -118,7 +125,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
                 var parameters = this.entity().parameters();
                 var parameter = parameters[0];
                 if (parameter) {
-                    this._entityShaderStrategy = new Engine.CurveShaderStrategy(parameter);
+                    this._entityShaderStrategy = new exports.CurveShaderStrategy(parameter);
                 } else {
                     console.error("missing parameter");
                 }
@@ -130,16 +137,16 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
         /**
          * Symbol categorization.
          */
-        symbolCategorization: function () {
+/*        symbolCategorization: function () {
             if (this._symbolCategorization == undefined) {
-                this._symbolCategorization = new Engine.SymbolCategorization(this.vertexShaderSinks(),            
+                this._symbolCategorization = new exports.SymbolCategorization(this.vertexShaderSinks(),            
                                                                          this.fragmentShaderSinks(),
                                                                          this.parameterSymbols(),
                                                                          this.primitiveSymbols(),
                                                                          this.expressions());
             } 
             return this._symbolCategorization;
-        },
+        },*/
 
 
         /**
@@ -177,7 +184,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             console.log("stepSize:" + stepSize);
             
 
-            var tessellation = new Engine.TubeTessellation(uDomain, stepSize);
+            var tessellation = new exports.TubeTessellation(uDomain, stepSize);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
@@ -199,7 +206,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
             var triangleData = tessellation.triangleArray();
             
 
-            var triangleSorter = new Engine.TriangleSorter(uData, vData);
+            var triangleSorter = new exports.TriangleSorter(uData, vData);
 
             this.updateTriangleBuffer(triangleData)
 
@@ -210,7 +217,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
         /**
          * Render.
          */
-        render: function (camera) {
+        render: function (renderer) {
 
             var gl = this.gl();
             this.useProgram();
@@ -255,7 +262,7 @@ define(['quack', 'gl-matrix', 'kalkyl', 'mathgl', 'mathgl/engine/exports.js', 'm
 
             var e = new Float32Array(16);
 
-            e = camera.matrix();
+            e = renderer.matrix();
             gl.uniformMatrix4fv(location, false, e);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);

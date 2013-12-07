@@ -1,5 +1,8 @@
-define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
-    return Format.Lexer = q.createClass({
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    
+    return exports.Lexer = q.createClass({
         /**
          * Constructor. Create a lexer that is set up to tokenize str.
          */
@@ -49,7 +52,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
                     return this.next();
                 }
             } else {
-                return new Format.Token('end', '', this.cursor());
+                return new exports.Token('end', '', this.cursor());
             }
         },
 
@@ -69,7 +72,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
          * Generate lexer error. (meant for private use) 
          */
         generateError: function (type) {
-            this._errors.push(new Format.ParseError(type, this.cursor(), null));
+            this._errors.push(new exports.ParseError(type, this.cursor(), null));
         },
 
             
@@ -237,7 +240,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
                     var type = punctuators[s];
                     var extracted = scope.extract(s);
                     if (extracted) {
-                        token = new Format.Token(type, extracted, position);
+                        token = new exports.Token(type, extracted, position);
                     }
                 }
             });
@@ -262,7 +265,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
                     if (!match) return;
                     var after = scope._source.charAt(scope.cursor() + s.length);
                     if (match && !scope.isLetter(after)) {
-                        token = new Format.Token(type, scope.get(s.length), position);
+                        token = new exports.Token(type, scope.get(s.length), position);
                     }
                 }
             });
@@ -283,7 +286,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
             if (str === "") {
                 return null;
             } else {
-                return new Format.Token('name', str, position);
+                return new exports.Token('name', str, position);
             }
         },
 
@@ -315,7 +318,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
             if (str === "") {
                 return null;
             } else {
-                return new Format.Token('number', str, position);
+                return new exports.Token('number', str, position);
             }
         },
 
@@ -332,7 +335,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
             if (str === "") {
                 return null;
             } else {
-                return new Format.Token('whitespace', str, position);
+                return new exports.Token('whitespace', str, position);
             }
         },
 

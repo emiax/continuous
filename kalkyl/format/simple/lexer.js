@@ -1,5 +1,9 @@
-define(['quack', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], function(q, Format, Simple) {
-    return Simple.Lexer = q.createClass({
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Format = require('kalkyl/format');
+
+    return exports.Lexer = q.createClass({
         
         constructor: function (str) {
             this._tokenBuffer = [];

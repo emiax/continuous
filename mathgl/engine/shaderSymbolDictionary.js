@@ -1,4 +1,7 @@
-define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
+define(function (require) {
+
+    var q = require('quack');
+    var exports = require('./exports');
     
     /**
      * Shader Symbol Dictionary
@@ -6,7 +9,7 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
      * A mathematical symbol may get different names in different contexts in glsl code (x -> vs_x, or x -> fs_s) 
      */
 
-    return Engine.ShaderSymbolDictionary = q.createClass({
+    return exports.ShaderSymbolDictionary = q.createClass({
         /**
          * Constructor.
          */

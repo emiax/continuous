@@ -1,5 +1,10 @@
-define(['quack', './exports.js', './visitor.js', './expression.js'], function(q, KL, Visitor, Expression) {
-    KL.VariableLister = q.createClass(Visitor, {
+define(function (require) {
+    var q = require('quack');
+    var Visitor = require('./visitor');
+    var Expression = require('./expression');
+    var exports = require('./exports');
+
+    exports.VariableLister = q.createClass(Visitor, {
 
         listVariables: function (expr) {
             return Object.keys(this.variableSet(expr));
@@ -52,12 +57,12 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
         listVariables: function(lister) {
             if (!lister) {
-                lister = new KL.VariableLister();
+                lister = new exports.VariableLister();
             }
             return lister.listVariables(this);
         }
 
     });
 
-    return KL.Simplifier;
+    return exports.VariableLister;
 });

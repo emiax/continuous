@@ -1,5 +1,9 @@
-define(['quack', './exports.js', './trigonometricFunction.js'], function(q, KL, TrigonometricFunction) {
-    return KL.Sin = q.createClass(KL.TrigonometricFunction, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var TrigonometricFunction = require('./trigonometricFunction');
+
+    return exports.Sin = q.createClass(TrigonometricFunction, {
         /**
          * Return JavaScript function to use for evaluation
          */

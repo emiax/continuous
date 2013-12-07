@@ -1,5 +1,8 @@
-define(['quack', './exports.js'], function(q, KL) {
-    return KL.Visitor = q.createClass({
+define(function (require) {
+    var q = require('quack');
+    var exports = require('./exports');
+
+    return exports.Visitor = q.createClass({
 
         visitExpression: function (expr) {
             console.error("abstract function call");

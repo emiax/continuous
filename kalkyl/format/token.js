@@ -1,5 +1,8 @@
-define(['quack', './exports.js'], function(q, Format) {
-    return Format.Token = q.createClass({
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+
+    return exports.Token = q.createClass({
         /**
          * Constructor.
          */

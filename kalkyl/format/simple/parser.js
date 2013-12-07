@@ -1,5 +1,10 @@
-define(['quack', 'kalkyl', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], function(q, Kalkyl, Format, Simple) {
-    return Simple.Parser = q.createClass({
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Kalkyl = require('kalkyl');
+    var Format = require('kalkyl/format');
+
+    return exports.Parser = q.createClass({
         
         constructor: function () {
             this._parser = null;
@@ -11,6 +16,7 @@ define(['quack', 'kalkyl', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], 
          */
         parse: function (str) {
             // initialize the parser lazily!
+
             var parser = this.parser();
             var expression = null;
             parser.source(str);
@@ -108,7 +114,7 @@ define(['quack', 'kalkyl', 'kalkyl/format', 'kalkyl/format/simple/exports.js'], 
         parser: function () {
             if (!this._parser) {
                 var parser = this._parser = new Format.Parser();
-                parser.lexer(new Simple.Lexer());
+                parser.lexer(new exports.Lexer());
 
                 parser.rule('leftParen', new Format.ParseRule({
                     nud: function (parser, token) {

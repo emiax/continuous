@@ -1,5 +1,9 @@
-define(['quack', 'mathgl/exports.js'], function (q, MathGL) {
-    return MathGL.SpaceObserver = q.createInterface(
+define(function (require) {
+
+    var q = require('quack');
+    var exports = require('./exports');
+
+    return exports.SpaceObserver = q.createInterface(
         /**
          * Method to be invoked when the space is changed.
          * First parameter is a reference to the actual node.

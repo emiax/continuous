@@ -1,10 +1,14 @@
-define(['quack', './exports.js', './expression.js'], function (q, KL, Expression) {
-    return KL.Leaf = q.createAbstractClass(Expression, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Expression = require('./expression');
+
+    return q.createAbstractClass(Expression, {
         /**
          * Dimension
          */
         dim: function () {
-            return new KL.Vector2(1, 1);
+            return new exports.Vector2(1, 1);
         }
     });
 });

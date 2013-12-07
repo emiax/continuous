@@ -1,6 +1,10 @@
-define(['quack', 'mathgl/entity.js', 'mathgl/exports.js'], function(q, Entity, MathGL) {
+define(function (require) {
 
-    return MathGL.Surface = q.createClass(Entity, {
+    var q = require('quack');
+    var Entity = require('./entity');
+    var exports = require('./exports');
+
+    return exports.Surface = q.createClass(Entity, {
         /**
          * Constructor
          */

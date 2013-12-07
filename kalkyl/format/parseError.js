@@ -1,5 +1,8 @@
-define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
-    return Format.ParseError = q.createClass({
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+
+    return exports.ParseError = q.createClass({
         /**
          * Constructor.
          */

@@ -1,7 +1,6 @@
-define(['kalkyl/glmatrix/exports.js', 'kalkyl', 'gl-matrix'], function(exports, Kalkyl, gm) {
-    /**
-     * A set of functions to convert kalkyl matrices/vectors to glMatrix types.
-     */
+define(function (require) {
+    var exports = require('./exports');
+    var gm = require('gl-matrix');
 
     var vec2 = gm.vec2;
     var vec3 = gm.vec3;
@@ -11,6 +10,7 @@ define(['kalkyl/glmatrix/exports.js', 'kalkyl', 'gl-matrix'], function(exports, 
     var mat3 = gm.vec3;
     var mat4 = gm.vec4;
 
+    
     return exports.Converter = {
         vec2: function (expr) {
             var vec, x, y, primitive;
@@ -29,4 +29,13 @@ define(['kalkyl/glmatrix/exports.js', 'kalkyl', 'gl-matrix'], function(exports, 
             return null;
         }
     }
+
+
+});
+
+define(['kalkyl/glmatrix/exports.js', 'kalkyl', 'gl-matrix'], function(exports, Kalkyl, gm) {
+    /**
+     * A set of functions to convert kalkyl matrices/vectors to glMatrix types.
+     */
+
 });

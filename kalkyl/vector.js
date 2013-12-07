@@ -1,5 +1,9 @@
-define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
-    return KL.Vector = q.createAbstractClass(Matrix, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Matrix = require('./matrix');
+
+    return exports.Vector = q.createAbstractClass(Matrix, {
 
         toVectorN: new q.AbstractMethod(),
 

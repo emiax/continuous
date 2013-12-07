@@ -1,8 +1,13 @@
-define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], function(q, Kalkyl, SimpleFormat, MathGL) {
+define(function (require) {
+    
+    var q = require('quack');
+    var Kalkyl = require('kalkyl');
+    var SimpleFormat = require('kalkyl/format/simple');
+    var exports = require('./exports');
 
     var nextId = 1;
 
-    return MathGL.Scope = q.createClass({
+    return exports.Scope = q.createClass({
         /**
          * Constructor.
          *
@@ -15,7 +20,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
 
             /**
              * Map from symbol to either of the following
-             *   1) Scope where expression was defined (Some other MathGL.Scope)
+             *   1) Scope where expression was defined (Some other Scope)
              *   2) A Kalkyl Expression
              */
             this._expressions = {};
@@ -141,10 +146,12 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
          * Add child.
          */
         add: function (child) {
-            if (child instanceof MathGL.Scope) {
+            if (child instanceof exports.Scope) {
                 this._children[child._id] = child;
                 child._parent = this;
                 child.updateScope();
+                console.log("adding !");
+                console.log(child.id());
                 child.notifyObservers('add');
             } else {
                 throw "Type error. Child is not a scope";
@@ -241,7 +248,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
                 this._primitives[symbol] = value;
             }
 
-            if (this._primitives[symbol] instanceof MathGL.Scope) {
+            if (this._primitives[symbol] instanceof exports.Scope) {
                 return this._primitives[symbol]._primitives[symbol];
             } else {
                 return this._primitives[symbol];
@@ -324,7 +331,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
                 }
             }
 
-            if (this._expressions[symbol] instanceof MathGL.Scope) {
+            if (this._expressions[symbol] instanceof exports.Scope) {
                 return this._expressions[symbol]._expressions[symbol];
             } else {
                 return this._expressions[symbol];
@@ -392,7 +399,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
                   var scope = this;
                   Object.keys(this._expressions).forEach(function (symbol) {
                   var expr = scope._expressions[symbol];
-                  if (expr instanceof MathGL.Scope) {
+                  if (expr instanceof exports.Scope) {
                   expressions[symbol] = expr._expressions[symbol];
                   } else {
                   expressions[symbol] = expr;
@@ -496,7 +503,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
          */
         expressionScope: function (symbol) {
             var expressionOrScope = this._expressions[symbol];
-            if (expressionOrScope instanceof MathGL.Scope) {
+            if (expressionOrScope instanceof exports.Scope) {
                 return expressionOrScope;
             } else if (expressionOrScope !== undefined) {
                 return this;
@@ -511,7 +518,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
          */
         primitiveScope: function (symbol) {
             var primitiveOrScope = this._primitives[symbol];
-            if (primitiveOrScope instanceof MathGL.Scope) {
+            if (primitiveOrScope instanceof exports.Scope) {
                 return primitiveOrScope;
             } else if (primitiveOrScope !== undefined) {
                 return this;
@@ -549,8 +556,8 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             // Reinherit old primitive references from parent.
             // Remove primitive references that are undefined in parent scope.
             Object.keys(myPrimitives).forEach(function (symbol) {
-                if (myPrimitives[symbol] instanceof MathGL.Scope) {
-                    if (parentPrimitives[symbol] instanceof MathGL.Scope) {
+                if (myPrimitives[symbol] instanceof exports.Scope) {
+                    if (parentPrimitives[symbol] instanceof exports.Scope) {
                         myPrimitives[symbol] = parentPrimitives[symbol];
                     } else if (typeof parentPrimitives[symbol] === 'number') {
                         myPrimitives[symbol] = parent;
@@ -563,7 +570,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             // Inherit new primitive references from parent
             Object.keys(parentPrimitives).forEach(function (symbol) {
                 if (myPrimitives[symbol] === undefined) {
-                    if (parentPrimitives[symbol] instanceof MathGL.Scope) {
+                    if (parentPrimitives[symbol] instanceof exports.Scope) {
                         myPrimitives[symbol] = parentPrimitives[symbol];
                     } else {
                         myPrimitives[symbol] = parent;
@@ -585,8 +592,8 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             // Reinherit old expression references from parent.
             // Remove expression references that are undefined in parent scope.
             Object.keys(myExpressions).forEach(function (symbol) {
-                if (myExpressions[symbol] instanceof MathGL.Scope) {
-                    if (parentExpressions[symbol] instanceof MathGL.Scope) {
+                if (myExpressions[symbol] instanceof exports.Scope) {
+                    if (parentExpressions[symbol] instanceof exports.Scope) {
                         myExpressions[symbol] = parentExpressions[symbol];
                     } else if (parentExpressions[symbol] instanceof Kalkyl.Expression) {
                         myExpressions[symbol] = parent;
@@ -600,7 +607,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             // Ineherit new expression references from parent
             Object.keys(parentExpressions).forEach(function (symbol) {
                 if (myExpressions[symbol] === undefined) {
-                    if (parentExpressions[symbol] instanceof MathGL.Scope) {
+                    if (parentExpressions[symbol] instanceof exports.Scope) {
                         myExpressions[symbol] = parentExpressions[symbol];
                     } else {
                         myExpressions[symbol] = parent;
@@ -640,7 +647,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             var scope = this;
             Object.keys(this._expressions).forEach(function (symbol) {
                 var expr = scope._expressions[symbol];
-                if (expr instanceof MathGL.Scope) {
+                if (expr instanceof exports.Scope) {
                     expressions[symbol] = expr._expressions[symbol];
                 } else {
                     expressions[symbol] = expr;
@@ -659,7 +666,7 @@ define(['quack', 'kalkyl', 'kalkyl/format/simple', 'mathgl/exports.js'], functio
             var scope = this;
             Object.keys(this._primitives).forEach(function (symbol) {
                 var prim = scope._primitives[symbol];
-                if (prim instanceof MathGL.Scope) {
+                if (prim instanceof exports.Scope) {
                     primitives[symbol] = prim._primitives[symbol];
                 } else {
                     primitives[symbol] = prim;

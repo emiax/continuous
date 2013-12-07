@@ -1,11 +1,15 @@
-define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryOperator) {
-    return KL.Minus = q.createClass(BinaryOperator, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var BinaryOperator = require('./binaryOperator');
+
+    return exports.Minus = q.createClass(BinaryOperator, {
         /**
          * Constructor.
          */
         constructor: function (left, right) {
-            left = KL.Number.boxNumber(left);
-            right = KL.Number.boxNumber(right);
+            left = exports.Number.boxNumber(left);
+            right = exports.Number.boxNumber(right);
             this._dim = left.dim();
 
             if (this.dim().identicalTo(right.dim())) {
@@ -27,7 +31,7 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
             var right = this.right().evaluated(map);
 
             if (left.isEvaluated() && right.isEvaluated()) {
-                if (left instanceof KL.Matrix) {
+                if (left instanceof exports.Matrix) {
                     var first = left.toMatrixNM();
                     var second = right.toMatrixNM();
                     first.forEachArgument(function (v, k) {
@@ -35,16 +39,16 @@ define(['quack', './exports.js', './binaryOperator.js'], function(q, KL, BinaryO
                     });
                     return first.toSpecificDim();
                 } else {
-                    return new KL.Number(left.value() - right.value());
+                    return new exports.Number(left.value() - right.value());
                 }
             } else {
-                return new KL.Minus(left, right);
+                return new exports.Minus(left, right);
             }
         },
 
 
         /**
-         * Return this as a KL.Matrix with only scalar operators.
+         * Return this as a Matrix with only scalar operators.
          */
         expanded: function() {
             // todo

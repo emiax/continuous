@@ -1,11 +1,15 @@
-define(['quack', './exports.js', './expression.js'], function(q, Kalkyl, Expression) {
-    Kalkyl.Flattener = q.createClass({
+define(function (require) {
+    var q = require('quack');
+    var Expression = require('./expression');
+    var exports = require('./exports');
+
+    exports.Flattener = q.createClass({
 
         constructor: function (map) {
             var scope = this;
-            this._substitutor = new Kalkyl.Substitutor(map);
-            this._graph = new Kalkyl.DependencyGraph(map);
-            this._lister = new Kalkyl.VariableLister();
+            this._substitutor = new exports.Substitutor(map);
+            this._graph = new exports.DependencyGraph(map);
+            this._lister = new exports.VariableLister();
             this._map = map || {};
         },
 
@@ -22,7 +26,7 @@ define(['quack', './exports.js', './expression.js'], function(q, Kalkyl, Express
          *  => 3 + 3 + 4
          */
         flatten: function (expression) {
-            if (!(expression instanceof Kalkyl.Expression)) {
+            if (!(expression instanceof Expression)) {
                 console.error("cannot flatten expression, which is " + expression);
                 return;
             }
@@ -85,11 +89,11 @@ define(['quack', './exports.js', './expression.js'], function(q, Kalkyl, Express
 
         flattened: function (map) {
 
-            var flattener = new Kalkyl.Flattener(map);
+            var flattener = new exports.Flattener(map);
             return flattener.flatten(this);
         }
 
     });
 
-    return Kalkyl.Flattener;
+    return exports.Flattener;
 });

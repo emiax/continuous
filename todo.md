@@ -43,7 +43,9 @@ Simple parser
 
 3D Engine
 ---------
-    Allow for both primitives and Kalkyl trees as variables in MathGL.Scopes.
+
+    Animation API, create centralized render loop
+    Fix antialiasing in checker
     Find out when shaders need recompilation
     Remove stuff and Reset stuff.
     

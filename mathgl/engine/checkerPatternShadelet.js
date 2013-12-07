@@ -1,6 +1,10 @@
-define(['quack', 'mathgl/engine/shadelet.js', 'mathgl/engine/exports.js'], function (q, Shadelet, Engine) {
+define(function (require) {
 
-    return Engine.CheckerPatternShadelet = q.createClass(Shadelet, {
+    var q = require('quack');
+    var Shadelet = require('./shadelet');
+    var exports = require('./exports');
+
+    return exports.CheckerPatternShadelet = q.createClass(Shadelet, {
 
         format: function () {
             var glsl = "";
@@ -25,12 +29,19 @@ define(['quack', 'mathgl/engine/shadelet.js', 'mathgl/engine/exports.js'], funct
 
             Object.keys(parameters).forEach(function (parameter) {
                 var stepSize = parameters[parameter];
-                glsl += "+ floor(mod(" + scope.symbolName(parameter) + "/" + scope.formatFloat(stepSize) + ", 2.0))";
+                glsl += "+ floor(mod(" + scope.symbolName(parameter) + "*" + scope.formatFloat(1/stepSize) + ", 2.0))";
             });
 
             glsl += ", 2.0)));\n";
 
+
+
             glsl += this.nodeName(node) + " = " + scope.normalBlend('bg', 'color') + ";\n";
+//            glsl += this.nodeName(node) + " = vec4(dFdx(v_t), 1.0, 1.0, 1.0);\n";
+            glsl += '#ifdef GL_OES_standard_derivatives\n';
+            glsl += this.nodeName(node) + " = vec4(0.0, 0.0, 1.0, 1.0);\n";
+            glsl += '#endif\n';
+
             return glsl;
         },
     })

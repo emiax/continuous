@@ -1,5 +1,10 @@
-define(['quack', 'kalkyl/format/glsl/exports.js', 'kalkyl/visitor.js'], function(q, GLSL, Visitor) {
-    return GLSL.Formatter = q.createClass(Visitor, {
+define(function (require) {
+
+    var exports = require('./exports');
+    var q = require('quack');
+    var Visitor = require('kalkyl/visitor');
+
+    return exports.Formatter = q.createClass(Visitor, {
         /**
          * Get String.
          */

@@ -1,5 +1,14 @@
-define(['quack', 'kalkyl', 'mathgl', 'kalkyl/format/javascript', 'mathgl/engine/exports.js', 'mathgl/engine/renderable.js'], function(q, Kalkyl, MathGL, JavascriptFormat, Engine, Renderable) {
-    return Engine.TriangleSorter = q.createClass({
+define(function (require) {
+
+    var q = require('quack');
+    var Kalkyl = require('kalkyl');
+    var MathGL = require('mathgl');
+//    var JavaScriptFormat = require('kalkyl/format/javascript');
+    var Renderable = require('./renderable');
+    
+    var exports = require('./exports');
+
+    return exports.TriangleSorter = q.createClass({
         /**
          * Constructor
          * uValues: a Float32Array containing u values of centroids

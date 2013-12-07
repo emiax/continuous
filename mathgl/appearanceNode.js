@@ -1,8 +1,11 @@
-define(['quack', 'mathgl/exports.js'], function(q, MathGL) {
+define(function (require) {
+
+    var q = require('quack');
+    var exports = require('./exports');
 
     var nextId = 1;
     
-    return MathGL.AppearanceNode = q.createAbstractClass({
+    return exports.AppearanceNode = q.createAbstractClass({
         /**
          * Constructor.
          */

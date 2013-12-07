@@ -1,5 +1,9 @@
-define(['quack', 'mathgl/exports.js'], function (q, Engine) {
-    return Engine.EntityShaderStrategy = q.createAbstractClass({
+define(function (require) {
+
+    var q = require('quack');
+    var exports = require('./exports');
+
+    return exports.EntityShaderStrategy = q.createAbstractClass({
         /**
          * Return glsl code for uniform declarations
          */

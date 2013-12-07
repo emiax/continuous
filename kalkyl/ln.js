@@ -1,5 +1,9 @@
-define(['quack', 'kalkyl/exports.js', 'kalkyl/unaryOperator.js'], function(q, KL, UnaryOperator) {
-    return KL.Ln = q.createClass(UnaryOperator, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var UnaryOperator = require('./unaryOperator');
+
+    return exports.Ln = q.createClass(UnaryOperator, {
         /**
          * Return JavaScript function to use for evaluation
          */
@@ -17,7 +21,7 @@ define(['quack', 'kalkyl/exports.js', 'kalkyl/unaryOperator.js'], function(q, KL
             var arg = this.arg().evaluated(map);
 
             if (arg.isEvaluated()) {
-                if (arg instanceof KL.Matrix) {
+                if (arg instanceof exports.Matrix) {
                     var m = arg.toMatrixNM();
                     m.forEachArgument(function (v, k) {
                             m.element(k, Math.cos(v));
@@ -25,7 +29,7 @@ define(['quack', 'kalkyl/exports.js', 'kalkyl/unaryOperator.js'], function(q, KL
                     return m.toSpecificDim();
                 } else {
                     var f = this.javaScriptFunction();
-                    return new KL.Number(f(arg.value()));
+                    return new exports.Number(f(arg.value()));
                 }
             } else {
                 return this.clone();

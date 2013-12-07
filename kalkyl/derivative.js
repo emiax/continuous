@@ -1,6 +1,9 @@
-define(['quack', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOperator) {
-    
-    return KL.Derivative = q.createClass(UnaryOperator, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var UnaryOperator = require('./unaryOperator');
+
+    return exports.Derivative = q.createClass(UnaryOperator, {
         
         /**
          * Constructor.

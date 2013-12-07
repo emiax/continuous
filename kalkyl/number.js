@@ -1,10 +1,14 @@
-define(['quack', 'kalkyl/exports.js', 'kalkyl/leaf.js'], function(q, KL, Leaf) {
-    return KL.Number = q.createClass(KL.Leaf, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Leaf = require('./leaf');
+
+    return exports.Number = q.createClass(Leaf, {
         /**
          * Constructor.
          */
         constructor: function (value) {
-            if (value instanceof KL.Number) {
+            if (value instanceof exports.Number) {
                 value = value.value();
             }
             this.value(value);
@@ -65,7 +69,7 @@ define(['quack', 'kalkyl/exports.js', 'kalkyl/leaf.js'], function(q, KL, Leaf) {
          * Clone
          */
         clone: function () {
-            return new KL.Number(this);
+            return new exports.Number(this);
         },
 
         
@@ -74,10 +78,12 @@ define(['quack', 'kalkyl/exports.js', 'kalkyl/leaf.js'], function(q, KL, Leaf) {
          */
         boxNumber: function (v) {
             if (typeof v === 'number') {
-                return new KL.Number(v);
+                return new exports.Number(v);
             } else {
                 return v;
             }
         }
     });
+
+    return Number;
 });

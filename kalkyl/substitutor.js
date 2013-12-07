@@ -1,5 +1,10 @@
-define(['quack', './exports.js', './visitor.js', './expression.js'], function(q, Kalkyl, Visitor, Expression) {
-    Kalkyl.Substitutor = q.createClass(Visitor, {
+define(function (require) {
+    var q = require('quack');
+    var Visitor = require('./visitor');
+    var Expression = require('./expression');
+    var exports = require('./exports');
+    
+    exports.Substitutor = q.createClass(Visitor, {
 
         constructor: function (map) {
             this.map(map);
@@ -12,10 +17,10 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
                 Object.keys(map).forEach(function (s) {
                     var v = map[s];
                     if (typeof v === 'number') {
-                        scope._substitutes[s] = Kalkyl.Number.boxNumber(v);
+                        scope._substitutes[s] = exports.Number.boxNumber(v);
                     } else if (typeof v === 'string') {
-                        scope._substitutes[s] = Kalkyl.Variable.boxVariable(v);
-                    } else if (v instanceof Kalkyl.Expression) {
+                        scope._substitutes[s] = exports.Variable.boxVariable(v);
+                    } else if (v instanceof exports.Expression) {
                         scope._substitutes[s] = v;
                     }
                 });
@@ -34,7 +39,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         },
         
         getSubstitute: function (s) {
-            if (s instanceof Kalkyl.Variable) {
+            if (s instanceof exports.Variable) {
                 s = s.symbol();
             }
             return this._substitutes[s];
@@ -95,10 +100,10 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
     function substitutor(substitutorOrMap) {
         var substitutor = null;
-        if (substitutorOrMap instanceof Kalkyl.Substitutor) {
+        if (substitutorOrMap instanceof exports.Substitutor) {
             substitutor = substitutorOrMap;
         } else {
-            substitutor = new Kalkyl.Substitutor(substitutorOrMap);
+            substitutor = new exports.Substitutor(substitutorOrMap);
         }
         return substitutor;
     }
@@ -111,5 +116,5 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
     });
 
-    return Kalkyl.Substitutor;
+    return exports.Substitutor;
 });

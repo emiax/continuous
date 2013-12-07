@@ -1,7 +1,13 @@
-define(['quack', 'mathgl/engine/shadelet.js', 'mathgl/engine/exports.js'], function (q, Shadelet, Engine) {
+define(function (require) {
 
-    return Engine.ThresholdShadelet = q.createClass(Shadelet, {
-        
+    var q = require('quack');
+    var Shadelet = require('./shadelet');
+    var exports = require('./exports');
+
+    return exports.ThresholdShadelet = q.createClass(Shadelet, {
+        /**
+         * Format
+         */
         format: function () {
             var glsl = "";
 
@@ -29,7 +35,6 @@ define(['quack', 'mathgl/engine/shadelet.js', 'mathgl/engine/exports.js'], funct
             } else {
                 glsl += "vec4 above = vec4(0.0, 0.0, 0.0, 0.0);\n";
             }
-
 
             glsl += this.nodeName() + " = mix(below, above, step(" + value + ", " + parameter + "));\n";
                     

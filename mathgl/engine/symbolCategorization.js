@@ -1,4 +1,8 @@
-define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engine) {
+define(function (require) {
+
+    var q = require('quack');
+    var Kalkyl = require('kalkyl');
+    var exports = require('./exports');
     
     /**
      * Symbol Categorization.
@@ -12,7 +16,7 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
      *
      * A symbol categorization should be considered immutable.
      */
-    return Engine.SymbolCategorization = q.createClass({
+    return exports.SymbolCategorization = q.createClass({
         /**
          * Constructor.
          * vertexSinks: set of symbols required by the vertex shader to displace points.

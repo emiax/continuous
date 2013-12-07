@@ -1,11 +1,15 @@
-define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
-    return KL.Vector2 = q.createClass(Vector, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Vector = require('./vector');
+
+    return exports.Vector2 = q.createClass(Vector, {
         /**
          * Constructor.
          */
         constructor: function(x, y) {
-            this.x(KL.Number.boxNumber(x));
-            this.y(KL.Number.boxNumber(y));
+            this.x(exports.Number.boxNumber(x));
+            this.y(exports.Number.boxNumber(y));
         },
 
 
@@ -46,7 +50,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          * Get dimension of vector.
          */
         dim: function () {
-            return new KL.Vector2(2, 1);
+            return new exports.Vector2(2, 1);
         },
 
 
@@ -54,7 +58,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          * Evaluated.
          */
         evaluated: function(map) {
-            return new KL.Vector2(
+            return new exports.Vector2(
                 this.x().evaluated(map),
                 this.y().evaluated(map)
             );
@@ -70,8 +74,8 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
 
 
         forEachElement: function(f) {
-            f(this.x(), new KL.Vector2(0, 0));
-            f(this.y(), new KL.Vector2(1, 0));
+            f(this.x(), new exports.Vector2(0, 0));
+            f(this.y(), new exports.Vector2(1, 0));
         },
 
 
@@ -79,7 +83,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          * To vector with general length
          */
         toVectorN: function() {
-            return new KL.VectorN([this.x(), this.y()]);
+            return new exports.VectorN([this.x(), this.y()]);
         },
 
 
@@ -87,7 +91,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          * Transposed.
          */
         transposed: function() {
-            var m = KL.Matrix.createZeroMatrix(new KL.Vector2(1, 2));
+            var m = exports.Matrix.createZeroMatrix(new exports.Vector2(1, 2));
             m.element([0, 0], this.x());
             m.element([0, 1], this.y());
             return m;
@@ -118,10 +122,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          * Clone.
          */
         clone: function() {
-            return new KL.Vector2(this.x().clone(), this.y().clone());
+            return new exports.Vector2(this.x().clone(), this.y().clone());
         }
-
-
     });
-
 });

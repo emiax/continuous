@@ -1,5 +1,10 @@
-define(['quack', 'mathgl/engine/entityShaderStrategy.js', 'mathgl/engine/exports.js'], function (q, EntityShaderStrategy, Engine) {
-    return Engine.SurfaceShaderStrategy = q.createClass(EntityShaderStrategy, {
+define(function (require) {
+
+    var q = require('quack');
+    var EntityShaderStrategy = require('./entityShaderStrategy');
+    var exports = require('./exports');
+
+    return exports.SurfaceShaderStrategy = q.createClass(EntityShaderStrategy, {
         /**
          * Return the code nessesary to set space position
          * cat is a SymbolCategorization

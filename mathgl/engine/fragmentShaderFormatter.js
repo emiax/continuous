@@ -1,9 +1,16 @@
-define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'mathgl', 'mathgl/engine/exports.js'], function(q, GLSL, ShaderFormatter, MathGL, Engine) {
+define(function (require) {
+
+    var q = require('quack');
+    var GLSL = require('kalkyl/format/glsl');
+    var ShaderFormatter = require('./shaderFormatter');
+    var MathGL = require('mathgl');
+    var exports = require('./exports');
+
     
     /**
      * Fragment shader formatter.
      */
-    return Engine.FragmentShaderFormatter = q.createClass(ShaderFormatter, {
+    return exports.FragmentShaderFormatter = q.createClass(ShaderFormatter, {
         /**
          * Constructor.
          */
@@ -54,10 +61,10 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
         shadelet: function (node) {
             var scope = this;
             var shadelet = (function () {
-                if (node instanceof MathGL.Color) return new Engine.ColorShadelet(scope, node);
-                if (node instanceof MathGL.Gradient) return new Engine.GradientShadelet(scope, node);
-                if (node instanceof MathGL.CheckerPattern) return new Engine.CheckerPatternShadelet(scope, node);
-                if (node instanceof MathGL.Threshold) return new Engine.ThresholdShadelet(scope, node);
+                if (node instanceof MathGL.Color) return new exports.ColorShadelet(scope, node);
+                if (node instanceof MathGL.Gradient) return new exports.GradientShadelet(scope, node);
+                if (node instanceof MathGL.CheckerPattern) return new exports.CheckerPatternShadelet(scope, node);
+                if (node instanceof MathGL.Threshold) return new exports.ThresholdShadelet(scope, node);
             })();
             
             if (shadelet) {
@@ -125,7 +132,14 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/shaderFormatter.js', 'math
          * Format shader.
          */        
         format: function () {
-            var glsl = "precision mediump float;\n"; 
+            var glsl = '#ifdef GL_ES\n';
+            glsl += 'precision mediump float;\n'
+            glsl += '#endif\n';
+            //glsl += "#extension GL_OES_standard_derivatives:enable";
+//            glsl += '#ifdef GL_OES_standard_derivatives\n';
+            glsl += '#extension GL_OES_standard_derivatives : enable\n';
+//            glsl += '#endif\n';
+
             glsl += this.declarations();
             glsl += this.mainFunction();
             return glsl;

@@ -1,7 +1,9 @@
-define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
-    return KL.MatrixNM = q.createClass(Matrix, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Matrix = require('./matrix');
 
-
+    return exports.MatrixNM = q.createClass(Matrix, {
         /**
          * Constructor.
          */
@@ -9,7 +11,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
             var scope = this;
             this._rows = rows;
             this.forEachElement(function (v, k) {
-                scope.element(k, KL.Number.boxNumber(v));
+                scope.element(k, exports.Number.boxNumber(v));
             });
         },
 
@@ -20,7 +22,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
         element: function(index, value) {
             var row = index.x().value();
             var column = index.y().value();
-            value = KL.Number.boxNumber(value);
+            value = exports.Number.boxNumber(value);
 
             var dim = this.dim();
             if (row < dim.x().value() && row >= 0 && column < dim.y().value() && column >= 0) {
@@ -47,7 +49,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
                     return row[i];
                 }
             } else if (i >= 0 && i < nRows) {
-                var vector = new KL.VectorN(rows[i]);
+                var vector = new exports.VectorN(rows[i]);
                 if (vector.isScalar()) {
                     return vector.element(0);
                 } else {
@@ -66,7 +68,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
 
             var row = Math.floor(index / nColumns);
             var column = index % nColumns;
-            return this.element(new KL.Vector2(row, column), value);
+            return this.element(new exports.Vector2(row, column), value);
         },
 
 
@@ -74,7 +76,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
          * Dim.
          */
         dim: function () {
-            return new KL.Vector2(
+            return new exports.Vector2(
                 this._rows.length,
                 this._rows[0].length);
         },
@@ -90,7 +92,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
             });
 
             if (evaluated.isScalar()) {
-                return evaluated.element(new KL.Vector2(0, 0));
+                return evaluated.element(new exports.Vector2(0, 0));
             } else {
                 return evaluated;
             }
@@ -109,7 +111,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
                 this._rows.forEach(function (v) {
                     column.push(v[0]);
                 });
-                var vector = new KL.VectorN(column);
+                var vector = new exports.VectorN(column);
                 return vector.toSpecificDim();
             }
             if (clone) {
@@ -149,7 +151,7 @@ define(['quack', './exports.js', './matrix.js'], function(q, KL, Matrix) {
         forEachElement: function (f) {
             this._rows.forEach(function (row, r) {
                 row.forEach(function (v, c) {
-                    f(v, new KL.Vector2(r, c));
+                    f(v, new exports.Vector2(r, c));
                 });
             });
         },

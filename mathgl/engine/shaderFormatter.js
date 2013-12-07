@@ -1,9 +1,13 @@
-define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/exports.js'], function(q, GLSL, Engine) {
+define(function (require) {
+
+    var q = require('quack');
+    var GLSL = require('kalkyl/format/glsl');
+    var exports = require('./exports');
     
     /**
      * Shader Formatter Base Class
      */
-    return Engine.ShaderFormatter = q.createAbstractClass({
+    return exports.ShaderFormatter = q.createAbstractClass({
         /**
          * Constructor.
          */
@@ -30,7 +34,7 @@ define(['quack', 'kalkyl/format/glsl', 'mathgl/engine/exports.js'], function(q, 
          */
         shaderSymbolDictionary: function () {
             if (this._shaderSymbolDictionary === undefined) {
-                this._shaderSymbolDictionary = new Engine.ShaderSymbolDictionary();
+                this._shaderSymbolDictionary = new exports.ShaderSymbolDictionary();
             }
             return this._shaderSymbolDictionary;
         },

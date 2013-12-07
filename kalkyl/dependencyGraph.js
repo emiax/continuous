@@ -1,4 +1,6 @@
-define(['quack', './exports.js', './visitor.js', './expression.js'], function(q, Kalkyl, Expression) {
+define(function (require) {
+    var q = require('quack');
+    var exports = require('./exports');
 
     /**
      * Functionallity to create a DAG representing
@@ -7,7 +9,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
      * A sink is an expression that no other expression depends on.
      */
 
-    Kalkyl.DependencyGraph = q.createClass({
+    return exports.DependencyGraph = q.createClass({
         /**
          * Constructor.
          */
@@ -263,7 +265,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
          */
         lister: function () {
             if (!this._lister) {
-                this._lister = new Kalkyl.VariableLister();
+                this._lister = new exports.VariableLister();
             }
             return this._lister;
         },

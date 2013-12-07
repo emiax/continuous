@@ -1,11 +1,16 @@
-define(['quack', './exports.js', './expression.js', './innerNode.js'], function(q, KL, Expression, InnerNode) {
-    return KL.UnaryOperator = q.createAbstractClass(Expression, [InnerNode], {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Expression = require('./expression');
+    var InnerNode = require('./innerNode');
+    
+    return exports.UnaryOperator = q.createAbstractClass(Expression, [InnerNode], {
 
         /**
          * Constructor.
          */
         constructor: function (arg) {
-            arg = KL.Number.boxNumber(arg);
+            arg = exports.Number.boxNumber(arg);
             this.arg(arg);
         },
 

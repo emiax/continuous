@@ -1,10 +1,15 @@
-define(['quack', 'mathgl/appearanceNode.js', 'mathgl/exports.js'], function(q, AppearanceNode, MathGL) {
-    return MathGL.Fill = q.createAbstractClass(AppearanceNode, {
+define(function (require) {
+
+    var q = require('quack');
+    var AppearanceNode = require('./appearanceNode');
+    var exports = require('./exports');
+
+    return exports.Fill = q.createAbstractClass(AppearanceNode, {
         /**
          * Constructor.
          */
         constructor: function (spec) {
-            MathGL.AppearanceNode.constructor.call(this, spec);
+            exports.AppearanceNode.constructor.call(this, spec);
             
             spec = spec || {};
             var blendMode, background;

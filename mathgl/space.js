@@ -1,6 +1,10 @@
-define(['quack', 'mathgl/scope.js', 'mathgl/exports.js'], function(q, Scope, MathGL) {
+define(function (require) {
 
-    return MathGL.Space = q.createClass(Scope, {
+    var q = require('quack');
+    var Scope = require('./scope');
+    var exports = require('./exports');
+    
+    return exports.Space = q.createClass(Scope, {
         /**
          * Constructor
          */
@@ -54,7 +58,10 @@ define(['quack', 'mathgl/scope.js', 'mathgl/exports.js'], function(q, Scope, Mat
          * Notify observers.
          */
         notifyObservers: function (node, type, symbol) {
+            console.log("soace!");
+            console.log(this._observers);
 	    this._observers.forEach(function (o) {
+                console.log("obs");
                 o.update(node, type, symbol);
             });
         }

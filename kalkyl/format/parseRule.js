@@ -1,5 +1,8 @@
-define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
-    return Format.ParseRule = q.createClass({
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+
+    return exports.ParseRule = q.createClass({
         /**
          * Constructor.
          */
@@ -42,6 +45,5 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
             }
             return this._lbp;
         }
-
     });
 });

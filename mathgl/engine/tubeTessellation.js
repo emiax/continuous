@@ -1,8 +1,13 @@
-define(['quack', 'mathgl/engine/exports.js', 'mathgl/engine/planeTessellation.js'], function(q, Engine, PlaneTessellation) {
+define(function (require) {
+
+    var q = require('quack');
+    var PlaneTessellation = require('./planeTessellation');
+    var exports = require('./exports');
+
     /**
      * A tube tessellation is a plane tessellation with the second paramater always going form 0 to 2*pi
      */
-    return Engine.TubeTessellation = q.createClass(PlaneTessellation, {
+    return exports.TubeTessellation = q.createClass(PlaneTessellation, {
         /**
          * Constructor.
          *

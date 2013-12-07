@@ -1,10 +1,15 @@
-define(['quack', 'mathgl/fill.js', 'mathgl/exports.js'], function(q, Fill, MathGL) {
-    return MathGL.CheckerPattern = q.createClass(Fill, {
+define(function (require) {
+
+    var q = require('quack');
+    var Fill = require('./fill');
+    var exports = require('./exports');
+
+    return exports.CheckerPattern = q.createClass(Fill, {
         /**
          * Constructor.
          */
         constructor: function (spec) {
-            MathGL.Fill.constructor.call(this, spec);
+            Fill.constructor.call(this, spec);
             
             spec = spec || {};
 

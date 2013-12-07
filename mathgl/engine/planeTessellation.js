@@ -1,5 +1,9 @@
-define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
-    return Engine.PlaneTessellation = q.createClass({
+define(function (require) {
+
+    var q = require('quack');
+    var exports = require('./exports');
+
+    return exports.PlaneTessellation = q.createClass({
         /**
          * Constructor.
          *
@@ -127,6 +131,7 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
                 this.tessellate();
             }
             return this._uData;
+
         },
 
 

@@ -1,10 +1,15 @@
-define(['quack', 'mathgl/fill.js', 'mathgl/exports.js'], function(q, Fill, MathGL) {
-    return MathGL.Gradient = q.createClass(Fill, {
+define(function (require) {
+
+    var q = require('quack');
+    var Fill = require('./fill');
+    var exports = require('./exports');
+
+    return exports.Gradient = q.createClass(Fill, {
         /**
          * Constructor.
          */
         constructor: function (spec) {
-            MathGL.Fill.constructor.call(this, spec);
+            exports.Fill.constructor.call(this, spec);
             
             spec = spec || {};
             var parameter = spec.parameter;

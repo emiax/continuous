@@ -1,10 +1,15 @@
-define(['quack', 'mathgl/appearanceNode.js', 'mathgl/exports.js'], function(q, AppearanceNode, MathGL) {
-    return MathGL.Threshold = q.createClass(AppearanceNode, {
+define(function (require) {
+
+    var q = require('quack');
+    var AppearanceNode = require('./appearanceNode');
+    var exports = require('./exports');
+
+    return exports.Threshold = q.createClass(AppearanceNode, {
         /**
          * Constructor.
          */
         constructor: function (spec) {
-            MathGL.AppearanceNode.constructor.call(this, spec);
+            AppearanceNode.constructor.call(this, spec);
             
             spec = spec || {};
 

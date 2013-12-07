@@ -1,6 +1,10 @@
-define(['quack', 'mathgl/scope.js', 'mathgl/exports.js'], function(q, Scope, MathGL) {
+define(function (require) {
 
-    return MathGL.Entity = q.createAbstractClass(Scope, {
+    var q = require('quack');
+    var Scope = require('./scope');
+    var exports = require('./exports');
+
+    return exports.Entity = q.createAbstractClass(Scope, {
         /**
          * Get/Set appearance.
          */

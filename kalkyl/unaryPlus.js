@@ -1,5 +1,8 @@
-define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOperator) {
-    return KL.UnaryPlus = q.createClass(KL.UnaryOperator, {
+define(function (require, exports) {
+    var q = require('quack');
+    var UnaryOperator = require('./unaryOperator');
+
+    return q.createClass(UnaryOperator, {
 
         /**
          * Evaluated.
@@ -17,6 +20,9 @@ define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL
         },
 
 
+        /**
+          * Return dimension.
+          */
         dim: function() {
             return this.arg().dim();
         },
@@ -28,5 +34,5 @@ define(['../lib/quack.js', './exports.js', './unaryOperator.js'], function(q, KL
         accept: function (visitor) {
             return visitor.visitUnaryPlus(this);
         },
-    });b
+    });
 });

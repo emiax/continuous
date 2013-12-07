@@ -1,6 +1,9 @@
-define(['quack', './exports.js', './expression.js'], function(q, KL, Expression) {
-    KL.Dumper = q.createClass({
+define(function (require) {
+    var q = require('quack');
+    var Expression = require('./expression');
+    var exports = require('./exports');
 
+    return exports.Dumper = q.createClass({
         /**
          * Dump expression.
          */
@@ -10,22 +13,20 @@ define(['quack', './exports.js', './expression.js'], function(q, KL, Expression)
             } else {
                 console.log(expr.simpleFormat());
             }
-
-
         }
-
     });
+
     
     q.patch(Expression, {
         dump: function(label, dumper) {
             if (!dumper) {
-                dumper = new KL.Dumper();
+                dumper = new exports.Dumper();
             }
             dumper.dump(this, label);
         },
     });
 
 
-    return KL.Dumper;
+    return Dumper;
 });
 

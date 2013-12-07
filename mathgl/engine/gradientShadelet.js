@@ -1,6 +1,10 @@
-define(['quack', 'mathgl/engine/shadelet.js', 'mathgl/engine/exports.js'], function (q, Shadelet, Engine) {
+define(function (require) {
 
-    return Engine.GradientShadelet = q.createClass(Shadelet, {
+    var q = require('quack');
+    var Shadelet = require('./shadelet');
+    var exports = require('./exports');
+
+    return exports.GradientShadelet = q.createClass(Shadelet, {
         
         format: function () {
             var glsl = "";

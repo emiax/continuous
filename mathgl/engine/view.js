@@ -1,5 +1,14 @@
-define(['quack', 'mathgl/engine/exports.js', 'stats'], function(q, Engine, Stats) {
-    return Engine.View = q.createClass({
+define(function (require) {
+
+    var q = require('quack');
+    var exports = require('./exports');
+    var Stats = require('stats');
+
+
+    console.log(exports);
+    
+    
+    return exports.View = q.createClass({
         /**
          * Constructor.
          */
@@ -17,7 +26,8 @@ define(['quack', 'mathgl/engine/exports.js', 'stats'], function(q, Engine, Stats
             stats.domElement.style.position = 'absolute';
             stats.domElement.style.left = '0px';
             stats.domElement.style.top = '0px';
-
+            
+            this.updateDimensions();
         },
 
 
@@ -117,7 +127,7 @@ define(['quack', 'mathgl/engine/exports.js', 'stats'], function(q, Engine, Stats
         updateDimensions: function () {
             var renderer = this.renderer();
             if (renderer) {
-                renderer.dimensions(this._canvas.width, this._canvas.height);
+                renderer.dimensions([this._canvas.width, this._canvas.height]);
             }
         },
         
@@ -130,7 +140,7 @@ define(['quack', 'mathgl/engine/exports.js', 'stats'], function(q, Engine, Stats
                 var canvas = this._canvas;
                 var gl = canvas.getContext("experimental-webgl");
                 if (gl) {
-                    var renderer = this._renderer = new Engine.Renderer(gl);
+                    var renderer = this._renderer = new exports.Renderer(gl);
                     this.updateDimensions();
                 } else {
                     throw "WebGL not available."

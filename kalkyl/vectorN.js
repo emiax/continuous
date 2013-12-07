@@ -1,5 +1,9 @@
-define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
-    return KL.VectorN = q.createClass(Vector, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Vector = require('./vector');
+
+    return exports.VectorN = q.createClass(Vector, {
 
         /**
          * Constructor.
@@ -8,7 +12,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
             this._elements = elements;
             var scope = this;
             this.forEachElement(function (v, k) {
-                scope.element(k, KL.Number.boxNumber(v));
+                scope.element(k, exports.Number.boxNumber(v));
             });
 
         },
@@ -40,7 +44,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          * Get dimension of vector.
          */
         dim: function () {
-            return new KL.Vector2(this._elements.length, 1);
+            return new exports.Vector2(this._elements.length, 1);
         },
 
 
@@ -57,7 +61,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          */
         evaluated: function(values) {
             var m = this.toMatrixNM().evaluated();
-            if (m instanceof KL.Matrix) {
+            if (m instanceof exports.Matrix) {
                 return m.toSpecificDim();
             }
             return m;
@@ -79,7 +83,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          */
         forEachElement: function (f) {
             this._elements.forEach(function (v, k) {
-                f(v, new KL.Vector2(k, 0));
+                f(v, new exports.Vector2(k, 0));
             });
         },
 
@@ -88,11 +92,11 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
          * To specific dimension type
          */
         toSpecificDim: function () {
-            if (this.hasDim(new KL.Vector2(2, 1))) {
-                return new KL.Vector2(this.argument(0), this.argument(1));
+            if (this.hasDim(new exports.Vector2(2, 1))) {
+                return new exports.Vector2(this.argument(0), this.argument(1));
             }
-            if (this.hasDim(new KL.Vector2(3, 1))) {
-                return new KL.Vector3(this.argument(0), this.argument(1), this.argument(2));
+            if (this.hasDim(new exports.Vector2(3, 1))) {
+                return new exports.Vector3(this.argument(0), this.argument(1), this.argument(2));
             }
             return this;
         },
@@ -111,7 +115,7 @@ define(['quack', './exports.js', './vector.js'], function(q, KL, Vector) {
             this.forEachArgument(function (v, k) {
                 m[k] = v.clone();
             });
-            return new KL.VectorN(m);
+            return new exports.VectorN(m);
         }
 
     });

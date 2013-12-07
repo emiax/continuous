@@ -1,5 +1,10 @@
-define(['quack', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOperator) {
-    KL.UnaryMinus = q.createClass(KL.UnaryOperator, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var UnaryOperator = require('./unaryOperator');
+    var Expression = require('./expression');
+
+    exports.UnaryMinus =  q.createClass(UnaryOperator, {
         /**
          * Evaluated.
          */
@@ -9,14 +14,14 @@ define(['quack', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOpe
             var arg = this.arg().evaluated(map);
 
             if (arg.isEvaluated()) {
-                if (arg instanceof KL.Matrix) {
+                if (arg instanceof exports.Matrix) {
                     var m = arg.toMatrixNM();
                     m.forEachArgument(function (v, k) {
                             m.element(k, -v);
                     });
                     return m.toSpecificDim();
                 } else {
-                    return new KL.Number(-arg.value());
+                    return new exports.Number(-arg.value());
                 }
             } else {
                 return this.clone();
@@ -25,7 +30,7 @@ define(['quack', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOpe
 
 
         /**
-         * Return this as a KL.Matrix with only scalar operators.
+         * Return this as a exports.Matrix with only scalar operators.
          */
         expanded: function() {
 
@@ -45,14 +50,11 @@ define(['quack', './exports.js', './unaryOperator.js'], function(q, KL, UnaryOpe
         },
     });
 
-    q.patch(KL.Expression, {
+    q.patch(Expression, {
 
         negated: function() {
-            return new KL.UnaryMinus(this.clone());
+            return new exports.UnaryMinus(this.clone());
         }
 
     });
-
-    return KL.UnaryMinus;
-
 });

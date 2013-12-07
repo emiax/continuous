@@ -1,5 +1,12 @@
-define(['quack', './exports.js', './expression.js', './innerNode.js'], function (q, KL, Expression, InnerNode) {
-    return KL.BinaryOperator = q.createAbstractClass(Expression, [InnerNode], {
+define(function (require) {
+
+//define(['quack', './exports.js', './expression.js', './innerNode.js'], function (q, KL, Expression, InnerNode) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Expression = require('./expression');
+    var InnerNode = require('./innerNode');
+
+    return q.createAbstractClass(Expression, [InnerNode], {
 
         /**
          * Constructor.

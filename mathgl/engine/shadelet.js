@@ -1,6 +1,9 @@
-define(['quack', 'mathgl/engine/exports.js'], function (q, Engine) {
+define(function (require) {
 
-    return Engine.Shadelet = q.createAbstractClass({
+    var q = require('quack');
+    var exports = require('./exports');
+
+    return exports.Shadelet = q.createAbstractClass({
         /**
          * Constructor
          */

@@ -1,5 +1,10 @@
-define(['quack', './exports.js', './expression.js', './innerNode.js'], function(q, KL, Expression, InnerNode) {
-    return KL.Matrix = q.createAbstractClass(Expression, [InnerNode], {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Expression = require('./expression');
+    var InnerNode = require('./innerNode');
+
+    return exports.Matrix = q.createAbstractClass(Expression, [InnerNode], {
 
         evaluated: new q.AbstractMethod(),
 
@@ -17,7 +22,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
          * Return transposed matrix.
          */
         transposed: function () {
-            var m = KL.Matrix.createZeroMatrix(this.dim().reversed());
+            var m = exports.Matrix.createZeroMatrix(this.dim().reversed());
             this.forEachElement(function (v, k) {
                 m.element(k.reversed(), v);
             });
@@ -50,7 +55,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
          * Return true if evaluated
          */
         isEvaluated: function () {
-            return this.allElementsInstanceOf(KL.Number);
+            return this.allElementsInstanceOf(exports.Number);
         },
 
 
@@ -104,7 +109,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
          */
         createIdentityMatrix: function(dim) {
             var r, c;
-            if (dim instanceof KL.Vector2) {
+            if (dim instanceof exports.Vector2) {
                 r = dim.x();
                 c = dim.y();
             } else if (typeof dim === 'number') {
@@ -115,10 +120,10 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
             for (var i = 0; i < r; i++) {
                 m[i] = new Array(c);
                 for (var j = 0; j < c; j++) {
-                    m[i][j] = i === j ? new KL.Number(1) : new KL.Number(0);
+                    m[i][j] = i === j ? new exports.Number(1) : new exports.Number(0);
                 }
             }
-            return new KL.MatrixNM(m);
+            return new exports.MatrixNM(m);
         },
 
 
@@ -127,7 +132,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
          */
         createZeroMatrix: function(dim) {
             var r, c;
-            if (dim instanceof KL.Vector2) {
+            if (dim instanceof exports.Vector2) {
                 r = dim.x().value();
                 c = dim.y().value();
             } else if (typeof dim === 'number') {
@@ -138,12 +143,10 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
             for (var i = 0; i < r; i++) {
                 m[i] = new Array(c);
                 for (var j = 0; j < c; j++) {
-                    m[i][j] = new KL.Number(0);
+                    m[i][j] = new exports.Number(0);
                 }
             }
-            return new KL.MatrixNM(m);
+            return new exports.MatrixNM(m);
         }
     });
-
-    return Matrix;
 });

@@ -7,9 +7,12 @@
  *   (function that returns if token appears in the beginning of a construct (e.g. unary operator))
  */
 
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
 
-define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
-    return Format.Parser = q.createClass({
+    return exports.Parser = q.createClass({
+
         /**
          * Constructor.
          */
@@ -17,7 +20,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
             this._rules = {};
             this.reset();
             this.lexer(lexer);
-            this.rule('end', new Format.ParseRule());
+            this.rule('end', new exports.ParseRule());
         },
         
         
@@ -34,7 +37,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
          * Assign a ParseRule to a tokenType (string).
          */
         rule: function (tokenType, rule) {
-            if (rule instanceof Format.ParseRule) {
+            if (rule instanceof exports.ParseRule) {
                 this._rules[tokenType] = rule;
             }
             return this._rules[tokenType];
@@ -55,7 +58,6 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
                 t = this.current();
                 this.next();
                 left = (this.led(t))(this, t, left);
-                //console.log(left.simpleFormat());
             }
             
             return left;
@@ -189,7 +191,7 @@ define(['quack', 'kalkyl/format/exports.js'], function(q, Format) {
             if (!token) {
                 token = this.current();
             }
-            this._errors.push(new Format.ParseError(type, token.position(), token));
+            this._errors.push(new exports.ParseError(type, token.position(), token));
         }
 
         

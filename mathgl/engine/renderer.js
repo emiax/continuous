@@ -1,6 +1,11 @@
-define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/exports.js'], function(q, Kalkyl, SpaceObserver, MathGL, Engine) {
+define(function (require) {
 
-    return Engine.Renderer = q.createClass([SpaceObserver], {
+    var q = require('quack');
+    var SpaceObserver = require('mathgl/spaceObserver');
+    var MathGL = require('mathgl')
+    var exports = require('./exports');
+
+    return exports.Renderer = q.createClass([SpaceObserver], {
         /**
          * Constructor
          */
@@ -10,7 +15,10 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
             this._updates = {};
             this._space = null;
             this._camera = null;
+
+            this._dimensions = [0, 0];
             
+
             gl.enable(gl.DEPTH_TEST);
             gl.enable (gl.BLEND);
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -29,8 +37,22 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
         /**
          * Get/set dimensions of rendering context.
          */
-        dimensions: function () {
-            // TODO
+        dimensions: function (dimensions) {
+            if (dimensions !== undefined) {
+                this._dimensions = dimensions;
+                this.gl().viewport(0, 0, dimensions[0], dimensions[1]);
+            }
+            return this._dimensions;
+        },
+
+
+        aspect: function () {
+            var dimensions = this.dimensions();
+
+            var w = dimensions[0];
+            var h = dimensions[1];
+            
+            return h ? w/h : 1;
         },
 
 
@@ -63,9 +85,14 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
             }
             this.prepareRenderables();
             this.clearFrame();
+            var scope = this;
             this.forEachRenderable(function (r) {
-                r.renderIfVisible(camera);                    
+                r.renderIfVisible(scope);                    
             });
+        },
+
+        matrix: function () {
+            return this.camera().matrix(this);
         },
 
         
@@ -117,10 +144,17 @@ define(['quack', 'kalkyl', 'mathgl/spaceObserver.js', 'mathgl', 'mathgl/engine/e
         attach: function (scope) {
             var id = scope.id();
             if (scope instanceof MathGL.Surface) {
-                this._renderables[id] = new Engine.RenderableSurface(this.gl(), scope);
+                this._renderables[id] = new exports.RenderableSurface(this.gl(), scope);
             } else if (scope instanceof MathGL.Curve) {
-                this._renderables[id] = new Engine.RenderableCurve(this.gl(), scope);
+                this._renderables[id] = new exports.RenderableCurve(this.gl(), scope);
+            } else if (scope instanceof MathGL.VectorArrow) {
+                this._renderables[id] = new exports.RenderableVectorArrow(this.gl(), scope);
             }
+//            } else if (scope instanceof MathGL.Axis) {
+//                this._renderables[id] = new exports.RenderableAxis(this.gl(), scope);
+//            }
+
+
             // ADD MORE ENTITY TYPES HERE.
 
             if (this._renderables[id]) {

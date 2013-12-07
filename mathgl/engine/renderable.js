@@ -1,5 +1,10 @@
-define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engine) {
-    return Engine.Renderable = q.createAbstractClass({
+define(function (require) {
+
+    var q = require('quack');
+    var Kalkyl = require('kalkyl');
+    var exports = require('./exports');
+
+    return exports.Renderable = q.createAbstractClass({
         /**
           * Constructor.
           */
@@ -47,9 +52,9 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
         /**
          * Render if entity is visible.
          */
-        renderIfVisible: function (camera) {
+        renderIfVisible: function (renderer) {
             if (this.entity().chainVisible()) {
-                this.render(camera);
+                this.render(renderer);
             }
         },
 
@@ -118,7 +123,7 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
          */
         symbolCategorization: function () {
             if (this._symbolCategorization == undefined) {
-                this._symbolCategorization = new Engine.SymbolCategorization(this.vertexShaderSinks(),            
+                this._symbolCategorization = new exports.SymbolCategorization(this.vertexShaderSinks(),            
                                                                          this.fragmentShaderSinks(),
                                                                          this.parameterSymbols(),
                                                                          this.primitiveSymbols(),
@@ -162,12 +167,13 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
          */
         generateShaderProgram: function () {
             var gl = this.gl();
-
-          
-            var vertexShaderFormatter = new Engine.VertexShaderFormatter(this.expressions(),
+            
+            var vertexShaderFormatter = new exports.VertexShaderFormatter(this.expressions(),
                                                                       this.symbolCategorization());
 
-            var fragmentShaderFormatter = new Engine.FragmentShaderFormatter(this.expressions(),
+            console.log(exports);
+
+            var fragmentShaderFormatter = new exports.FragmentShaderFormatter(this.expressions(),
                                                                              this.symbolCategorization(),
                                                                              this.appearance());
 
@@ -181,10 +187,10 @@ define(['quack', 'kalkyl', 'mathgl/engine/exports.js'], function(q, Kalkyl, Engi
             var fragmentShaderGLSL = fragmentShaderFormatter.format()
             console.log(fragmentShaderGLSL);
 
-            var vs = new Engine.VertexShader(gl, vertexShaderGLSL);
-            var fs = new Engine.FragmentShader(gl, fragmentShaderGLSL);
+            var vs = new exports.VertexShader(gl, vertexShaderGLSL);
+            var fs = new exports.FragmentShader(gl, fragmentShaderGLSL);
 
-            return new Engine.ShaderProgram(vs, fs);
+            return new exports.ShaderProgram(vs, fs);
         },
 
         

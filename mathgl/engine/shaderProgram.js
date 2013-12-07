@@ -1,14 +1,18 @@
-define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
-    return Engine.ShaderProgram = q.createClass({
+define(function (require) {
+
+    var q = require('quack');
+    var exports = require('./exports');
+
+    return exports.ShaderProgram = q.createClass({
         /**
          * Constructor.
          */
         constructor: function(vertexShader, fragmentShader) {
-            if (!(vertexShader instanceof Engine.VertexShader)) {
+            if (!(vertexShader instanceof exports.VertexShader)) {
                 console.warn("vertexShader has incorrect type");
             }
 
-            if (!(fragmentShader instanceof Engine.FragmentShader)) {
+            if (!(fragmentShader instanceof exports.FragmentShader)) {
                 console.warn("fragmentShader has incorrect type");
             }
 
@@ -46,13 +50,13 @@ define(['quack', 'mathgl/engine/exports.js'], function(q, Engine) {
 
             if (!vs.isCompiled()) {
                 vs.compile();
-                if (vs.isCompiled) {
+                if (!vs.isCompiled()) {
                     console.log("Compile error, vertex shader");
                 }
             }
             if (!fs.isCompiled()) {
                 fs.compile();
-                if (fs.isCompiled) {
+                if (!fs.isCompiled()) {
                     console.log("Compile error, fragment shader");
                 }
             }

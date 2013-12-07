@@ -1,26 +1,19 @@
-define(['mathgl/exports.js',
-        // Scoping system / Scene graph
-        'mathgl/scope.js',
-        'mathgl/entity.js',
-        'mathgl/space.js',
-        'mathgl/surface.js',
-        'mathgl/curve.js',
+/*define(function (require) {
 
-        'mathgl/camera.js',
-
-        // Appearance nodes
-        'mathgl/appearanceNode.js',
-        'mathgl/threshold.js',
-        'mathgl/fill.js',
-        'mathgl/color.js',
-        'mathgl/gradient.js',
-        'mathgl/checkerPattern.js',
-        
-        // Misc
-        'mathgl/spaceObserver.js'],
-       function(exports) {
-           console.log("loaded mathgl");
-           return exports;
-       });
-
-
+    require('./scope');
+    require('./entity');
+    require('./space');
+    require('./surface');
+    require('./curve');
+    require('./appearanceNode');
+    require('./threshold');
+    require('./fill');
+    require('./color');
+    require('./gradient');
+    require('./checkerPattern');
+    require('./spaceObserver');
+    require('./camera');
+    
+    return require('./exports.js');        
+});
+*/

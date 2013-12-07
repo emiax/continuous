@@ -1,5 +1,9 @@
-define(['quack', './exports.js', './binaryOperator.js'], function (q, Kalkyl, BinaryOperator) {
-    return Kalkyl.Accessor = q.createClass(BinaryOperator, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var BinaryOperator = require('./binaryOperator');
+
+    return exports.Accessor = q.createClass(BinaryOperator, {
         
         /**
          * Constructor

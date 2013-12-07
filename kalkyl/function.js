@@ -1,12 +1,18 @@
-define(['quack', './exports.js', './expression.js', './innerNode.js'], function(q, KL, Expression, InnerNode) {
-    return KL.Function = q.createClass(Expression, [InnerNode], {
+define(function(require) {
+    var q = require('quack');
+    var exports = require('./exports');
+    var Expression = require('./expression');
+    var InnerNode = require('./innerNode');
+    
+//define(['quack', './exports.js', './expression.js', './innerNode.js'], function(q, exports, Expression, InnerNode) {
+    return exports.Function = q.createClass(Expression, [InnerNode], {
         /**
          * Constructor
          */
         constructor: function (symbol, args, dim) {
             this.symbol(symbol);
             this._arguments = args;
-            this._dim = dim || new KL.Vector2(1, 1);
+            this._dim = dim || new exports.Vector2(1, 1);
         },
 
 
@@ -102,7 +108,7 @@ define(['quack', './exports.js', './expression.js', './innerNode.js'], function(
                 args[k] = a.clone();
             });
             
-            return new KL.Function(this.symbol(), args);
+            return new exports.Function(this.symbol(), args);
         },
         
         

@@ -1,5 +1,9 @@
-define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
-    return KL.Variable = q.createClass(Leaf, {
+define(function (require) {
+    var exports = require('./exports');
+    var q = require('quack');
+    var Leaf = require('./leaf');
+
+    return exports.Variable = q.createClass(Leaf, {
         /**
          * Constructor
          */
@@ -24,7 +28,7 @@ define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
             //if (map === undefined) console.error("map is undefined");
             var value = map && map[this.symbol()];
             if (value !== undefined) {
-                return new KL.Number(value);
+                return new exports.Number(value);
             } else {
                 return this.clone();
             }
@@ -60,7 +64,7 @@ define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
          * Clone.
          */
         clone: function () {
-            return new KL.Variable(this.symbol());
+            return new exports.Variable(this.symbol());
         },
         
         
@@ -78,7 +82,7 @@ define(['quack', './exports.js', './leaf.js'], function(q, KL, Leaf) {
          */
         boxVariable: function (v) {
             if (typeof v === 'string') {
-                return new KL.Variable(v);
+                return new exports.Variable(v);
             } else {
                 return v;
             }

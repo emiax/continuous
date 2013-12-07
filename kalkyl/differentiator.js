@@ -1,5 +1,10 @@
-define(['quack', './exports.js', './visitor.js', './expression.js'], function(q, KL, Visitor, Expression) {
-    KL.Differentiator = q.createClass(Visitor, {
+define(function (require) {
+    var q = require('quack');
+    var Visitor = require('./visitor');
+    var Expression = require('./expression');
+    var exports = require('./exports');
+    
+    exports.Differentiator = q.createClass(Visitor, {
 
         constructor: function (symbol) {
             this.symbol(symbol);
@@ -15,26 +20,26 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         },
 
         visitNumber: function (expr) {
-            return new KL.Number(0);
+            return new exports.Number(0);
         },
 
         visitVariable: function (expr) {
             if (expr.symbol() === this.symbol()) {
-                return new KL.Number(1);
+                return new exports.Number(1);
             } else {
-                return new KL.Number(0);
+                return new exports.Number(0);
             }
         },
 
         visitPlus: function (expr) {
-            return new KL.Plus(
+            return new exports.Plus(
                 expr.left().differentiated(this),
                 expr.right().differentiated(this)
             );
         },
 
         visitMinus: function(expr) {
-            return new KL.Minus(
+            return new exports.Minus(
                 expr.left().differentiated(this),
                 expr.right().differentiated(this)
             );
@@ -42,18 +47,18 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
 
         visitUnaryMinus: function (expr) {
-            return new KL.UnaryMinus(expr.arg().differentiated(this));
+            return new exports.UnaryMinus(expr.arg().differentiated(this));
         },
 
 
         visitMultiplication: function (expr) {
             var left = expr.left(), right = expr.right();
-            return new KL.Plus(
-                new KL.Multiplication(
+            return new exports.Plus(
+                new exports.Multiplication(
                     left.differentiated(this),
                     right.clone()
                 ),
-                new KL.Multiplication(
+                new exports.Multiplication(
                     left.clone(),
                     right.differentiated(this)
                 )
@@ -62,41 +67,41 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
         visitDivision: function (expr) {
             var left = expr.left(), right = expr.right();
-            return new KL.Division(
-                new KL.Minus(
-                    new KL.Multiplication(
+            return new exports.Division(
+                new exports.Minus(
+                    new exports.Multiplication(
                         left.differentiated(this),
                         right.clone()
                     ),
-                    new KL.Multiplication(
+                    new exports.Multiplication(
                         left.clone(),
                         right.differentiated(this)
                     )
                 ),
-                new KL.Power(right.clone(), 2)
+                new exports.Power(right.clone(), 2)
             );
         },
 
         visitPower: function (expr) {
             var left = expr.left(), right = expr.right();
-            return new KL.Plus(
-                new KL.Multiplication(
+            return new exports.Plus(
+                new exports.Multiplication(
                     right.clone(),
-                    new KL.Multiplication(
-                        new KL.Power(
+                    new exports.Multiplication(
+                        new exports.Power(
                             left.clone(),
-                            new KL.Minus(right.clone(), 1)
+                            new exports.Minus(right.clone(), 1)
                         ),
                         left.differentiated(this)
                     )
                 ),
-                new KL.Multiplication(
-                    new KL.Power(
+                new exports.Multiplication(
+                    new exports.Power(
                         left.clone(),
                         right.clone()
                     ),
-                    new KL.Multiplication(
-                        new KL.Ln(left.clone()),
+                    new exports.Multiplication(
+                        new exports.Ln(left.clone()),
                         right.differentiated(this)
                     )
                 )
@@ -104,7 +109,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
         },
 
         visitExp: function (expr) {
-            return new KL.Multiplication(
+            return new exports.Multiplication(
                 expr.arg().differentiated(this),
                 expr.clone()
             );
@@ -112,7 +117,7 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
         visitLn: function (expr) {
             var arg = expr.arg();
-            return new KL.Divition(
+            return new exports.Divition(
                 arg.differentiated(this),
                 arg.clone()
             );
@@ -120,24 +125,24 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
 
         visitSin: function (expr) {
             var arg = expr.arg();
-            return new KL.Multiplication(
+            return new exports.Multiplication(
                 arg.differentiated(this),
-                new KL.Cos(arg.clone())
+                new exports.Cos(arg.clone())
             );
         },
 
         visitCos: function (expr) {
             var arg = expr.arg();
-            return new KL.Multiplication(
+            return new exports.Multiplication(
                 arg.differentiated(this).negated(),
-                new KL.Sin(arg.clone())
+                new exports.Sin(arg.clone())
             );
         },
 
 
         visitMatrix: function (expr) {
             expr = expr.toMatrixNM();
-            var m = KL.Matrix.createZeroMatrix(expr.dim());
+            var m = exports.Matrix.createZeroMatrix(expr.dim());
             var differentiator = this;
             expr.forEachElement(function (v, k) {
                 m.element(k, v.differentiated(differentiator));
@@ -155,15 +160,15 @@ define(['quack', './exports.js', './visitor.js', './expression.js'], function(q,
          */
         differentiated: function (symbolOrDifferentiator) {
             var differentiator;
-            if (symbolOrDifferentiator instanceof KL.Differentiator) {
+            if (symbolOrDifferentiator instanceof exports.Differentiator) {
                 differentiator = symbolOrDifferentiator;
             } else {
-                differentiator = new KL.Differentiator(symbolOrDifferentiator);
+                differentiator = new exports.Differentiator(symbolOrDifferentiator);
             }
             return differentiator.differentiate(this).simplified();
         }
 
     });
 
-    return KL.Differentiator;
+    return exports.Differentiator;
 });
