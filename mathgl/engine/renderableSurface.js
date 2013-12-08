@@ -216,7 +216,13 @@ define(function (require) {
             gl.uniformMatrix4fv(location, false, e);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
-            gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
+
+            var style = entity.style();
+            if (style === 'wireframe')  {
+                gl.drawElements(gl.LINES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
+            } else {
+                gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
+            }
             //todo!
 
         }

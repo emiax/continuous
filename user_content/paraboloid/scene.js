@@ -71,6 +71,7 @@ define([
             t = State.t;
             camera.primitive('x', 4*Math.cos(2*Math.PI * t / 1000) + 0.01);
             camera.primitive('y', 4*Math.sin(2*Math.PI * t / 1000) + 0.01);
+            surfaceScope.primitive('b', Math.sin(t/100)*0.8 + 1);
             ++State.t;
         }
 
@@ -80,6 +81,7 @@ define([
         var green = new MathGL.Color(0xff00cc00);
         var blue = new MathGL.Color(0xff222299);
         var cyan = new MathGL.Color(0xff007bbb);
+        var white = new MathGL.Color(0xffffffff);
 
         var gradient = new MathGL.Gradient({
             parameter: 'z',
@@ -97,28 +99,68 @@ define([
 
         var checker = new MathGL.CheckerPattern({
             parameters: {
-                v: 0.1,
-                u: 0.1
+                x: 0.1,
+                y: 0.1
             },
             inputA: gradient,
             inputB: darkOverlay
         });
 
-
-        var surface = new MathGL.Surface({
-            domain: {
-                u: [-1, 1],
-                v: [-1, 1]
-            },
-            expressions: {
-                x: 'u',
-                y: 'v',
-                z: 'x^2 + y^2',
-            },
-            appearance: checker
+        var threshold = new MathGL.Threshold({
+            parameter: 'z',
+            value: 'b',
+            below: checker,
+            above: null
         });
 
-        scope.add(surface);
+
+        var surfaceScope = new MathGL.Scope({
+            primitives: {
+                b: 1
+            },
+            expressions: {
+                X: 'r*cos(T)',
+                Y: 'r*sin(T)',
+                Z: 'x^2 + y^2',
+            },
+        });
+
+        var wireSurface = new MathGL.Surface({
+            domain: {
+                r: [0, 1.4],
+                T: [0, 2*Math.PI]
+            },
+            expressions: {
+                x: 'X',
+                y: 'Y',
+                z: 'Z - 0.01',
+            },
+            style: 'wireframe',
+            appearance: white
+        });
+
+
+        var solidSurface = new MathGL.Surface({
+            domain: {
+                r: [0, 1.3],
+                T: [0, 2*Math.PI]
+            },           
+            expressions: {
+                x: 'X',
+                y: 'Y',
+                z: 'Z',
+            },
+            appearance: threshold
+        });
+
+
+
+
+
+        surfaceScope.add(solidSurface);
+        surfaceScope.add(wireSurface);
+        scope.add(surfaceScope);
+
         space.add(scope);    
 
         view.space(space);

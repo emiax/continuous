@@ -18,6 +18,7 @@ define(function (require) {
             });
             
             this.appearance(spec.appearance || null);
+            this.style(spec.style || 'solid');
         }, 
 
 
@@ -40,8 +41,16 @@ define(function (require) {
             console.log(Object.keys(this._domain));
             return Object.keys(this._domain);
         },
-
         
+
+        style: function (style) {
+            if (style !== undefined) {
+                this._style = style;
+            }
+            return this._style;
+        },
+
+
         xExpr: function () {
             return this.flat('x');
         },
