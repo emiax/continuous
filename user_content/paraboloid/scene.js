@@ -113,6 +113,9 @@ define([
             above: null
         });
 
+        var diffuse = new MathGL.Diffuse({
+            background: threshold
+        });
 
         var surfaceScope = new MathGL.Scope({
             primitives: {
@@ -150,7 +153,7 @@ define([
                 y: 'Y',
                 z: 'Z',
             },
-            appearance: threshold
+            appearance: diffuse
         });
 
 
