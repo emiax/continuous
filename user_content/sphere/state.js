@@ -6,8 +6,8 @@ define(function(require) {
         theta: '',
         phi: '',
         canvasDim: {
-            w: 0,
-            h: 0
+            w: 700,
+            h: 700
         },
         expression: 'r = 1, x = r*sin(theta)cos(phi), ...'
     };

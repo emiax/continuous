@@ -1,9 +1,11 @@
 <div id="canvas-wrapper">
-    <canvas id="canvas" 
+    <canvas
+        id="canvas"
         resize
-        width={{getWindowDimensions().w}}
-        height={{getWindowDimensions().h}}
-        publish={{publishDimensions()}}>
+        ng-style="style()"
+        width={{getElementDimensions().w}}
+        height={{getElementDimensions().h}}
+        publish={{publishCanvasDimensions()}}>
     </canvas>
 </div>
 

@@ -5,16 +5,25 @@ angular.module('continuousApp').compileProvider.directive(
         var w = angular.element($window);
         
         scope.getWindowDimensions = function () {
-            return { 'h': w[0].innerHeight-51, 'w': w[0].innerWidth };
+            return {
+                'h': w[0].innerHeight-51,
+                'w': w[0].innerWidth
+            };
         };
 
-        scope.publishDimensions = function () {
+        scope.getElementDimensions = function () {
+            return {
+                w: element.prop('offsetWidth'),
+                h: element.prop('offsetHeight')
+            };
+        };
+
+        scope.publishCanvasDimensions = function () {
             if( scope.state.hasOwnProperty("canvasDim") ) {
-                var dims = {
-                    w: element.prop('offsetWidth'),
-                    h: element.prop('offsetHeight')
-                }
-                scope.state.set('canvasDim', dims);
+                scope.state.set(
+                    'canvasDim',
+                    scope.getElementDimensions()
+                );
             }
         }
 
