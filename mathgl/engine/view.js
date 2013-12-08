@@ -127,8 +127,8 @@ define(function (require) {
         dimensions: function (width, height) {
             var renderer = this.renderer();
             if (renderer) {
-                return renderer.dimensions([this._canvas.width, this._canvas.height]);
-//                return renderer.dimensions(width, height);
+                // return renderer.dimensions([this._canvas.width, this._canvas.height]);
+               return renderer.dimensions([width, height]);
             }
             return renderer.dimensions();
         },

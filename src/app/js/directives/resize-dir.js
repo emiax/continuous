@@ -8,7 +8,7 @@ angular.module('continuousApp').compileProvider.directive(
             return { 'h': w[0].innerHeight-51, 'w': w[0].innerWidth };
         };
 
-        scope.publishDimensions = function (fn) {
+        scope.publishDimensions = function () {
             if( scope.state.hasOwnProperty("canvasDim") ) {
                 var dims = {
                     w: element.prop('offsetWidth'),

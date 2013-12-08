@@ -140,7 +140,10 @@ define([
 
         var updateDimensions = function (key) {
             if(key == 'canvasDim') {
-                console.log("Scene detected canvas dimensions update");
+                var newDims = State.canvasDim;
+                view.dimensions(newDims.w, newDims.h);
+                // console.log("Canvas dimensions updated in renderer.");
+                // console.log("New dims: w = " + newDims.w + ", h = " + newDims.h);
             }
         }
 
