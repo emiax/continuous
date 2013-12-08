@@ -445,7 +445,7 @@ define(function (require) {
                 if (evaluated.isEvaluated()) {
                     return evaluated.toPrimitive();
                 }
-            } else if (this._primitives[symbol]) {
+            } else if (this._primitives[symbol] !== undefined) {
                 return this.primitive(symbol);
             } else {
                 console.error("symbol "  + symbol + " is not defined in scope.");
