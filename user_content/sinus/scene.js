@@ -139,6 +139,15 @@ define([
         view.space(space);
         view.camera(camera);
 
+        var updateDimensions = function (key) {
+            if(key == 'canvasDim') {
+                var newDims = State.canvasDim;
+                view.dimensions(newDims.w, newDims.h);
+            }
+        }
+
+        State.subscribe(updateDimensions);
+
         view.startRendering(update, stats);
 
         var endTime = new Date();

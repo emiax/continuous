@@ -142,8 +142,6 @@ define([
             if(key == 'canvasDim') {
                 var newDims = State.canvasDim;
                 view.dimensions(newDims.w, newDims.h);
-                // console.log("Canvas dimensions updated in renderer.");
-                // console.log("New dims: w = " + newDims.w + ", h = " + newDims.h);
             }
         }
 

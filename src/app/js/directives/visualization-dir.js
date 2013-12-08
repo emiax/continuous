@@ -7,7 +7,7 @@ angular.module('continuousApp').compileProvider.directive(
             baseUrl = 'src/app/partials/visualization_templates/',
             templateMap = {
                 card_layout:'card_layout.html',
-                kartotek_layout: 'showroom_layout.html',
+                gallery_layout: 'gallery_layout.html',
                 no_layout: 'no_layout.html'
             };
 
