@@ -132,6 +132,8 @@ define([
             appearance: checker
         });
 
+        State.set('r', surface.primitive('r'));
+
         scope.add(surface);
         space.add(scope);    
 
