@@ -71,6 +71,7 @@ define([
             t = State.t;
             camera.primitive('x', 10*Math.cos(2*Math.PI * t / 1000) + 0.01);
             camera.primitive('y', 10*Math.sin(2*Math.PI * t / 1000) + 0.01);
+            arrow.primitive('s', t);
             ++State.t;
         }
 
@@ -119,13 +120,14 @@ define([
         var arrow = new MathGL.VectorArrow({
             primitives: {
                 a: 1,
-                b: Math.sin(1)
+                b: Math.sin(1),
+                s: 0
             },
             expressions: {
                 x: 'a',
                 y: 'b',
                 position: '[a 0 b]',
-                value: '[1 0 0]',
+                value: '[1.5 + sin(s/100), 0, 0]',
             },
             appearance: blue
         });
