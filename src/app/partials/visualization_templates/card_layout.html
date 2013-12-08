@@ -1,0 +1,21 @@
+<div id="canvas-wrapper">
+    <canvas id="canvas" 
+        resize
+        width={{getWindowDimensions().w}}
+        height={{getWindowDimensions().h}}
+        publish={{publishDimensions()}}>
+    </canvas>
+</div>
+
+<div id="card-bar" class="right">
+    <ul>
+        <li class="card">
+            <p>Here's my card</p>
+        </li>
+
+        <li class="card" subscribe="state">
+            <p>theta: {{publisher.theta}}</p>
+            <p>phi: {{publisher.phi}}</p>
+        </li>
+    </ul>
+</div>

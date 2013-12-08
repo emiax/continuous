@@ -228,8 +228,6 @@ define(function (require) {
 
     var endTime = new Date();
 
-    //    console.log("creating scene took " + (endTime - startTime) + "ms");
-
 
     var updateSize = function () {
         canvas.width = window.innerWidth;
@@ -365,3 +363,7 @@ define(function (require) {
   console.log("creating scene took " + (endTime - startTime) + "ms");
   });
 */
+=======
+    console.log("creating scene took " + (endTime - startTime) + "ms");
+});
+>>>>>>> 98af6a41003831169e7a62049443424904bead5f

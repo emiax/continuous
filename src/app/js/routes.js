@@ -1,17 +1,50 @@
-define(['angular', 'app'], function(angular, app) {
-	'use strict';
+continuousApp.config(function($routeProvider){
 
-	return app.config(['$routeProvider', function($routeProvider) {
-		$routeProvider.when('/visualization', {
-			templateUrl: 'app/partials/visualization.html',
-			controller: 'VisualizationCtrl'
-		});
+    $routeProvider
+    
+    .when('/', {
+        templateUrl: 'src/app/partials/index-view.html',
+        controller: 'IndexCtrl',
+        resolve: { deps:function ($q, $rootScope) {
+            var deferred = $q.defer();
+            var dependencies = [
+                'src/app/js/controllers/index-ctrl.js'
+            ];
+ 
+            require(dependencies, function () {
+                $rootScope.$apply(function () {
+                    deferred.resolve();
+                });
+            });
 
-		$routeProvider.when('/view1', {
-			templateUrl: 'app/partials/partial1.html',
-			controller: 'MyCtrl1'
-		});
-		$routeProvider.otherwise({redirectTo: '/view1'});
-	}]);
+            return deferred.promise;
+        }}
+    })
+
+    .when('/visualization/:visualizationId', {
+        templateUrl: 'src/app/partials/visualization-view.html',
+        controller: 'VisualizationCtrl',
+        resolve: { deps:function ($q, $rootScope) {
+            var deferred = $q.defer();
+            var dependencies = [
+                'src/app/js/controllers/visualization-ctrl.js',
+                'src/app/js/directives/visualization-dir.js',
+                'src/app/js/directives/resize-dir.js',
+                'src/app/js/directives/subscribe-dir.js'
+            ];
+ 
+            require(dependencies, function () {
+                $rootScope.$apply(function () {
+                    deferred.resolve();
+                });
+            });
+            
+            return deferred.promise;
+        }}
+    })
+    
+    .otherwise({
+        redirectTo: '/'
+    });
 
 });

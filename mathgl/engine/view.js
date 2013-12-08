@@ -27,7 +27,7 @@ define(function (require) {
             stats.domElement.style.left = '0px';
             stats.domElement.style.top = '0px';
             
-            this.updateDimensions();
+//            this.updateDimensions();
         },
 
 
@@ -122,13 +122,15 @@ define(function (require) {
 
 
         /** 
-         * Update dimensions.
+         * Get/set dimensions.
          */
-        updateDimensions: function () {
+        dimensions: function (width, height) {
             var renderer = this.renderer();
             if (renderer) {
-                renderer.dimensions([this._canvas.width, this._canvas.height]);
+                return renderer.dimensions([this._canvas.width, this._canvas.height]);
+//                return renderer.dimensions(width, height);
             }
+            return renderer.dimensions();
         },
         
         
@@ -141,7 +143,6 @@ define(function (require) {
                 var gl = canvas.getContext("experimental-webgl");
                 if (gl) {
                     var renderer = this._renderer = new exports.Renderer(gl);
-                    this.updateDimensions();
                 } else {
                     throw "WebGL not available."
                 }

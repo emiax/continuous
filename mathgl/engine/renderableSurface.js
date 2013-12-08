@@ -113,7 +113,7 @@ define(function (require) {
             var uDomain = domain[u];
             var vDomain = domain[v];
 
-            var tessellation = new exports.PlaneTessellation(uDomain, vDomain, 0.01);
+            var tessellation = new exports.PlaneTessellation(uDomain, vDomain, 0.1);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 
