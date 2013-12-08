@@ -1,5 +1,5 @@
 requirejs.config({
-    baseUrl: 'http://localhost/continuous/',
+    baseUrl: './',
 
     packages: [
         "quack",
