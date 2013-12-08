@@ -53,9 +53,9 @@ define([
        
         var camera = new MathGL.Camera({
             primitives: {
-                x: 1,
+                x: 10,
                 y: 0,
-                z: 1
+                z: 10
             },
             expressions: {
                 position: '[x, y, z]',
@@ -69,8 +69,8 @@ define([
         var t;
         function update() {
             t = State.t;
-            camera.primitive('x', Math.cos(2*Math.PI * t / 1000) + 0.01);
-            camera.primitive('y', Math.sin(2*Math.PI * t / 1000) + 0.01);
+            camera.primitive('x', 10*Math.cos(2*Math.PI * t / 1000) + 0.01);
+            camera.primitive('y', 10*Math.sin(2*Math.PI * t / 1000) + 0.01);
             ++State.t;
         }
 
@@ -104,18 +104,33 @@ define([
 
         var curve = new MathGL.Curve({
             domain: {
-                s: [0, 0.1]
+                s: [-1, 1]
             },
             expressions: {
                 x: 's',
-                y: 's',
+                y: '0',
                 z: 'sin(x)',
             },
             thickness: 0.2,
             stepSize: 0.5,
             appearance: gradient
         });
+        
+        var arrow = new MathGL.VectorArrow({
+            primitives: {
+                a: 1,
+                b: Math.sin(1)
+            },
+            expressions: {
+                x: 'a',
+                y: 'b',
+                position: '[a 0 b]',
+                value: '[1 0 0]',
+            },
+            appearance: blue
+        });
 
+        scope.add(arrow);
         scope.add(curve);
         space.add(scope);    
 
