@@ -22,6 +22,13 @@ define(function (require) {
          * Get transformation matrix
          */
         matrix: function (renderer) {
+            var mat = mat4.create();
+            mat4.multiply(mat, this.pMatrix(renderer), this.mvMatrix());
+            return mat;
+        },
+
+        
+        mvMatrix: function () {
             var position = this.positionExpr(); 
             var subject = this.subjectExpr();
             var up = this.upExpr();
@@ -36,19 +43,20 @@ define(function (require) {
 
             var mat = mat4.create();
             var mv = mat4.create();
-            var ortho = mat4.create();
-            
-            var aspect = renderer.aspect();
             
             mat4.lookAt(mv, p, s, u);
-
-            mat4.perspective(ortho, 1, aspect, 0.1, 100);
-
-            mat4.multiply(mat, ortho, mv);
-
-            return mat;
+            return mv;
         },
 
+
+        pMatrix: function (renderer) {
+            var mat4 = gm.mat4;
+            var p = mat4.create();
+            var aspect = renderer.aspect();
+            mat4.perspective(p, 1, aspect, 0.1, 100);
+            return p;
+        },
+        
         /**
          * Get position expression
          */

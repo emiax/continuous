@@ -91,8 +91,19 @@ define(function (require) {
             });
         },
 
-        matrix: function () {
-            return this.camera().matrix(this);
+        /**
+         * Return model view matrix
+         */
+        mvMatrix: function () {
+            return this.camera().mvMatrix(this);
+        },
+
+
+        /**
+         * Return perspective matrix
+         */
+        pMatrix: function () {
+            return this.camera().pMatrix(this);
         },
 
         

@@ -15,7 +15,7 @@ define(function (require) {
          * Step size. the step size for the parameter.
          */
         constructor: function (domain, stepSize) {
-            PlaneTessellation.constructor.call(this, domain, [0, 2*Math.PI], [stepSize, 1]);
+            PlaneTessellation.constructor.call(this, domain, [0, 2*Math.PI], [stepSize, 0.2]);
         },
     });
     

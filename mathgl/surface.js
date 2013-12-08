@@ -1,6 +1,7 @@
 define(function (require) {
 
     var q = require('quack');
+    var Kalkyl = require('kalkyl');
     var Entity = require('./entity');
     var exports = require('./exports');
 
@@ -38,7 +39,6 @@ define(function (require) {
         
         
         parameters: function () {
-            console.log(Object.keys(this._domain));
             return Object.keys(this._domain);
         },
         
@@ -63,6 +63,37 @@ define(function (require) {
 
         zExpr: function () {
             return this.flat('z');
+        },
+
+
+        /**
+         * Tangent expression map
+         */
+        tangentExpressions: function () {
+            var parameters = this.parameters();
+            var map = {};
+            
+            var u = parameters[0];
+            var v = parameters[1];
+            
+            var zero = new Kalkyl.Number(0);
+            var one = new Kalkyl.Number(1);
+            
+            map[u] = {};
+            map[v] = {};
+
+            var scope = this;
+            ['x', 'y', 'z'].forEach(function (k) {
+                switch (k) {
+                case u: map[u][k] = one; map[v][k] = zero; break;
+                case v: map[u][k] = zero; map[v][k] = one; break;
+                default:
+                    map[u][k] = scope.flatExpression(k).differentiated(u);
+                    map[v][k] = scope.flatExpression(k).differentiated(v);
+                }
+            });
+
+            return map;
         }
 
     });

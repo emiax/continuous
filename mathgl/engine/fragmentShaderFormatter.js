@@ -50,6 +50,9 @@ define(function (require) {
             cat.varyings().forEach(function (s) {
                 glsl += 'varying float ' + dict.varyingName(s) + ";\n";
             });
+
+            glsl += 'varying vec3 spaceNormal;\n';
+            glsl += 'uniform mat4 mvMatrix;\n';
             
             return glsl;
         },
@@ -65,6 +68,7 @@ define(function (require) {
                 if (node instanceof MathGL.Gradient) return new exports.GradientShadelet(scope, node);
                 if (node instanceof MathGL.CheckerPattern) return new exports.CheckerPatternShadelet(scope, node);
                 if (node instanceof MathGL.Threshold) return new exports.ThresholdShadelet(scope, node);
+                if (node instanceof MathGL.Diffuse) return new exports.DiffuseShadelet(scope, node);
             })();
             
             if (shadelet) {
@@ -89,7 +93,9 @@ define(function (require) {
 
             cat.fragmentDefinitions().forEach(function (s) {
                 var expr = scope.expressions()[s];
-                console.log(s);
+                if (!expr) {
+                    console.error("'" + s + "' is not an expression in scope.");
+                }
                 glsl += "float " + dict.fragmentName(s, cat) + " = " + formatter.format(expr) + ";\n";
             });
             
@@ -137,7 +143,7 @@ define(function (require) {
             glsl += '#endif\n';
             //glsl += "#extension GL_OES_standard_derivatives:enable";
 //            glsl += '#ifdef GL_OES_standard_derivatives\n';
-            glsl += '#extension GL_OES_standard_derivatives : enable\n';
+//            glsl += '#extension GL_OES_standard_derivatives : enable\n';
 //            glsl += '#endif\n';
 
             glsl += this.declarations();

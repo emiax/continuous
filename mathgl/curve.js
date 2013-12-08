@@ -3,6 +3,7 @@ define(function (require) {
     var q = require('quack');
     var Entity = require('./entity');
     var exports = require('./exports');
+    var Kalkyl = require('kalkyl');
 
     return exports.Curve = q.createClass(Entity, {
         /**
@@ -85,12 +86,17 @@ define(function (require) {
          */
         tangentExpressions: function () {
             var parameter = this.parameter();
-            var map = {}
+            var map = {};
+            
+            var zero = new Kalkyl.Number(0);
+            var one = new Kalkyl.Number(1);
 
-            var xDeriv = "dxd" + parameter, yDeriv = "dyd" + parameter, zDeriv = "dzd" + parameter;
-            map[xDeriv] = this.expression(xDeriv) || this.flatExpression('x').differentiated(parameter);
-            map[yDeriv] = this.expression(yDeriv) || this.flatExpression('y').differentiated(parameter);
-            map[zDeriv] = this.expression(zDeriv) || this.flatExpression('z').differentiated(parameter);
+            // todo: allow for user to set tangent expression manually
+            // to improve unnecessarily complicated derivative expressions
+            
+            map.x = (parameter === 'x') ? one : this.flatExpression('x').differentiated(parameter);
+            map.y = (parameter === 'y') ? one : this.flatExpression('y').differentiated(parameter);
+            map.z = (parameter === 'z') ? one : this.flatExpression('z').differentiated(parameter);
             return map;
         }
     });

@@ -58,8 +58,6 @@ define(function (require) {
          * Notify observers.
          */
         notifyObservers: function (node, type, symbol) {
-            console.log("soace!");
-            console.log(this._observers);
 	    this._observers.forEach(function (o) {
                 console.log("obs");
                 o.update(node, type, symbol);

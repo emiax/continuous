@@ -33,7 +33,6 @@ define(function (require) {
             if (!this._tessellated) {
                 this.tessellate();
             }
-            console.log(this._triangleData);
             return this._triangleData;
         }, 
 

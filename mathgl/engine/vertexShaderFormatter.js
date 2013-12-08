@@ -17,8 +17,6 @@ define(function (require) {
             var cat = this.symbolCategorization();
             var dict = this.shaderSymbolDictionary();
 
-            console.log(this.entityStrategy());
-            
             glsl += this.entityStrategy().uniformDeclarations();
             glsl += this.entityStrategy().attributeDeclarations();
             
@@ -36,7 +34,9 @@ define(function (require) {
                 glsl += 'varying float ' + dict.varyingName(s) + ";\n";
             });
 
-            glsl += 'uniform mat4 mvpMatrix;\n';
+            glsl += 'uniform mat4 mvMatrix;\n';
+            glsl += 'uniform mat4 pMatrix;\n';
+            glsl += 'varying vec3 spaceNormal;\n';
 
             return glsl;
         },
@@ -53,7 +53,6 @@ define(function (require) {
             var glsl = "void main() {\n";
             var scope = this;
 
-            console.log(cat.vertexDefinitions());
             cat.vertexDefinitions().forEach(function (s) {
                 var expr = scope.expressions()[s];
 
@@ -62,6 +61,7 @@ define(function (require) {
             
             glsl += "vec4 spacePosition;\n";
             glsl += this.entityStrategy().spacePosition(cat, dict);
+            glsl += this.entityStrategy().spaceNormal(cat, dict);
 /*
             glsl += "vec4 spacePosition = vec4(" +
                 dict.vertexName('x', cat) + '+theta/100.0' + ', ' + 
@@ -71,7 +71,7 @@ define(function (require) {
             glsl += this.entityStrategy().displace('spacePosition');
 */
 
-            glsl += "gl_Position = " + dict.mvpMatrixName() + " * spacePosition;\n";
+            glsl += "gl_Position = " + dict.pMatrixName() + "*" + dict.mvMatrixName() + " * spacePosition;\n";
 
 
             cat.varyings().forEach(function (s) {

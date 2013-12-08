@@ -47,9 +47,11 @@ define(function (require) {
                 scope._uniformLocations[s] = scope._shaderProgram.uniformLocation(ref);
             });
 
-            ref = dict.mvpMatrixName();
-            this._mvpMatrixLocation = this._shaderProgram.uniformLocation(ref);
-
+            ref = dict.mvMatrixName();
+            this._mvMatrixLocation = this._shaderProgram.uniformLocation(ref);
+            ref = dict.pMatrixName();
+            this._pMatrixLocation = this._shaderProgram.uniformLocation(ref);
+            
             var scope = this;
         },
 
@@ -66,19 +68,7 @@ define(function (require) {
          * Refresh.
          */
         refresh: function (spec) {
-            /*            var refreshUniforms = {};
-                          var refreshAttributes = {};
-                          var refreshVertexShader = false;
-                          var refreshFragmentShader = false;
-
-                          console.log(spec);
-                          spec = spec || {};
-                          var expressions = spec.expressions || {};
-
-
-                          if (spec.appearance) {
-
-                          }*/
+            // todo: remove?
         },
 
 
@@ -108,7 +98,6 @@ define(function (require) {
             var direction = vec3.create();
             var triangleData = tessellation.triangleArray();
             
-            console.log(triangleData);
 //            var triangleSorter = new exports.TriangleSorter(uData, vData);
 
             this.updateTriangleBuffer(triangleData)
@@ -149,11 +138,16 @@ define(function (require) {
                 gl.uniform1f(location, value);
             });
 
-            var location = this._mvpMatrixLocation;
 
+            var location = this._mvMatrixLocation;
             var e = new Float32Array(16);
+            e = renderer.mvMatrix();
+            gl.uniformMatrix4fv(location, false, e);
 
-            e = renderer.matrix();
+
+            var location = this._pMatrixLocation;
+            e = new Float32Array(16);
+            e = renderer.pMatrix();
             gl.uniformMatrix4fv(location, false, e);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
