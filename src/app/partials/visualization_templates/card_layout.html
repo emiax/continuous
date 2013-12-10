@@ -14,11 +14,26 @@
         <li class="card">
             <p>This visualization is showing spherical coordinates in the <em>continuous™ Card Layout</em></p>
         </li>
+        
+        <li class="card">
+            <p>Inline math:</p>
+            <p>
+                The interval of
+                <equation expr="phi"></equation>
+                is varying between
+                <equation expr="{0, 0}"></equation>
+                and
+                <equation expr="{0, 2 pi}"></equation>
+            </p>
+        </li>
 
         <li class="card" subscribe="state">
-            <p>radius: {{publisher.r}}</p>
-            <p>theta: {{publisher.theta}}</p>
-            <p>phi: {{publisher.phi}}</p>
+            <p>Equation blocks:</p>
+            <div class="equation-block">
+                <p><equation pre="radius =" watch="publisher.r"></equation></p>
+                <p><equation pre="theta:" watch="publisher.theta"></equation></p>
+                <p><equation pre="phi:" watch="publisher.phi"></equation></p>
+            </div>
         </li>
     </ul>
 </div>

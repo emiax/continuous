@@ -1,7 +1,7 @@
 angular.module('continuousApp').compileProvider.directive(
-    'subscribe', function($window) {
+    'subscribe', function($rootScope, $compile) {
 
-        var linker = function (scope) {
+        var linker = function (scope, element) {
 
             var update = function (key) {
                 var phase = scope.$root.$$phase;

@@ -30,7 +30,8 @@ continuousApp.config(function($routeProvider){
                 'src/app/js/controllers/visualization-ctrl.js',
                 'src/app/js/directives/visualization-dir.js',
                 'src/app/js/directives/resize-dir.js',
-                'src/app/js/directives/subscribe-dir.js'
+                'src/app/js/directives/subscribe-dir.js',
+                'src/app/js/directives/equation-dir.js'
             ];
  
             require(dependencies, function () {

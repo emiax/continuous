@@ -1,9 +1,13 @@
 <div id="gallery-info-wrapper">
     <h2 class="gallery" id="gallery-title">{{gui.title}}</h2>
-    <div class="gallery" id="gallery-expression">{{state.expression}}</div>
+    <equation 
+        class="gallery"
+        id="gallery-expression"
+        watch="state.expression">
+    </equation>
 </div>
 <div id="canvas-wrapper">
-    <canvas id="canvas" 
+    <canvas id="canvas"
         resize
         width={{getWindowDimensions().w}}
         height={{getWindowDimensions().h}}

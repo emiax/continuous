@@ -1,9 +1,15 @@
-@import url(http://fonts.googleapis.com/css?family=Pacifico);
+@import url(http://fonts.googleapis.com/css?family=Asap:400,400italic|Pacifico);
+
 @color-midBlack: #333333;
 @color-cardBarBg: #282828;
 @color-navBg: #222222;
 @color-almostWhite: #f4f4f4;
 @color-almostBlack: #111111;
+
+@import "text_style.less";
+@import "helper_styles.less";
+@import "visualization_style.less";
+@import "navbar_style.less";
 
 /**
  * Normalize
@@ -13,22 +19,6 @@
   padding: 0;
 }
 
-/**
- * Helpers
- */
-.right {
-  right: 0;
+body {
+    .default-font-style;
 }
-
-.flexbox {
-  display: flex;
-  flex-direction: column;
-}
-.subflexer {
-  flex: auto;
-  display: flex;
-  flex-direction: row;
-}
-
-@import "visualization_style.less";
-@import "navbar_style.less";

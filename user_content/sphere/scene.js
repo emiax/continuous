@@ -74,8 +74,8 @@ define([
             a = Math.abs(Math.sin(t/200));
             aString = Math.round( a * 10 ) / 10;
 
-            State.set( 'theta', '[ 0, ' + (aString).toFixed(1) + 'π ]' );
-            State.set( 'phi', '[ 0, ' + (aString*2).toFixed(1) + 'π ]');
+            State.set( 'theta', '{0, ' + (aString).toFixed(1) + 'pi }' );
+            State.set( 'phi', '{0, ' + (aString*2).toFixed(1) + 'pi }');
 
             surface.primitive( 'a', a );
 

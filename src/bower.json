@@ -15,6 +15,10 @@
     "requirejs-text": "2.0.10"
   },
   "dependencies": {
-    "bootstrap": "3.0.0"
+    "bootstrap": "3.0.0",
+    "MathJax": "*"
+  },
+  "resolutions": {
+    "angular": "1.2.0-rc.1"
   }
 }
