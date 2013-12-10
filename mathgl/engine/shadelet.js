@@ -38,10 +38,8 @@ define(function (require) {
 
 
         symbolName: function (symbol) {
-            console.log(this.formatter());
             var cat = this.formatter().symbolCategorization();
             var dict = this.formatter().shaderSymbolDictionary();
-            console.log(dict.fragmentName(symbol, cat));
             return dict.fragmentName(symbol, cat);
         },
 

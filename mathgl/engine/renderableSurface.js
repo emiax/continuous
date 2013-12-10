@@ -12,7 +12,6 @@ define(function (require) {
          * Initialize.
          */
         initialize: function () {
-            console.log("Initializing " + this.entity().id());
             this.initializeParameterBuffer();
 
             this._shaderProgram = this.generateShaderProgram();
@@ -45,8 +44,11 @@ define(function (require) {
                 scope._uniformLocations[s] = scope._shaderProgram.uniformLocation(ref);
             });
 
-            ref = dict.mvpMatrixName();
-            this._mvpMatrixLocation = scope._shaderProgram.uniformLocation(ref)
+            ref = dict.mvMatrixName();
+            this._mvMatrixLocation = this._shaderProgram.uniformLocation(ref);
+
+            ref = dict.pMatrixName();
+            this._pMatrixLocation = this._shaderProgram.uniformLocation(ref);
 
         },
 
@@ -62,11 +64,22 @@ define(function (require) {
         },
 
 
+        /**
+         * TangentExpressions. 
+         */
+        tangentExpressions: function () {
+            if (this._tangentExpressions === undefined) {
+               this._tangentExpressions = this.entity().tangentExpressions();
+            }
+            return this._tangentExpressions;
+        },
+
 
 
         entityShaderStrategy: function () {
             if (this._entitiyShaderStrategy === undefined) {
-                this._entityShaderStrategy = new exports.SurfaceShaderStrategy();
+                var derivativeExpressions = this.tangentExpressions();
+                this._entityShaderStrategy = new exports.SurfaceShaderStrategy(derivativeExpressions);
             }
             return this._entityShaderStrategy;
         },
@@ -99,7 +112,6 @@ define(function (require) {
 
                           }*/
         },
-
 
 
         initializeParameterBuffer: function () {
@@ -158,14 +170,9 @@ define(function (require) {
 
 
         updateTriangleBuffer: function (triangleData) {
-            var start = new Date();
             var gl = this.gl();
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, triangleData, gl.STATIC_DRAW);
-            var end = new Date();
-            
-            console.log("Updating buffer");
-            console.log(end - start);
         },
 
 
@@ -176,14 +183,6 @@ define(function (require) {
 
             var gl = this.gl();
             this.useProgram();
-
-            /*
-              Object.keys(this._parameterLocations).forEach(function (s) {
-              gl.bindBuffer(gl.ARRAY_BUFFER, this._attributeBuffer[s]);
-              gl.enableVertexAttribArray(this._parameterLocations[s]);
-              gl.vertexAttribPointer(this._parameterLocations[s], 1, gl.FLOAT, false, 0, 0);
-              });
-            */
 
             gl.bindBuffer(gl.ARRAY_BUFFER, this._uBuffer);
             gl.enableVertexAttribArray(this._uLocation);
@@ -199,21 +198,21 @@ define(function (require) {
 
             Object.keys(this._uniformLocations).forEach(function (s) {
                 var location = scope._uniformLocations[s];
-//                var evaluated = entity.value(s);//flat(s).evaluated();
-/*                if (!evaluated.value) {
-                    console.log('could not evaluate ' + s);
-                    console.log('expr gave ' + entity.get(s).simpleFormat());
-                    console.log('flattened gave ' + entity.flat(s).simpleFormat());
-                }*/
                 var value = entity.value(s);
                 gl.uniform1f(location, value);
             });
 
-            var location = this._mvpMatrixLocation;
+            var location = this._mvMatrixLocation;
             var e = new Float32Array(16);
-
-            e = renderer.matrix();
+            e = renderer.mvMatrix();
             gl.uniformMatrix4fv(location, false, e);
+
+
+            var location = this._pMatrixLocation;
+            e = new Float32Array(16);
+            e = renderer.pMatrix();
+            gl.uniformMatrix4fv(location, false, e);
+
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
 
@@ -223,8 +222,6 @@ define(function (require) {
             } else {
                 gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
             }
-            //todo!
-
         }
 
     });

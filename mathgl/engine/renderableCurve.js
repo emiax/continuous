@@ -47,8 +47,10 @@ define(function (require) {
             scope._thicknessLocation = scope._shaderProgram.uniformLocation(ref);
             
 
-            ref = dict.mvpMatrixName();
-            this._mvpMatrixLocation = scope._shaderProgram.uniformLocation(ref)
+            ref = dict.mvMatrixName();
+            this._mvMatrixLocation = this._shaderProgram.uniformLocation(ref);
+            ref = dict.pMatrixName();
+            this._pMatrixLocation = this._shaderProgram.uniformLocation(ref);
 
         },
 
@@ -65,42 +67,19 @@ define(function (require) {
          * Refresh.
          */
         refresh: function (spec) {
-            /*            var refreshUniforms = {};
-                          var refreshAttributes = {};
-                          var refreshVertexShader = false;
-                          var refreshFragmentShader = false;
-
-                          console.log(spec);
-                          spec = spec || {};
-                          var expressions = spec.expressions || {};
-
-
-                          if (spec.appearance) {
-
-                          }*/
+            // todo: remove? Create new renderable when expression is added/removed/changed?
         },
 
 
         /**
          * Return the set of symbols required by the vertex shader.
-         * Make sure that derivative (tangent) expressions get evaluated in the shader.
          */
         vertexShaderSinks: function () {
-            var sinks = {
+            return {
                 x: true,
                 y: true,
                 z: true
             };
-            
-            var scope = this;
-            var tangentExpressions = this.tangentExpressions();
-            Object.keys(tangentExpressions).forEach(function (s) {
-                if (!scope.expressions[s]) {
-                    sinks[s] = true;
-                }
-            });
-
-            return sinks;
         },
 
 
@@ -110,7 +89,6 @@ define(function (require) {
         tangentExpressions: function () {
             if (this._tangentExpressions === undefined) {
                this._tangentExpressions = this.entity().tangentExpressions();
-          //      return this.entity().tangentExpressions();
             }
             return this._tangentExpressions;
         },
@@ -125,7 +103,8 @@ define(function (require) {
                 var parameters = this.entity().parameters();
                 var parameter = parameters[0];
                 if (parameter) {
-                    this._entityShaderStrategy = new exports.CurveShaderStrategy(parameter);
+                    var derivativeExpressions = this.tangentExpressions();
+                    this._entityShaderStrategy = new exports.CurveShaderStrategy(derivativeExpressions);
                 } else {
                     console.error("missing parameter");
                 }
@@ -134,39 +113,6 @@ define(function (require) {
         },
 
         
-        /**
-         * Symbol categorization.
-         */
-/*        symbolCategorization: function () {
-            if (this._symbolCategorization == undefined) {
-                this._symbolCategorization = new exports.SymbolCategorization(this.vertexShaderSinks(),            
-                                                                         this.fragmentShaderSinks(),
-                                                                         this.parameterSymbols(),
-                                                                         this.primitiveSymbols(),
-                                                                         this.expressions());
-            } 
-            return this._symbolCategorization;
-        },*/
-
-
-        /**
-         * Overrides expressions is base class.
-         * Also incldues tangent expressions.
-         */
-        expressions: function () {
-            var curve = this.entity();
-            var expressions = curve.allExpressions();
-            var tangentExpressions = this.tangentExpressions();
-            
-            Object.keys(tangentExpressions).forEach(function (s) {
-                if (!expressions[s]) {
-                    expressions[s] = tangentExpressions[s];
-                }
-            });
-            
-            return expressions;
-        },
-
         /**
          * Initialize Parameter buffer
          */
@@ -181,9 +127,6 @@ define(function (require) {
             var uDomain = domain[u];
             var stepSize = curve.stepSize()[u];
             
-            console.log("stepSize:" + stepSize);
-            
-
             var tessellation = new exports.TubeTessellation(uDomain, stepSize);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
@@ -218,17 +161,9 @@ define(function (require) {
          * Render.
          */
         render: function (renderer) {
-
             var gl = this.gl();
             this.useProgram();
 
-            /*
-              Object.keys(this._parameterLocations).forEach(function (s) {
-              gl.bindBuffer(gl.ARRAY_BUFFER, this._attributeBuffer[s]);
-              gl.enableVertexAttribArray(this._parameterLocations[s]);
-              gl.vertexAttribPointer(this._parameterLocations[s], 1, gl.FLOAT, false, 0, 0);
-              });
-            */
             gl.bindBuffer(gl.ARRAY_BUFFER, this._uBuffer);
             gl.enableVertexAttribArray(this._uLocation);
             gl.vertexAttribPointer(this._uLocation, 1, gl.FLOAT, false, 0, 0);
@@ -237,40 +172,30 @@ define(function (require) {
             gl.enableVertexAttribArray(this._vLocation);
             gl.vertexAttribPointer(this._vLocation, 1, gl.FLOAT, false, 0, 0);
 
-
             var scope = this;
             var entity = this.entity();
 
-            var te = this.tangentExpressions();
-//            console.log(te.dydd);
             Object.keys(this._uniformLocations).forEach(function (s) {
                 var location = scope._uniformLocations[s];
-                
-                if (te[s]) {
-                    value = te[s].value();
-                } else {
-                    value = entity.value(s);
-                }
-
+                value = entity.value(s);
                 gl.uniform1f(location, value);
             });
 
             var thicknessLocation = this._thicknessLocation;
             gl.uniform1f(thicknessLocation, this.entity().thickness());
 
-            var location = this._mvpMatrixLocation;
-
+            var location = this._mvMatrixLocation;
             var e = new Float32Array(16);
-
-            e = renderer.matrix();
+            e = renderer.mvMatrix();
+            gl.uniformMatrix4fv(location, false, e);
+            
+            var location = this._pMatrixLocation;
+            e = new Float32Array(16);
+            e = renderer.pMatrix();
             gl.uniformMatrix4fv(location, false, e);
 
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._triangleBuffer);
-
-                gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
-            
-            //todo!
-
+            gl.drawElements(gl.TRIANGLES, this._triangleCount, gl.UNSIGNED_SHORT, 0);
         }
 
       

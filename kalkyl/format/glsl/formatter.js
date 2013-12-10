@@ -6,11 +6,19 @@ define(function (require) {
 
     return exports.Formatter = q.createClass(Visitor, {
         /**
+         * Constructor
+         */
+        constructor: function (translationTable) {
+            this.translationTable(translationTable);
+        },
+        
+
+        /**
          * Get String.
          */
         format: function (expr) {
             if (!expr) {
-                console.error("expr is not set");
+                console.error("expr is undefined");
             }
             return expr.accept(this);
         },

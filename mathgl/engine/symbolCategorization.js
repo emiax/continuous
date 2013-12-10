@@ -39,8 +39,6 @@ define(function (require) {
 
             var independents = this.independents(dependencyGraph, symbols, Object.keys(parameterSources));
 
-            console.log(independents);
-
             var vertexSymbols = dependencyGraph.orderedSubset(Object.keys(vertexSinks));
             var fragmentSymbols = dependencyGraph.orderedSubset(Object.keys(fragmentSinks));
             

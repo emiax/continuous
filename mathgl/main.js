@@ -11,6 +11,7 @@ define(function (require) {
     require('./fill');
     require('./color');
     require('./gradient');
+    require('./diffuse');
     require('./checkerPattern');
     require('./spaceObserver');
     require('./camera');

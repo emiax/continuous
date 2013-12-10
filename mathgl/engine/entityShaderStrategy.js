@@ -33,7 +33,16 @@ define(function (require) {
          * cat is a SymbolCategorization
          * dict is a ShaderSymbolDictionary
          */
-        spacePosition: new q.AbstractMethod()
+        spacePosition: new q.AbstractMethod(),
+
+
+        /**
+         * Return the code nessesary to set space normal
+         * cat is a SymbolCategorization
+         * dict is a ShaderSymbolDictionary
+         */
+        spaceNormal: new q.AbstractMethod()
+
     });
 });
 

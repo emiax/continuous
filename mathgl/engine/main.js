@@ -41,6 +41,7 @@ define(function (require) {
     require('./colorShadelet');
     require('./gradientShadelet');
     require('./checkerPatternShadelet');
+    require('./diffuseShadelet');
     require('./thresholdShadelet');
 
 

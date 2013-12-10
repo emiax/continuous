@@ -32,8 +32,6 @@ define(function (require) {
                 dict[symbol] = scope.attributeName(symbol);
             });
 
-            console.log(cat);
-
             cat.vertexDefinitions().forEach(function (symbol) {
                 dict[symbol] = scope.vertexDefinitionName(symbol);
             });
@@ -146,11 +144,28 @@ define(function (require) {
 
         
         /**
-         * MVPMatrixName
+         * mvMatrixName
          */
-        mvpMatrixName: function() {
-            return "mvpMatrix";
+        mvMatrixName: function() {
+            return "mvMatrix";
+        },
+
+
+        /**
+         * pMatrixName
+         */
+        pMatrixName: function() {
+            return "pMatrix";
+        },
+
+        
+        /**
+         * Return the name of a derivative dydx
+         */
+        derivativeName: function (x) {
+            return 'der_' + x;
         }
+
     });
 
 });

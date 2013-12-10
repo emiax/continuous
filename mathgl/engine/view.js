@@ -5,8 +5,6 @@ define(function (require) {
     var Stats = require('stats');
 
 
-    console.log(exports);
-    
     
     return exports.View = q.createClass({
         /**
@@ -53,7 +51,7 @@ define(function (require) {
          */
         startRendering: function (renderLoop) {
             var scope = this;
-            console.log("render!");
+//            console.log("render!");
             this._renderLoop = renderLoop;
             
             var renderer = this.renderer();
@@ -90,8 +88,7 @@ define(function (require) {
                 }
             })();
         },
-        
-        
+                
         /**
          * Get/Set active
          */

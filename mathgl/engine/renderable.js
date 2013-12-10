@@ -171,8 +171,6 @@ define(function (require) {
             var vertexShaderFormatter = new exports.VertexShaderFormatter(this.expressions(),
                                                                       this.symbolCategorization());
 
-            console.log(exports);
-
             var fragmentShaderFormatter = new exports.FragmentShaderFormatter(this.expressions(),
                                                                              this.symbolCategorization(),
                                                                              this.appearance());

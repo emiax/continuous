@@ -50,10 +50,8 @@ define(function (require) {
          */
         symbols: function () {
             var keys = Object.keys(this._parameters);
-            console.log(keys);
             var set = {};
             keys.forEach(function (k) {
-                console.log(k);
                 set[k] = true;
             });
             return set;

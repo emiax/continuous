@@ -52,7 +52,16 @@ define(function (require) {
 
             glsl +=  "spacePosition = vec4(position + parallelDisplacement + angularDisplacement, 1.0);\n"; 
             return glsl;
+        },
+
+
+        /**
+         * Return the code nessesary to set space normal
+         * cat is a SymbolCategorization
+         * dict is a ShaderSymbolDictionary
+         */
+        spaceNormal: function (cat, dict) {
+            return "spaceNormal = vec3(0.0, 0.0, 1.0);\n";
         }
-        
     });
 });

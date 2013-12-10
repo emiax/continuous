@@ -34,8 +34,6 @@ define(function (require) {
             var n = this._n = Math.ceil(uDist / this._uStep) + 1;
             var m = this._m = Math.ceil(vDist / this._vStep) + 1;
 
-            console.log(n + ", " + m);
-            
             this._tessellated = false;
             
         },

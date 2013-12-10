@@ -6,7 +6,7 @@ define(function (require) {
     var exports = require('./exports');
 
     var nextId = 1;
-
+    var saidIt = false;
     return exports.Scope = q.createClass({
         /**
          * Constructor.
@@ -150,8 +150,6 @@ define(function (require) {
                 this._children[child._id] = child;
                 child._parent = this;
                 child.updateScope();
-                console.log("adding !");
-                console.log(child.id());
                 child.notifyObservers('add');
             } else {
                 throw "Type error. Child is not a scope";
@@ -448,7 +446,10 @@ define(function (require) {
             } else if (this._primitives[symbol] !== undefined) {
                 return this.primitive(symbol);
             } else {
-                console.error("symbol "  + symbol + " is not defined in scope.");
+                if (!saidIt) {
+                    console.error("symbol "  + symbol + " is not defined in scope.");
+                    saidIt = true;
+                }
             }
         },
 
