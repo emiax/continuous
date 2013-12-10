@@ -42,37 +42,11 @@ define([
         var space = new MathGL.Space();
         
         // BEGIN DEFINING SPACE.
-        var scope = new MathGL.Scope({
-            expressions: {
-                t: 0,
-                j: 0,
-                p: 3,
-                q: -7
-            }
-        });
-       
-        var camera = new MathGL.Camera({
-            primitives: {
-                x: 10,
-                y: 0,
-                z: 10
-            },
-            expressions: {
-                position: '[x, y, z]',
-                subject: '[0, 0, 0]',
-                up: '[0, 0, 1]'
-            }
-        });
-
-        scope.add(camera);
-
         var t;
         function update() {
             t = State.t;
-            camera.primitive('x', 10*Math.cos(2*Math.PI * t / 1000) + 0.01);
-            camera.primitive('y', 10*Math.sin(2*Math.PI * t / 1000) + 0.01);
-            arrow.primitive('s', t);
-            ++State.t;
+            scope.primitive('t', t % 20*Math.PI);
+            State.t += 0.01;
         }
 
         // surface appearance.
@@ -84,53 +58,96 @@ define([
             parameter: 's',
             blendMode: 'normal', 
             stops: {
-                '0.5': red,
-                '0': blue
+                '0': blue,
+                '1': red
             }
         });
 
-        // var darkOverlay = new MathGL.Color({
-        //     color: 0x55000000,
-        //     background: gradient
-        // });
+        var darkOverlay = new MathGL.Color({
+            background: gradient,
+            color: 0x44000000
+        });
+        
+        var stripes = new MathGL.CheckerPattern({
+            parameters: {
+                T: 1
+            },
+            inputA: gradient,
+            inputB: darkOverlay
+        });
 
-        // var checker = new MathGL.CheckerPattern({
-        //     parameters: {
-        //         t: 0.25
-        //     },
-        //     inputA: gradient,
-        //     inputB: darkOverlay
-        // });
+        var diffuse = new MathGL.Diffuse({
+            background: stripes
+        });
+
+        var parser = new SimpleFormat.Parser();
+        
+
+        
+        
+        var r = parser.parse('cos(q*T) + 2');
+        var x = parser.parse('5cos(T/10) + r*cos(p*T)').substituted({r: r});
+        var y = parser.parse('5sin(T/10) + r*sin(p*T)').substituted({r: r});
+        var z = parser.parse('-sin(q*T)').substituted({r: r});
 
 
-        var curve = new MathGL.Curve({
-            domain: {
-                s: [-1, 1]
+        // main scope
+
+        var scope = new MathGL.Scope({
+            primitives: {
+                t: 0,
+                p: 3, 
+                q: -4
             },
             expressions: {
-                x: 's',
-                y: '0',
-                z: 'sin(x)',
+                a: 't',
+                T: 'a*s',
+                x: x,
+                y: y,
+                z: z,
+                X: x.differentiated('T'),
+                Y: y.differentiated('T'),
+                Z: z.substituted({'x': x, 'y': y}).differentiated('T'),
+            }
+        });
+
+
+        // entities
+        
+        var curve = new MathGL.Curve({
+            domain: {
+                s: [0, 1]
             },
-            thickness: 0.2,
-            stepSize: 0.5,
-            appearance: gradient
+            thickness: 0.1,
+            stepSize: 0.001,
+            appearance: diffuse
         });
         
         var arrow = new MathGL.VectorArrow({
             primitives: {
-                a: 1,
-                b: Math.sin(1),
-                s: 0
+                s: 1
             },
             expressions: {
-                x: 'a',
-                y: 'b',
-                position: '[a 0 b]',
-                value: '[1.5 + sin(s/100), 0, 0]',
+                position: '[x, y, z]',
+                value: '[X/10, Y/10, Z/10]',
             },
-            appearance: blue
+            appearance: diffuse
         });
+
+        // camera
+       
+        var camera = new MathGL.Camera({
+            expressions: {
+                s: 1,
+                position: '15*[cos(t/10), sin(t/10), sin(t/10)]',
+                subject: '[0, 0, 0]',
+                up: '[0, 0, 1]'
+            }
+        });
+
+        scope.add(camera);
+
+        // Add erverything to the scene graph.
 
         scope.add(arrow);
         scope.add(curve);

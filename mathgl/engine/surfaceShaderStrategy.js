@@ -15,6 +15,14 @@ define(function (require) {
 
 
         /**
+         * Return glsl code for varying declarations.
+         */
+        varyingDeclarations: function () {
+            return "varying vec3 vSpecial_spaceNormal;\n";
+        },
+        
+
+        /**
          * Return the code nessesary to set space position
          * cat is a SymbolCategorization
          * dict is a ShaderSymbolDictionary
@@ -28,11 +36,11 @@ define(function (require) {
 
 
         /**
-         * Return the code nessesary to set space normal
+         * Return vertex shader appendix. In this case: calculate a normal in the space reference system.
          * cat is a SymbolCategorization
          * dict is a ShaderSymbolDictionary
          */
-        spaceNormal: function (cat, dict) {            
+        vertexShaderAppendix: function (cat, dict) {            
             var dxds = dict.derivativeName("dxds");
             var dyds = dict.derivativeName("dyds");
             var dzds = dict.derivativeName("dzds");
@@ -62,8 +70,19 @@ define(function (require) {
             glsl += "vec3 tangent1 = vec3(" + dxds + ", " + dyds + ", " + dzds + ");\n";
             glsl += "vec3 tangent2 = vec3(" + dxdt + ", " + dydt + ", " + dzdt + ");\n";
 
-            glsl += "spaceNormal = normalize(-cross(tangent1, tangent2));\n";
+            glsl += "vSpecial_spaceNormal = normalize(-cross(tangent1, tangent2));\n";
             return glsl;
+        },
+
+
+        /**
+         * Return code to set space normal in fragment shader.
+         * In this case: Just forward the vertex shader's space normal. 
+         */
+        spaceNormal: function (cat, dict) {
+            var spaceNormal = dict.spaceNormalName();
+            return "vec3 " + spaceNormal + " = vSpecial_spaceNormal;\n";
         }
+
     });
 });

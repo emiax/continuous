@@ -15,20 +15,31 @@ define(function (require) {
 
 
         /**
-         * Return glsl code for variable declarations
+         * Return glsl code for attribute declarations.
          */
         attributeDeclarations: function () {
             return "attribute float theta;\n";
         },
 
-        
-        uniformDeclarations: function () {
-            return "uniform float thickness;\n"
-        },
-
 
         /**
-         * Return the code nessesary to set space position
+         * Return glsl code for uniform declarations.
+         */
+        uniformDeclarations: function () {
+            return "uniform float thickness;\n";
+        },
+        
+
+        /**
+         * Return glsl code for varying declarations.
+         */
+        varyingDeclarations: function () {
+            return "varying vec3 vSpecial_spaceNormal;\n";
+        },
+        
+
+        /**
+         * Return the code necessary to set space position in the vertex shader.
          * cat is a SymbolCategorization
          * dict is a ShaderSymbolDictionary
          */
@@ -65,12 +76,22 @@ define(function (require) {
 
 
         /**
-         * Return the code nessesary to set space normal
+         * Return vertex shader appendix. In this case: calculate a normal in the space reference system.
          * cat is a SymbolCategorization
          * dict is a ShaderSymbolDictionary
          */
+        vertexShaderAppendix: function (cat, dict) {
+            return "vSpecial_spaceNormal = normalize(displacement);\n";
+        },
+
+
+        /**
+         * Return code to set space normal in fragment shader.
+         * In this case: Just forward the vertex shader's space normal. 
+         */
         spaceNormal: function (cat, dict) {
-            return "spaceNormal = normalize(displacement);\n";
-        }        
+            var spaceNormal = dict.spaceNormalName();
+            return "vec3 " + spaceNormal + " = vSpecial_spaceNormal;\n";
+        }
     });
 });

@@ -40,7 +40,7 @@ define(function (require) {
 
 
             glsl += this.entityStrategy().uniformDeclarations();
-            glsl += this.entityStrategy().varyingDeclatations();
+            glsl += this.entityStrategy().varyingDeclarations();
             
             
             cat.uniforms().forEach(function (s) {
@@ -51,8 +51,9 @@ define(function (require) {
                 glsl += 'varying float ' + dict.varyingName(s) + ";\n";
             });
 
-            glsl += 'varying vec3 spaceNormal;\n';
-            glsl += 'uniform mat4 mvMatrix;\n';
+//            glsl += 'varying vec3 ' + dict.spaceNormalName() + ';\n';
+//            glsl += 'vec3 ' + dict.fragmentNormalName() + ' = ' + dict.spaceNormalName() + ';\n';
+            glsl += 'uniform mat4 ' + dict.mvMatrixName() + ';\n';
             
             return glsl;
         },
@@ -98,6 +99,8 @@ define(function (require) {
                 }
                 glsl += "float " + dict.fragmentName(s, cat) + " = " + formatter.format(expr) + ";\n";
             });
+            
+            glsl += this.entityStrategy().spaceNormal(cat, dict);
             
             var sinkNode = this.appearance();
             var nodes = sinkNode ? sinkNode.bottomUp() : [];

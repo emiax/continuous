@@ -147,7 +147,7 @@ define(function (require) {
          * mvMatrixName
          */
         mvMatrixName: function() {
-            return "mvMatrix";
+            return "uSpecial_mvMatrix";
         },
 
 
@@ -155,15 +155,31 @@ define(function (require) {
          * pMatrixName
          */
         pMatrixName: function() {
-            return "pMatrix";
+            return "uSpecial_pMatrix";
         },
 
         
         /**
-         * Return the name of a derivative dydx
+         * Return the name of a derivative dydx.
          */
         derivativeName: function (x) {
-            return 'der_' + x;
+            return 'vsDerivative_' + x;
+        },
+
+
+        /**
+         * Return the name of the space position in the vertex shader.
+         */
+        spacePositionName: function () {
+            return 'vsSpecial_spacePosition'
+        },
+
+        
+        /*
+         * Return the name of the the space normal. This is defined in the fragment shader.
+         */
+        spaceNormalName: function () {
+            return 'fsSpecial_spaceNormal';
         }
 
     });

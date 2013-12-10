@@ -98,8 +98,8 @@ define(function (require) {
                 triangleData[j++] = i2;
 
                 triangleData[j++] = i1;
-                triangleData[j++] = i2;
                 triangleData[j++] = i3;
+                triangleData[j++] = i2;
 
 //                j += 6;
                 // cylinder's top

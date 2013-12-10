@@ -14,11 +14,14 @@ define(function (require) {
             var glsl = "";
             var nodeName = this.nodeName();
 
+            var dict = this.dictionary();
+            
             if (background) {
+                var spaceNormal = dict.spaceNormalName();
                 glsl += 'vec4 bg = ' + this.nodeName(node.background()) + ';\n';
                 
                 glsl += nodeName + " = bg;\n";
-                glsl += "vec4 transformedNormal = mvMatrix * vec4(spaceNormal, 1.0);\n";
+                glsl += "vec4 transformedNormal = " + dict.mvMatrixName() + " * vec4(" + spaceNormal + ", 1.0);\n";
                 glsl += "float multiplier;\n";
 
                 glsl += 'if (gl_FrontFacing) {\n'
@@ -29,10 +32,12 @@ define(function (require) {
 
                 glsl += 'vec3 lightDirection = normalize(vec3(1.0, 0.0, 1.0));';
                 
-                glsl += nodeName + ".xyz *= 0.7 + 0.7*clamp(dot(spaceNormal.xyz * multiplier, lightDirection), 0.0, 1.0);\n";
+                glsl += nodeName + ".xyz *= 0.7 + 0.7*clamp(dot(" + spaceNormal + ".xyz * multiplier, lightDirection), 0.0, 1.0);\n";
             } else {
                 glsl += nodeName + " = vec4(1.0);\n";
             }
+
+//            glsl += nodeName + " = vec4(fsSpecial_cylinderNormal, 1.0);\n"
             return glsl;
         }
     });

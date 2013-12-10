@@ -15,7 +15,7 @@ define(function (require) {
             column.forEachArgument(function (v) {
                 rows.push([v]);
             });
-            return new KL.MatrixNM(rows);
+            return new exports.MatrixNM(rows);
         },
 
 

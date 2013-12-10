@@ -94,6 +94,7 @@ define(function (require) {
          */
         toPrimitive: function () {
             console.error("Cannot convert binary operator to primitive");
+            this.dump();
             return null;
         }
 
