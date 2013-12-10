@@ -139,7 +139,7 @@ define([
         var camera = new MathGL.Camera({
             expressions: {
                 s: 1,
-                position: '20*[cos(t/10), sin(t/10), sin(t/10)]',
+                position: '15*[cos(t/10), sin(t/10), sin(t/10)]',
                 subject: '[0, 0, 0]',
                 up: '[0, 0, 1]'
             }
