@@ -43,6 +43,11 @@ define(function (require) {
             return dict.fragmentName(symbol, cat);
         },
 
+        
+        dictionary: function () {
+            return this.formatter().shaderSymbolDictionary();
+        }, 
+
 
         formatFloat: function (f) {
             var f = f + "";

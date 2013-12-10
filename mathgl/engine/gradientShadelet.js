@@ -19,7 +19,7 @@ define(function (require) {
             }
             
             var stops = node.stops();
-            var keys = Object.keys(stops).sort();
+            var keys = Object.keys(stops).sort(function(a,b){return a-b});
             var parameter = this.symbolName(node.parameter());
             var nKeys = keys.length;
             

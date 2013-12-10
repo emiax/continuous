@@ -29,7 +29,7 @@ define(function (require) {
 
 
         /**
-         * Return the code nessesary to set space position
+         * Return the code nessesary to set space position in the vertex shader
          * cat is a SymbolCategorization
          * dict is a ShaderSymbolDictionary
          */
@@ -37,12 +37,17 @@ define(function (require) {
 
 
         /**
-         * Return the code nessesary to set space normal
+         * Return code to append to the vertex. This can for example set varyings necessary to calculate a space normal in the fs.
          * cat is a SymbolCategorization
          * dict is a ShaderSymbolDictionary
          */
-        spaceNormal: new q.AbstractMethod()
+        vertexShaderAppendix: new q.AbstractMethod(),
 
+
+        /**
+         * Return the code necessary to set space normal on fragment shader (should define fragmentSpaceNormal)
+         */
+        spaceNormal: new q.AbstractMethod()
     });
 });
 

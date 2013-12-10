@@ -19,6 +19,7 @@ define(function (require) {
 
             glsl += this.entityStrategy().uniformDeclarations();
             glsl += this.entityStrategy().attributeDeclarations();
+            glsl += this.entityStrategy().varyingDeclarations();
             
 //            glsl += this.entitySpecificAttributeDefinitions();
             
@@ -33,11 +34,10 @@ define(function (require) {
             cat.varyings().forEach(function (s) {
                 glsl += 'varying float ' + dict.varyingName(s) + ";\n";
             });
-
-            glsl += 'uniform mat4 mvMatrix;\n';
-            glsl += 'uniform mat4 pMatrix;\n';
-            glsl += 'varying vec3 spaceNormal;\n';
-
+            
+            glsl += 'uniform mat4 ' + dict.mvMatrixName() + ';\n';
+            glsl += 'uniform mat4 ' + dict.pMatrixName() + ';\n';
+            
             return glsl;
         },
 
@@ -55,13 +55,12 @@ define(function (require) {
 
             cat.vertexDefinitions().forEach(function (s) {
                 var expr = scope.expressions()[s];
-
                 glsl += "float " + dict.vertexName(s, cat) + " = " + formatter.format(expr) + ";\n";
             });
             
             glsl += "vec4 spacePosition;\n";
             glsl += this.entityStrategy().spacePosition(cat, dict);
-            glsl += this.entityStrategy().spaceNormal(cat, dict);
+            glsl += this.entityStrategy().vertexShaderAppendix(cat, dict);
 /*
             glsl += "vec4 spacePosition = vec4(" +
                 dict.vertexName('x', cat) + '+theta/100.0' + ', ' + 

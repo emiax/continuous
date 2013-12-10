@@ -3,7 +3,7 @@ define(function (require) {
     var Expression = require('./expression');
     var exports = require('./exports');
 
-    return exports.Dumper = q.createClass({
+    exports.Dumper = q.createClass({
         /**
          * Dump expression.
          */
@@ -16,7 +16,7 @@ define(function (require) {
         }
     });
 
-    
+
     q.patch(Expression, {
         dump: function(label, dumper) {
             if (!dumper) {
@@ -27,6 +27,6 @@ define(function (require) {
     });
 
 
-    return Dumper;
+    return exports.Dumper;
 });
 
