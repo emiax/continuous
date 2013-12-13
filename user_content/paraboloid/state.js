@@ -4,10 +4,8 @@ define(function(require) {
 
     var state = {
         t: 0,
-        canvasDim: {
-            w: 700,
-            h: 700
-        },
+        canvasDim: {},
+        mouseState: {},
         expression: 'z = x^2 + y^2'
     };
 
