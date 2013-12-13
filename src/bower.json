@@ -7,18 +7,14 @@
     "bower_components"
   ],
   "devDependencies": {
-    "angular": "1.2.0-rc.1",
     "angular-scenario": "1.2.0-rc.1",
-    "angular-route": "1.2.0-rc.1",
-    "angular-mocks": "1.2.0-rc.1",
-    "requirejs": "2.1.8",
-    "requirejs-text": "2.0.10"
+    "angular-mocks": "1.2.0-rc.1"
   },
   "dependencies": {
-    "bootstrap": "3.0.0",
+    "requirejs": "2.1.8",
+    "requirejs-text": "2.0.10",
+    "angular-route": "1.2.0-rc.1",
+    "angular": "1.2.0-rc.1",
     "MathJax": "*"
-  },
-  "resolutions": {
-    "angular": "1.2.0-rc.1"
   }
 }

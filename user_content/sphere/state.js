@@ -6,10 +6,8 @@ define(function(require) {
         r: '',
         theta: '',
         phi: '',
-        canvasDim: {
-            w: 700,
-            h: 700
-        },
+        canvasDim: {},
+        mouseState: {},
         expression: 'r = 1, x = r*sin(theta)cos(phi), ...'
     };
 

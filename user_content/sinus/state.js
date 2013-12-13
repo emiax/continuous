@@ -8,6 +8,7 @@ define(function(require) {
             w: 700,
             h: 700
         },
+        mouseState: {},
         expression: 'z = sin(x)'
     };
 

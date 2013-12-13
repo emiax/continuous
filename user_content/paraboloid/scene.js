@@ -69,8 +69,8 @@ define([
         var t;
         function update() {
             t = State.t;
-            camera.primitive('x', 6*Math.cos(2*Math.PI * t / 1000) + 0.01);
-            camera.primitive('y', 4*Math.sin(2*Math.PI * t / 5000) + 0.01);
+            // camera.primitive('x', 6*Math.cos(2*Math.PI * t / 1000) + 0.01);
+            // camera.primitive('y', 4*Math.sin(2*Math.PI * t / 5000) + 0.01);
             surface2.primitive('a', 7*Math.sin(t/500));
             ++State.t;
         }
@@ -160,8 +160,38 @@ define([
                 view.dimensions(newDims.w, newDims.h);
             }
         }
-
         State.subscribe(updateDimensions);
+
+        var updateCamera = function (update) {
+            if(update == 'mouseState') {
+                
+                var x = State.mouseState.mouseDiff.x;
+                var y = State.mouseState.mouseDiff.y;
+
+                var camX = camera.primitive('x');
+                var camY = camera.primitive('y');
+                var camZ = camera.primitive('z');
+
+                // cartesian => spherical
+                var r = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
+                var phi = Math.atan2(camY, camX);
+                var theta = Math.acos(camZ / r);
+
+                phi -= x/100;
+
+                theta -= y/100;
+                theta = theta > Math.PI ? Math.PI : theta;
+                theta = theta < 0.001 ? 0.001 : theta;
+
+                // spherical => cartesian
+                camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
+                camera.primitive('y', r*Math.sin(theta)*Math.sin(phi));
+                camera.primitive('z', r*Math.cos(theta));
+
+                console.log(phi);
+            }
+        }
+        State.subscribe(updateCamera);
 
         view.startRendering(update, stats);
 

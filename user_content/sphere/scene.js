@@ -2,16 +2,16 @@ requirejs.config({
     baseUrl: './',
 
     packages: [
-        "quack",
-        "kalkyl",
-        "kalkyl/format",
-        "kalkyl/format/simple",
-        "kalkyl/format/glsl",
-        "kalkyl/glmatrix",
+    "quack",
+    "kalkyl",
+    "kalkyl/format",
+    "kalkyl/format/simple",
+    "kalkyl/format/glsl",
+    "kalkyl/glmatrix",
 
-        "gl-matrix",
-        "mathgl",
-        "mathgl/engine"
+    "gl-matrix",
+    "mathgl",
+    "mathgl/engine"
     ],
 
     paths: {
@@ -33,13 +33,13 @@ define([
         require,
         Kalkyl, SimpleFormat, MathGL, Engine) {
 
-    var scene = function() {
-        var State = require('./state');
+        var scene = function() {
+            var State = require('./state');
 
-        var view = new Engine.View(document.getElementById('canvas'));
+            var view = new Engine.View(document.getElementById('canvas'));
 
-        var space = new MathGL.Space();
-        
+            var space = new MathGL.Space();
+
         // BEGIN DEFINING SPACE.
         var scope = new MathGL.Scope({
             expressions: {
@@ -49,7 +49,7 @@ define([
                 q: -7
             }
         });
-       
+
         var camera = new MathGL.Camera({
             primitives: {
                 x: 1,
@@ -68,8 +68,6 @@ define([
         var t = 0
         var a, aString;
         function update() {
-            camera.primitive('x', Math.cos(2*Math.PI * t / 1000) + 0.01);
-            camera.primitive('y', Math.sin(2*Math.PI * t / 1000) + 0.01);
 
             a = Math.abs(Math.sin(t/200));
             aString = Math.round( a * 10 ) / 10;
@@ -140,14 +138,44 @@ define([
         view.space(space);
         view.camera(camera);
 
-        var updateDimensions = function (key) {
-            if(key == 'canvasDim') {
+        var updateDimensions = function (update) {
+            if(update == 'canvasDim') {
                 var newDims = State.canvasDim;
                 view.dimensions(newDims.w, newDims.h);
             }
         }
-
         State.subscribe(updateDimensions);
+
+        var updateCamera = function (update) {
+            if(update == 'mouseState') {
+                
+                var x = State.mouseState.mouseDiff.x;
+                var y = State.mouseState.mouseDiff.y;
+
+                var camX = camera.primitive('x');
+                var camY = camera.primitive('y');
+                var camZ = camera.primitive('z');
+
+                // cartesian => spherical
+                var r = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
+                var phi = Math.atan2(camY, camX);
+                var theta = Math.acos(camZ / r);
+
+                phi -= x/100;
+
+                theta -= y/100;
+                theta = theta > Math.PI ? Math.PI : theta;
+                theta = theta < 0.001 ? 0.001 : theta;
+
+                // spherical => cartesian
+                camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
+                camera.primitive('y', r*Math.sin(theta)*Math.sin(phi));
+                camera.primitive('z', r*Math.cos(theta));
+
+                console.log(phi);
+            }
+        }
+        State.subscribe(updateCamera);
 
         view.startRendering(update, stats);
 

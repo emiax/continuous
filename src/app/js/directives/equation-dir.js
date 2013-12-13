@@ -4,7 +4,6 @@ angular.module('continuousApp').compileProvider.directive(
       restrict: "E",
       controller: ["$scope", "$element", "$attrs",
       function($scope, $element, $attrs) {
-        
         // static expressions
         var expr = $attrs.expr == undefined ? "" : $attrs.expr;
         console.log(expr);
@@ -21,6 +20,7 @@ angular.module('continuousApp').compileProvider.directive(
                 "":
                 "`" + pre + value + post + "`"
             );
+            // console.log($element);
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, $element[0]]);
           });
         }
