@@ -42,7 +42,7 @@ define(function (require) {
                     return new exports.Number(left.value() + right.value());
                 }
             } else {
-                return new Plus(left, right);
+                return new exports.Plus(left, right);
             }
         },
 
