@@ -5,6 +5,8 @@ var continuousApp = angular.module(
     ]
 );
 
+console.log("continiousApp running");
+
 continuousApp.config(function(
     $routeProvider,
     $controllerProvider,
