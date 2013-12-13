@@ -9,7 +9,7 @@ define(function (require) {
          * Constructor
          */
         constructor: function (spec) {
-            Scope.constructor.apply(this, spec);
+            Scope.constructor.call(this, spec);
             this._space = this;
             this._observers = [];
         },

@@ -124,8 +124,15 @@ define(function (require) {
             var u = parameters[0], v = parameters[1];
             var uDomain = domain[u];
             var vDomain = domain[v];
+            
+            var stepSize = surface.stepSize();
+            //var uStep = typeof stepSize === 'object' ? stepSize[u] : stepSize || (domain[u][1] - domain[u][1])/100;
+           // var vStep = typeof stepSize === 'object' ? stepSize[v] : stepSize || (domain[v][1] - domain[v][1])/100;
 
-            var tessellation = new exports.PlaneTessellation(uDomain, vDomain, 0.1);
+            var uStep = 0.1;
+            var vStep = 0.1;
+
+            var tessellation = new exports.PlaneTessellation(uDomain, vDomain, [uStep, vStep]);
             var uData = tessellation.uArray();
             var vData = tessellation.vArray();
 

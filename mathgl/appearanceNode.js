@@ -36,6 +36,9 @@ define(function (require) {
          * Get/set input with the specified name.
          */
         input: function (name, input) {
+            if (!(input instanceof exports.AppearanceNode)) {
+                console.log(input);
+            }
             if (input !== undefined) {
                 oldInput = this._inputs[name];
                 if (oldInput) {

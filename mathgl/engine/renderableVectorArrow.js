@@ -124,7 +124,20 @@ define(function (require) {
 
 
             var position = this.entity().positionExpr(); 
+
+            if (!position.isEvaluated()) {
+                console.error('position could not be evaluated.');
+                position.dump();
+            }
+
+
             var value = this.entity().valueExpr();
+
+            if (!value.isEvaluated()) {
+                console.error('value could not be evaluated.');
+                value.dump();
+            }
+
 
             gl.uniform1f(thicknessLocation, this.entity().thickness());
             gl.uniform3f(positionLocation, position.x().value(), position.y().value(), position.z().value());
