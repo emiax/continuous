@@ -33,16 +33,22 @@ angular.module('continuousApp').compileProvider.directive(
         if(updated === 'activeStep') {
           var waitForStep;
           
-          $.each(children, function (index, child) {
-            child = $(child);
+          for(var index = 0; index < children.length; ++index) {
+            child = $(children[index]);
             waitForStep = child.attr('waitForStep');
+            
             if(waitForStep != undefined) {
-              if(waitForStep <= activeStep)
+              if(waitForStep <= activeStep) {
                 child.removeClass('hidden');
+                child.removeAttr('waitForStep');
+                return;
+              } else {
+                return;
+              }
             } else if (index <= activeStep) {
               child.removeClass('hidden');
             }
-          });
+          }
         }
       }
       scope.state.subscribe(showNextCard);
