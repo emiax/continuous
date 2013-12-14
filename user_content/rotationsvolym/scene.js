@@ -72,8 +72,9 @@ define([
 
 
         // appearance.
-        var red = new MathGL.Color(0xffff0000);
+        var red = new MathGL.Color(0xffcc0000);
         var green = new MathGL.Color(0xff00cc00);
+        var darkBlue = new MathGL.Color(0x880000cc);
         var blue = new MathGL.Color(0xff0000ff);
         var white = new MathGL.Color(0xffffffff);
         var diffuseWhite = new MathGL.Diffuse({
@@ -81,6 +82,9 @@ define([
         });
         var diffuseGreen = new MathGL.Diffuse({
            background: green
+        });
+        var diffuseRed = new MathGL.Diffuse({
+            background: red
         });
 
         var gradient = new MathGL.Gradient({
@@ -110,8 +114,6 @@ define([
         /**
          * Entities
          */
-        
-        // Axes
         var xAxis = new MathGL.VectorArrow({
             expressions: {
                 position: '[-1.5, 0, 0]',
@@ -143,27 +145,68 @@ define([
             },
             thickness: 0.01,
             stepSize: 0.001,
-            appearance: green
+            appearance: diffuseGreen
         });
         space.add(delimitingFunction);
 
-        // var containedSurface = new MathGL.Surface({
-        //     domain: {
-        //         u: [0, 1],
-        //         v: [0, 'u^2']
-        //     },
-        //     expressions: {
-        //         x: 'u',
-        //         y: 'v',
-        //         z: 0
-        //     },
-        //     appearance: diffuseGreen
-        // });
+
+        var containedSurfaceClip = new MathGL.Threshold({
+            parameter: 'y',
+            value: 'a',
+            above: null,
+            below: darkBlue
+        });
+        var containedSurface = new MathGL.Surface({
+            domain: {
+                u: [0, 1],
+                v: [0, 1]
+            },
+            primitives: {
+                c: 1
+            },
+            expressions: {
+                a: 'x^2',
+                x: 'u',
+                y: 'v+c',
+                z: 0
+            },
+            appearance: containedSurfaceClip
+        });
+        space.add(containedSurface);
+
+        var volumeElementClip = new MathGL.Threshold({
+            parameter: 'r',
+            value: 'c',
+            above: null,
+            below: diffuseRed
+        });
+        var volumeElement = new MathGL.Surface({
+            domain: {
+                u: [-1, 1],
+                v: [-1, 1]
+            },
+            primitives: {
+                p: 0
+            },
+            expressions: {
+                c: 'x^2',
+                r: '(y^2 + z^2)^(1/2)',
+
+                x: 'p',
+                y: 'u',
+                z: 'v'
+            },
+            appearance: volumeElementClip
+        });
+        space.add(volumeElement);
 
         space.add(scope);
         view.space(space);
         view.camera(camera);
 
+        /**
+         * Subscribers
+         */
         var updateDimensions = function (update) {
             if(update == 'canvasDim') {
                 var newDims = State.canvasDim;
@@ -200,6 +243,27 @@ define([
             }
         }
         State.subscribe(updateCamera);
+
+        var showContainedSurface = function (update) {
+            if(update == 'activeStep' && State.activeStep == 1) {
+                containedSurface.primitive('c', 0);
+            }
+        }
+        State.subscribe(showContainedSurface);
+
+        var showVolumeElement = function (update) {
+            if(update == 'activeStep' && State.activeStep == 2) {
+                volumeElement.primitive('p', 0.7);
+            }
+        }
+        State.subscribe(showVolumeElement);
+
+        var updateVolumeElementPos = function (update) {
+            if(update == 'elementPos') {
+                volumeElement.primitive('p', State.elementPos);
+            }
+        }
+        State.subscribe(updateVolumeElementPos);
 
         view.startRendering(update, stats);
 

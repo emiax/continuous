@@ -42,6 +42,11 @@ angular.module('continuousApp').compileProvider.directive(
             }).then(function (response) {
                 element.replaceWith($compile(element.html())(scope));
             });
+
+            scope.updateState = function (key, value) {
+                this.state.set(key, value);
+                console.log(this.state);
+            };
         };
 
         return {

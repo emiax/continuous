@@ -19,11 +19,23 @@
             </div>
         </li>
         
-        <li class="card hidden" waitForStep="3">
-            <p>Mellan funktionskurvan och x-axeln finns en begränsad area.</p>
+        <li class="card hidden">
+            <p>Mellan funktionskurvan och x-axeln finns en <span class="blue">begränsad area</span>.</p>
         </li>
 
         <li class="card hidden">
+            <p> 
+                Vi definierar ett <span class="red">volymelement</span>,
+                <span class="red"><equation expr="dV"></equation></span>,
+                som en tunn skiva, med centrum i x-axeln och
+                <equation expr="r=x^2"></equation>.
+            </p>
+            <p>Titta på olika volymelement längs x-axeln:</p>
+            <input 
+                type="range"
+                ng-model="elementPos"
+                ng-change="updateState('elementPos', elementPos/100)">
+            </input>
         </li>
         <li id="btn-next">
             Gå vidare

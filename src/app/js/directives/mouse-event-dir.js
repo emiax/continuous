@@ -36,7 +36,6 @@ angular.module('continuousApp').compileProvider.directive(
       var doc = angular.element(document);
       doc.on("mouseup", function (e) {
         e = e.originalEvent;
-        e.preventDefault();
         mouseState.mouseDown = false;
       });
 
