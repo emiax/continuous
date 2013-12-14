@@ -1,0 +1,38 @@
+<div id="canvas-wrapper">
+    <canvas
+        id="canvas"
+        resize
+        ng-style="style()"
+        width={{getElementDimensions().w}}
+        height={{getElementDimensions().h}}
+        publish={{publishCanvasDimensions()}}
+        mouse-event="mousedrag">
+    </canvas>
+</div>
+
+<div id="card-bar" class="right">
+    <ul cardturner>
+        <li class="card">
+            <p>Betrakta <span class="green">funktionskurvan</span></p>
+            <div class="equation-block">
+                <equation expr="y=x^2,0<x<1"></equation>
+            </div>
+        </li>
+        
+        <li class="card hidden">
+            <p>Mellan funktionskurvan och x-axeln finns en begränsad area.</p>
+        </li>
+
+        <!-- <li class="card" subscribe="state">
+            <p>Equation blocks:</p>
+            <div class="equation-block">
+                <p><equation pre="radius =" watch="publisher.r"></equation></p>
+                <p><equation pre="theta:" watch="publisher.theta"></equation></p>
+                <p><equation pre="phi:" watch="publisher.phi"></equation></p>
+            </div>
+        </li> -->
+        <li id="btn-next">
+            Gå vidare
+        </li>
+    </ul>
+</div>

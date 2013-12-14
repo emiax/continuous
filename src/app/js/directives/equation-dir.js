@@ -6,7 +6,6 @@ angular.module('continuousApp').compileProvider.directive(
       function($scope, $element, $attrs) {
         // static expressions
         var expr = $attrs.expr == undefined ? "" : $attrs.expr;
-        console.log(expr);
         $element.text("`" + expr + "`");
         MathJax.Hub.Queue(["Typeset", MathJax.Hub, $element[0]]);
         

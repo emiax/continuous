@@ -10,6 +10,7 @@ function ($scope, $http, $routeParams) {
     require.undef('scene');
     require.undef('gui');
     require.undef('state');
+    $scope.id = $routeParams.visualizationId;
     
     require(['user_content/' + $routeParams.visualizationId + '/bootstrapper.js'], function(bootstrapper){
         

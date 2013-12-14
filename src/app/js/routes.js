@@ -32,7 +32,8 @@ continuousApp.config(function($routeProvider){
                 'src/app/js/directives/resize-dir.js',
                 'src/app/js/directives/subscribe-dir.js',
                 'src/app/js/directives/equation-dir.js',
-                'src/app/js/directives/mouse-event-dir.js'
+                'src/app/js/directives/mouse-event-dir.js',
+                'src/app/js/directives/cardturner-dir.js'
             ];
  
             require(dependencies, function () {

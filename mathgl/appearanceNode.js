@@ -37,7 +37,7 @@ define(function (require) {
          */
         input: function (name, input) {
             if (!(input instanceof exports.AppearanceNode)) {
-                console.log(input);
+                // console.log(input);
             }
             if (input !== undefined) {
                 oldInput = this._inputs[name];

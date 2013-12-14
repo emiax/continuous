@@ -125,7 +125,7 @@ define(function (require) {
             var uDomain = domain[u];
             var vDomain = domain[v];
             
-            var stepSize = surface.stepSize();
+            // var stepSize = surface.stepSize();
             //var uStep = typeof stepSize === 'object' ? stepSize[u] : stepSize || (domain[u][1] - domain[u][1])/100;
            // var vStep = typeof stepSize === 'object' ? stepSize[v] : stepSize || (domain[v][1] - domain[v][1])/100;
 

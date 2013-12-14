@@ -16,7 +16,7 @@ angular.module('continuousApp').compileProvider.directive(
 
       var mouseState = scope.state.mouseState;
 
-      if(!mouseState) {
+      if(mouseState == undefined) {
         throw 'There is no "mouseState" defined in this scope\'s state: ';
       }
 
