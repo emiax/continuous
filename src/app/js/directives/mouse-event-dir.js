@@ -16,7 +16,7 @@ angular.module('continuousApp').compileProvider.directive(
 
       var mouseState = scope.state.mouseState;
 
-      if(mouseState == undefined) {
+      if(mouseState === undefined) {
         throw 'There is no "mouseState" defined in this scope\'s state: ';
       }
 
@@ -24,7 +24,8 @@ angular.module('continuousApp').compileProvider.directive(
       mouseState.mousePos = { x: 0, y: 0 };
       mouseState.mouseDiff = { x: 0, y: 0 };
 
-      element.bind("mousedown", function (e) {
+      element.on("mousedown", function (e) {
+        e = e.originalEvent;
         e.preventDefault();
         mouseState.mousePos.x = e.x;
         mouseState.mousePos.y = e.y;
@@ -33,12 +34,14 @@ angular.module('continuousApp').compileProvider.directive(
 
       //mouseup needs to be bound to the entire document
       var doc = angular.element(document);
-      doc.bind("mouseup", function (e) {
+      doc.on("mouseup", function (e) {
+        e = e.originalEvent;
         e.preventDefault();
         mouseState.mouseDown = false;
       });
 
-      element.bind("mousemove", function (e) {
+      element.on("mousemove", function (e) {
+        e = e.originalEvent;
         e.preventDefault();
         if(mouseState.mouseDown) {
                    
@@ -52,7 +55,6 @@ angular.module('continuousApp').compileProvider.directive(
 
           scope.state.set('mouseState', mouseState);
         }
-
       });
     }
 

@@ -71,7 +71,7 @@ define([
         }
 
 
-        // surface appearance.
+        // appearance.
         var red = new MathGL.Color(0xffff0000);
         var green = new MathGL.Color(0xff00cc00);
         var blue = new MathGL.Color(0xff0000ff);
@@ -145,11 +145,22 @@ define([
             stepSize: 0.001,
             appearance: green
         });
-
         space.add(delimitingFunction);
-        // scope.add(surface);
-        space.add(scope);    
 
+        // var containedSurface = new MathGL.Surface({
+        //     domain: {
+        //         u: [0, 1],
+        //         v: [0, 'u^2']
+        //     },
+        //     expressions: {
+        //         x: 'u',
+        //         y: 'v',
+        //         z: 0
+        //     },
+        //     appearance: diffuseGreen
+        // });
+
+        space.add(scope);
         view.space(space);
         view.camera(camera);
 
