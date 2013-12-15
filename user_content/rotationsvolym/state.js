@@ -6,7 +6,8 @@ define(function(require) {
         canvasDim: {},
         mouseState: {},
         activeStep: 0,
-        elementPos: 0
+        elementPos: 0,
+        integrationUpperBound: 0
     };
 
     pubFactory.makePublisher(state);

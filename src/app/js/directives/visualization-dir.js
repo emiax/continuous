@@ -43,9 +43,14 @@ angular.module('continuousApp').compileProvider.directive(
                 element.replaceWith($compile(element.html())(scope));
             });
 
+            /**
+             * This function updates the state from an angular scope
+             * with the visualization directive
+             * @param  {String} key   State key to update
+             * @param  {Any}    value New value to assign
+             */
             scope.updateState = function (key, value) {
                 this.state.set(key, value);
-                console.log(this.state);
             };
         };
 

@@ -200,6 +200,24 @@ define([
         });
         space.add(volumeElement);
 
+        var integratedVolume = new MathGL.Surface({
+            domain: {
+                u: [0, 1],
+                T: [0, 2*Math.PI]
+            },
+            primitives: {
+                p: 0
+            },
+            expressions: {
+                r: 'x^2',
+                x: 'u*p',
+                y: 'r*sin(T)',
+                z: 'r*cos(T)'
+            },
+            appearance: diffuseRed
+        });
+        space.add(integratedVolume);
+
         space.add(scope);
         view.space(space);
         view.camera(camera);
@@ -244,19 +262,20 @@ define([
         }
         State.subscribe(updateCamera);
 
-        var showContainedSurface = function (update) {
-            if(update == 'activeStep' && State.activeStep == 1) {
-                containedSurface.primitive('c', 0);
+        var showEntities = function (update) {
+            if(update == 'activeStep') {
+                switch(State.activeStep) {
+                case 1:
+                    containedSurface.primitive('c', 0);
+                case 2:
+                    containedSurface.primitive('c', 1);
+                    volumeElement.primitive('p', 0.7);
+                    camera.primitive('z', 3*Math.sin(Math.PI/4));
+                    camera.primitive('x', 3*Math.sin(Math.PI/4));
+                }
             }
         }
-        State.subscribe(showContainedSurface);
-
-        var showVolumeElement = function (update) {
-            if(update == 'activeStep' && State.activeStep == 2) {
-                volumeElement.primitive('p', 0.7);
-            }
-        }
-        State.subscribe(showVolumeElement);
+        State.subscribe(showEntities);
 
         var updateVolumeElementPos = function (update) {
             if(update == 'elementPos') {
@@ -264,6 +283,14 @@ define([
             }
         }
         State.subscribe(updateVolumeElementPos);
+
+        var updateIntegratedVolume = function (update) {
+            if(update == 'integrationUpperBound') {
+                integratedVolume.primitive('p', State.integrationUpperBound);
+                volumeElement.primitive('p', State.integrationUpperBound);
+            }
+        }
+        State.subscribe(updateIntegratedVolume);
 
         view.startRendering(update, stats);
 
