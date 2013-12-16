@@ -243,11 +243,13 @@ define([
                 switch(State.activeStep) {
                 case 1:
                     containedSurface.primitive('c', 0);
+                    break;
                 case 2:
                     containedSurface.primitive('c', 1);
                     volumeElement.primitive('p', 0.7);
                     camera.primitive('z', 3*Math.sin(Math.PI/4));
                     camera.primitive('x', 3*Math.sin(Math.PI/4));
+                    break;
                 }
             }
         }
