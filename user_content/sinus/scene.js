@@ -95,11 +95,11 @@ define([
 
         var scope = new MathGL.Scope({
             primitives: {
-                t: 0,
-                p: 3, 
-                q: -4
+                t: 0
             },
             expressions: {
+                p: '3',
+                q: '7',
                 a: 't',
                 T: 'a*s',
                 x: x,

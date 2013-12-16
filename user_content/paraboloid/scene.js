@@ -59,7 +59,7 @@ define([
             },
             expressions: {
                 position: '[x, y, z]',
-                subject: '[cos(-x), sin(-x), 1]',
+                subject: '[0, 0, 0]',
                 up: '[0, 0, 1]'
             }
         });

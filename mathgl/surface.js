@@ -37,6 +37,17 @@ define(function (require) {
             return this._domain;
         },
         
+
+        stepSize: function (valueOrObject) {
+/*            var params = this.parameters();
+            if (typeof valueOrObject === 'number') {
+                this._stepSize[params[0]] = valueOrObject;
+                this._stepSize[params[1]] = valueOrObject;
+            } else {
+                if 
+            }
+            this._stepSize = stepSize;*/
+        },
         
         parameters: function () {
             return Object.keys(this._domain);
