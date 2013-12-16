@@ -4,8 +4,29 @@ MathJax.Hub.Config({
   messageStyle: "none"
 });
 
-require(['src/app/js/app'], function () {
-    require(['src/app/js/routes'], function () {
+
+requirejs.config({
+    baseUrl: './',
+
+    packages: [
+        "quack",
+        "kalkyl",
+        "kalkyl/format",
+        "kalkyl/format/simple",
+        "kalkyl/format/glsl",
+        "kalkyl/glmatrix",
+
+//        "gl-matrix",
+        "mathgl",
+        "mathgl/engine"
+    ],
+    paths: {
+        'gl-matrix':      './bower_components/gl-matrix/dist/gl-matrix-min'
+    }
+});
+
+require(['app/js/app'], function () {
+    require(['app/js/routes'], function () {
         angular.bootstrap(document, ['continuousApp']);
     });
 });

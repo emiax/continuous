@@ -3,12 +3,12 @@ continuousApp.config(function($routeProvider){
     $routeProvider
     
     .when('/', {
-        templateUrl: 'src/app/partials/index-view.html',
+        templateUrl: 'app/partials/index-view.html',
         controller: 'IndexCtrl',
         resolve: { deps:function ($q, $rootScope) {
             var deferred = $q.defer();
             var dependencies = [
-                'src/app/js/controllers/index-ctrl.js'
+                'app/js/controllers/index-ctrl.js'
             ];
  
             require(dependencies, function () {
@@ -22,18 +22,18 @@ continuousApp.config(function($routeProvider){
     })
 
     .when('/visualization/:visualizationId', {
-        templateUrl: 'src/app/partials/visualization-view.html',
+        templateUrl: 'app/partials/visualization-view.html',
         controller: 'VisualizationCtrl',
         resolve: { deps:function ($q, $rootScope) {
             var deferred = $q.defer();
             var dependencies = [
-                'src/app/js/controllers/visualization-ctrl.js',
-                'src/app/js/directives/visualization-dir.js',
-                'src/app/js/directives/resize-dir.js',
-                'src/app/js/directives/subscribe-dir.js',
-                'src/app/js/directives/equation-dir.js',
-                'src/app/js/directives/mouse-event-dir.js',
-                'src/app/js/directives/cardturner-dir.js'
+                'app/js/controllers/visualization-ctrl.js',
+                'app/js/directives/visualization-dir.js',
+                'app/js/directives/resize-dir.js',
+                'app/js/directives/subscribe-dir.js',
+                'app/js/directives/equation-dir.js',
+                'app/js/directives/mouse-event-dir.js',
+                'app/js/directives/cardturner-dir.js'
             ];
  
             require(dependencies, function () {

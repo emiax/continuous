@@ -19,7 +19,7 @@ angular.module('continuousApp').compileProvider.directive(
                                 id + "/" +
                                 gui.template;
             } else {
-                templateUrl = 'src/app/partials/visualization_templates/no_layout.html';
+                templateUrl = 'app/partials/visualization_templates/no_layout.html';
             }
             
             // var templateUrl = baseUrl + templateMap[layout];
