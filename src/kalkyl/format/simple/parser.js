@@ -6,10 +6,22 @@ define(function (require) {
 
     return exports.Parser = q.createClass({
         
-        constructor: function () {
+        constructor: function (singleCharacterNames) {
             this._parser = null;
+            this.singleCharacterNames(singleCharacterNames);
         },
         
+
+        /**
+         * Get/Set one character names
+         */
+        singleCharacterNames: function (trueOrFalse) {
+            if (trueOrFalse !== undefined) {
+                singleCharacterNames = trueOrFalse;
+            }
+            return this._singleCharacterNames;
+        },
+
 
         /**
          * Parse str to an Kalkyl expression.
@@ -114,7 +126,7 @@ define(function (require) {
         parser: function () {
             if (!this._parser) {
                 var parser = this._parser = new Format.Parser();
-                parser.lexer(new exports.Lexer());
+                parser.lexer(new exports.Lexer(this.singleCharacterNames()));
 
                 parser.rule('leftParen', new Format.ParseRule({
                     nud: function (parser, token) {
