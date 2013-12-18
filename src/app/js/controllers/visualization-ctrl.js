@@ -6,28 +6,11 @@ angular.module('continuousApp').controllerProvider.register(
 ['$scope', '$http', '$routeParams',
 function ($scope, $http, $routeParams) {
     console.log("VisualizationCtrl loaded");
-
-    require.undef('scene');
-    require.undef('gui');
-    require.undef('state');
     $scope.id = $routeParams.visualizationId;
-    
-    require(['user_content/' + $routeParams.visualizationId + '/bootstrapper.js'], function(bootstrapper){
-        
-        console.log("Made visualization request");
-        
-        $scope.state = bootstrapper.state;
-        $scope.guis = [bootstrapper.gui]; //is this an angular bug?
 
-        // render layout template
-        $scope.$digest();
-
-        require(['user_content/' + $routeParams.visualizationId +'/scene.js'], function(trigger) {
-            
-            trigger();
-
-            // update canvas dimensions
-            $scope.$digest();
-        });
+    require(['user_content/' + $routeParams.visualizationId + '/bootstrapper.js'], 
+        function(bootstrap){
+            $scope.trigger = bootstrap($scope);
+            $scope.ready();
     });
 }]);

@@ -24,7 +24,7 @@ continuousApp.config(function($routeProvider){
     .when('/visualization/:visualizationId', {
         templateUrl: 'app/partials/visualization-view.html',
         controller: 'VisualizationCtrl',
-        resolve: { deps:function ($q, $rootScope) {
+        resolve: { deps: function ($q, $rootScope) {
             var deferred = $q.defer();
             var dependencies = [
                 'app/js/controllers/visualization-ctrl.js',
@@ -35,7 +35,7 @@ continuousApp.config(function($routeProvider){
                 'app/js/directives/mouse-event-dir.js',
                 'app/js/directives/cardturner-dir.js'
             ];
- 
+
             require(dependencies, function () {
                 $rootScope.$apply(function () {
                     deferred.resolve();

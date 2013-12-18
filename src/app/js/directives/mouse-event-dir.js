@@ -10,6 +10,8 @@ angular.module('continuousApp').compileProvider.directive(
      */
     var mousedrag = function (scope, element) {
 
+      console.log(scope.state);
+
       if(!scope.hasOwnProperty('state')){
         throw ': Directive could not find a state in this scope';
       }

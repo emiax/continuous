@@ -4,6 +4,7 @@ angular.module('continuousApp').compileProvider.directive(
       restrict: "E",
       controller: ["$scope", "$element", "$attrs",
       function($scope, $element, $attrs) {
+        
         // static expressions
         var expr = $attrs.expr == undefined ? "" : $attrs.expr;
         $element.text("`" + expr + "`");

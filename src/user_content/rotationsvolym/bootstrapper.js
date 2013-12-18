@@ -1,5 +1,10 @@
 define(function(require) {
+
+    var sceneTrigger = require('./scene');
     var state = require('./state');
-    var gui = require('./gui');
-    return { state: state, gui: gui };
+
+    return function (scope) {
+        scope.state = state;
+        return sceneTrigger;
+    };
 });
