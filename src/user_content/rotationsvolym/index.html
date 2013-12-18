@@ -1,0 +1,80 @@
+<div id="canvas-wrapper">
+    <canvas
+        id="canvas"
+        resize
+        ng-style="style()"
+        width={{getElementDimensions().w}}
+        height={{getElementDimensions().h}}
+        publish={{publishCanvasDimensions()}}
+        mouse-event="mousedrag">
+    </canvas>
+</div>
+
+<div id="card-bar" class="right">
+    <ul cardturner>
+        <li class="card">
+            <p>Betrakta <span class="green">funktionskurvan</span></p>
+            <div class="equation-block">
+                <equation expr="y=f(x)=x^2,0<x<1"></equation>
+            </div>
+        </li>
+        
+        <li class="card hidden">
+            <p>Mellan funktionskurvan och x-axeln finns ett <span class="blue">begränsat område</span>.</p>
+            <p>Om vi roterar området kring x-axlen får vi en <strong>Rotationvolym</strong></p>
+            <p><em>Notera att</em>: Detta område egentligen inte är relevant för hur vi löser uppgiften rent matematiskt men är en bra minnesregel.</p>
+        </li>
+
+        <li class="card hidden">
+            <p subscribe="state">
+                <equation watch="publisher.activeStep"></equation>
+            </p>
+            <p>
+                Vi vill istället definiera
+                <span class="red">volymelement</span>,
+                <equation class="red" expr="dV"></equation>,
+                som arean av tunna cirkelskivor, med centrum i x-axeln och radien
+                <equation expr="f(x)"></equation>.
+            </p>
+            <div class="equation-block">
+                <equation expr="dV=pi*f(x)^2 dx=pi*x^4 dx="></equation>
+                <span ng-model="elementPos">
+                    {{
+                        (elementPos/100*
+                        elementPos/100*
+                        elementPos/100*
+                        elementPos/100
+                        || 0.0625).toFixed(2)
+                    }}
+                </span>
+                <equation expr="pi dx"></equation>
+            </div>
+            <p>Titta på olika volymelement längs x-axeln:</p>
+            <input 
+                type="range"
+                ng-model="elementPos"
+                ng-change="updateState('elementPos', elementPos/100)">
+                <equation expr="x="></equation>
+                <span>{{elementPos/100 || 0.5}}</span>
+            </input>
+        </li>
+        <li class="card hidden">
+            <p>För att få en rotationsvolym integrerar vi volymelementen längs x-axeln.</p>
+            <div class="equation-block">
+                <equation 
+                    expr="int_{0 < x < 1} dV = int_{0 < x < 1} pi*x^4 dx">
+                </equation>
+            </div>
+            <input 
+                type="range"
+                ng-model="upperBound"
+                ng-change="updateState('integrationUpperBound', upperBound/100)">
+                <equation expr="x="></equation>
+                <span>{{upperBound/100 || 0.5}}</span>
+            </input>
+        </li>
+        <li id="btn-next">
+            Gå vidare
+        </li>
+    </ul>
+</div>
