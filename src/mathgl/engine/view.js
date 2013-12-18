@@ -23,7 +23,8 @@ define(function (require) {
             document.body.appendChild(stats.domElement);
             stats.domElement.style.position = 'absolute';
             stats.domElement.style.left = '0px';
-            stats.domElement.style.top = '0px';
+            stats.domElement.style.bottom = '0px';
+            
             
 //            this.updateDimensions();
         },

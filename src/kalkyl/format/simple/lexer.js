@@ -5,10 +5,10 @@ define(function (require) {
 
     return exports.Lexer = q.createClass({
         
-        constructor: function (str) {
+        constructor: function (singleCharacterNames) {
             this._tokenBuffer = [];
             this._lastToken = null;
-            var lexer = this._lexer = new Format.Lexer(str);
+            var lexer = this._lexer = new Format.Lexer();
             
             lexer.addPunctuator('(', 'leftParen');
             lexer.addPunctuator(')', 'rightParen');
@@ -32,6 +32,9 @@ define(function (require) {
 
             lexer.addReservedWord(['dot', 'DOT'], 'dot');
             lexer.addReservedWord(['cross', 'CROSS'], 'cross');
+
+            this.singleCharacterNames(singleCharacterNames || true);
+            
            // lexer.addReservedWord(['arcsin', 'asin', 'ARCSIN', 'ASIN'], 'arcsin');
            // lexer.addReservedWord(['arccos', 'acos', 'ARCCOS', 'ACOS'], 'arccos');
            // lexer.addReservedWord(['arctan', 'atan', 'ARCTAN', 'ATAN'], 'arctan');
@@ -40,6 +43,17 @@ define(function (require) {
            // lexer.addReservedWord(['lg', "LG"], 'lg');
         },
         
+        
+        /**
+         * Get/Set one character names
+         */
+        singleCharacterNames: function (trueOrFalse) {
+            if (trueOrFalse !== undefined) {
+                singleCharacterNames = trueOrFalse;
+            }
+            return this._singleCharacterNames;
+        },
+
 
         /**
          * Get next token (to be called from parser)
@@ -83,7 +97,7 @@ define(function (require) {
          */
         addToBuffer: function (token) {
             var scope = this;
-            if (token.type() === 'name') {
+            if (this.singleCharacterNames() && token.type() === 'name') {
                 var strings = token.string().split("");
                 var pos = token.position();
                 strings.forEach(function (s) {

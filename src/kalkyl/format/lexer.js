@@ -6,10 +6,9 @@ define(function (require) {
         /**
          * Constructor. Create a lexer that is set up to tokenize str.
          */
-        constructor: function (str) {
+        constructor: function () {
             this._punctuators = {};
             this._reservedWords = {};
-            this.source(str || "");
         },
 
 
