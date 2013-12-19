@@ -24,8 +24,6 @@ define(function (require) {
             stats.domElement.style.position = 'absolute';
             stats.domElement.style.left = '0px';
             stats.domElement.style.bottom = '0px';
-            
-            
 //            this.updateDimensions();
         },
 

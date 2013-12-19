@@ -55,6 +55,9 @@ define(function (require) {
 
             cat.vertexDefinitions().forEach(function (s) {
                 var expr = scope.expressions()[s];
+                if (!expr) {
+                    console.error("expr " + s + " is not defined on the scope");
+                }
                 glsl += "float " + dict.vertexName(s, cat) + " = " + formatter.format(expr) + ";\n";
             });
             

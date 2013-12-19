@@ -1,24 +1,26 @@
 {
-  "name": "angular-requirejs-seed",
-  "version": "0.2.0",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components"
-  ],
-  "devDependencies": {
-    "angular-scenario": "1.2.0-rc.1",
-    "angular-mocks": "1.2.0-rc.1"
-  },
-  "dependencies": {
-    "requirejs": "2.1.8",
-    "requirejs-text": "2.0.10",
-    "angular-route": "1.2.0-rc.1",
-    "angular": "1.2.0-rc.1",
-    "MathJax": "*",
-    "less.js": "1.4.2",
-    "stats.js": "*",
-    "gl-matrix": "2.2.0",
-    "jquery": "*"
-  }
+    "name": "angular-requirejs-seed",
+    "version": "0.2.0",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components"
+    ],
+    "devDependencies": {
+        "angular-scenario": "1.2.0-rc.1",
+        "angular-mocks": "1.2.0-rc.1"
+    },
+    "dependencies": {
+        "requirejs": "2.1.8",
+        "requirejs-text": "2.0.10",
+        "angular-route": "1.2.0-rc.1",
+        "angular-mousewheel": "*",
+        "angular": "1.2.0-rc.1",
+        "MathJax": "*",
+        "less.js": "1.4.2",
+        "stats.js": "*",
+        "gl-matrix": "2.2.0",
+        "tweenjs": "*",
+        "jquery": "*"
+    }
 }

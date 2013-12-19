@@ -3,277 +3,558 @@ define([
     'kalkyl',
     'kalkyl/format/simple',
     'mathgl',
-    'mathgl/engine'], 
+    'mathgl/engine'],
 
-    function(
-        require,
-        Kalkyl, SimpleFormat, MathGL, Engine) {
+       function(
+           require,
+           Kalkyl, SimpleFormat, MathGL, Engine) {
 
-        var scene = function() {
-            var State = require('./state');
+           var scene = function() {
+               var State = require('./state');
 
-            var view = new Engine.View(document.getElementById('canvas'));
+               var view = new Engine.View(document.getElementById('canvas'));
 
-            var space = new MathGL.Space();
-
-        // BEGIN DEFINING SPACE.
-        var scope = new MathGL.Scope({
-            expressions: {
-                t: 0,
-                j: 0,
-                p: 3,
-                q: -7
-            }
-        });
-
-        var camera = new MathGL.Camera({
-            primitives: {
-                x: 0,
-                y: 0,
-                z: 3
-            },
-            expressions: {
-                position: '[x, y, z]',
-                subject: '[0, 0, 0]',
-                up: '[0, 1, 0]'
-            }
-        });
-
-        scope.add(camera);
-
-        var t = 0
-        function update() {
-            ++t;
-        }
+               var space = new MathGL.Space({
+                   primitives: {
+                       t: 0
+                   },
+                   expressions: {
+                       f: '1 - X^2'
+                   }
+               });
 
 
-        // appearance.
-        var red = new MathGL.Color(0xffcc0000);
-        var green = new MathGL.Color(0xff00cc00);
-        var darkBlue = new MathGL.Color(0x880000cc);
-        var blue = new MathGL.Color(0xff0000ff);
-        var white = new MathGL.Color(0xffffffff);
-        var diffuseWhite = new MathGL.Diffuse({
-           background: white
-        });
-        var diffuseGreen = new MathGL.Diffuse({
-           background: green
-        });
-        var diffuseRed = new MathGL.Diffuse({
-            background: red
-        });
+               var camera = new MathGL.Camera({
+                   primitives: {
+                       x: 0,
+                       y: 0,
+                       z: 3.5
+                   },
+                   expressions: {
+                       position: '[x, y, z]',
+                       subject: '[0, 0, 0]',
+                       up: '[0, 1, 0]'
+                   }
+               });
 
-        var gradient = new MathGL.Gradient({
-            parameter: 'z',
-            blendMode: 'normal', 
-            stops: {
-                '0.8': red,
-                '0': blue,
-                '-0.8': green
-            }
-        });
+               space.add(camera);
 
-        var darkOverlay = new MathGL.Color({
-            color: 0x55000000,
-            background: gradient
-        });
+               var t = 0
+               function update() {
+                   ++t;
+                   space.primitive('t', t/100);
+               }
 
-        var checker = new MathGL.CheckerPattern({
-            parameters: {
-                b: Math.PI / 2,
-                c: Math.PI / 2
-            },
-            inputA: gradient,
-            inputB: darkOverlay
-        });
+               
+               var surfaceWhite = new MathGL.Gradient({
+                   parameter: 'r', 
+                   stops: {
+                       '0': new MathGL.Color(0xff999900),
+//                       '0.5': new MathGL.Color(0xff999900),
+                       1: new MathGL.Color(0xff994400)
+                   }
+               })
+               var surfaceTransparent = new MathGL.Color(0x00998866);
 
-        /**
-         * Entities
-         */
-        var xAxis = new MathGL.VectorArrow({
-            expressions: {
-                position: '[-1.5, 0, 0]',
-                value: '[3.0, 0, 0]'
-            },
-            appearance: diffuseWhite,
-            thickness: 0.01
-        });
-        space.add(xAxis);
+               var surfaceTone = new MathGL.Gradient({
+                   parameter: 'alpha',
+                   stops: {
+                       0: surfaceTransparent,
+                       1: surfaceWhite
+                   }
+               });
 
-        var yAxis = new MathGL.VectorArrow({
-            expressions: {
-                position: '[0, -1.5, 0]',
-                value: '[0, 3.0, 0]'
-            },
-            appearance: diffuseWhite,
-            thickness: 0.01
-        });
-        space.add(yAxis);
+/*               var surfaceThreshold = new MathGL.Threshold({
+                   parameter: 'x',
+                   value: 'xLimit',
+                   above: null,
+                   below: surfaceTone
+               });*/
 
-        var delimitingFunction = new MathGL.Curve({
-            domain: {
-                s: [0, 1]
-            },
-            expressions: {
-                x: 's',
-                y: 'x^2',
-                z: 0
-            },
-            thickness: 0.01,
-            stepSize: 0.001,
-            appearance: diffuseGreen
-        });
-        space.add(delimitingFunction);
+               var surfaceToneDiffuse = new MathGL.Diffuse({
+                   background: surfaceTone
+               });
+               
+               // appearance.
+               var red = new MathGL.Color(0xffcc0000);
+               var green = new MathGL.Color(0xff00cc00);
+               var darkBlue = new MathGL.Color(0x880000cc);
+               var blue = new MathGL.Color(0xff0000ff);
+               var white = new MathGL.Color(0xffffffff);
+
+               var curveColor = new MathGL.Color(0xff437bbe);
 
 
-        var containedSurfaceClip = new MathGL.Threshold({
-            parameter: 'y',
-            value: 'a',
-            above: null,
-            below: darkBlue
-        });
-        var containedSurface = new MathGL.Surface({
-            domain: {
-                u: [0, 1],
-                v: [0, 1]
-            },
-            primitives: {
-                c: 1
-            },
-            expressions: {
-                a: 'x^2',
-                x: 'u',
-                y: 'v+c',
-                z: 0
-            },
-            appearance: containedSurfaceClip
-        });
-        space.add(containedSurface);
+               var diffuseWhite = new MathGL.Diffuse({
+                   background: white
+               });
 
-        var volumeElementClip = new MathGL.Threshold({
-            parameter: 'r',
-            value: 'c',
-            above: null,
-            below: diffuseRed
-        });
-        var volumeElement = new MathGL.Surface({
-            domain: {
-                u: [-1, 1],
-                v: [-1, 1]
-            },
-            primitives: {
-                p: 0
-            },
-            expressions: {
-                c: 'x^2',
-                r: '(y^2 + z^2)^(1/2)',
+               var diffuseRed = new MathGL.Diffuse({
+                   background: red
+               });
 
-                x: 'p',
-                y: 'u',
-                z: 'v'
-            },
-            appearance: volumeElementClip
-        });
-        space.add(volumeElement);
+               var diffuseCurve = new MathGL.Diffuse({
+                   background: curveColor
+               });
 
-        var integratedVolume = new MathGL.Surface({
-            domain: {
-                u: [0, 1],
-                T: [0, 2*Math.PI]
-            },
-            primitives: {
-                p: 0
-            },
-            expressions: {
-                r: 'x^2',
-                x: 'u*p',
-                y: 'r*sin(T)',
-                z: 'r*cos(T)'
-            },
-            appearance: diffuseRed
-        });
-        space.add(integratedVolume);
+               var curveThreshold = new MathGL.Threshold({
+                   parameter: 'x',
+                   value: 'xLimit',
+                   above: null,
+                   below: diffuseCurve
+               });
 
-        space.add(scope);
-        view.space(space);
-        view.camera(camera);
+               /**
+                * Entities
+                */
+               var xAxis = new MathGL.VectorArrow({
+                   expressions: {
+                       position: '[-1.5, 0, 0]',
+                       value: '[3.0, 0, 0]'
+                   },
+                   appearance: diffuseWhite,
+                   thickness: 0.01
+               });
+               space.add(xAxis);
 
-        /**
-         * Subscribers
-         */
-        var updateDimensions = function (update) {
-            if(update == 'canvasDim') {
-                var newDims = State.canvasDim;
-                view.dimensions(newDims.w, newDims.h);
-            }
-        }
-        State.subscribe(updateDimensions);
+               var yAxis = new MathGL.VectorArrow({
+                   expressions: {
+                       position: '[0, -1.5, 0]',
+                       value: '[0, 3.0, 0]'
+                   },
+                   appearance: diffuseWhite,
+                   thickness: 0.01
+               });
+               space.add(yAxis);
 
-        var updateCamera = function (update) {
-            if(update == 'mouseState') {
-                
-                var x = State.mouseState.mouseDiff.x;
-                var y = State.mouseState.mouseDiff.y;
+               var curve = new MathGL.Curve({
+                   domain: {
+                       s: [0, 1]
+                   },
+                   primitives: {
+                       xLimit: 0.5,
+                       theta: 0
+                   },
+                   expressions: {
+                       X: 's',
+                       x: 'X',
+                       y: 'cos(theta)*f',
+                       z: 'sin(theta)*f'
+                   },
+                   thickness: 0.01,
+                   stepSize: 0.001,
+                   appearance: curveThreshold
+               });
+               space.add(curve);
 
-                var camX = camera.primitive('x');
-                var camY = camera.primitive('z');
-                var camZ = camera.primitive('y');
+               var halfDistMarker = new MathGL.Curve({
+                   primitives: {
+                       drawRatio: 0
+                   },
+                   domain: {
+                       d: [0, 1]
+                   },
+                   expressions: {
+                       x: 0.5,
+                       z: 0,
+                       y: 'd*drawRatio*f',
+                       X: 'x'
+                   },
+                   appearance: diffuseWhite,
+                   thickness: 0.005
+               });
+               space.add(halfDistMarker);
+               
+               var cylinderCurve = new MathGL.Curve({
+                   primitives: {
+                       drawRatio: 0
+                   },
+                   domain: {
+                       d: [-0.5, 0.5]
+                   },
+                   expressions: {
+                       X: 0.5,
+                       x: 'X + drawRatio*d',
+                       y: 'f',
+                       z: 0
+                   },
+                   appearance: diffuseWhite,
+                   thickness: 0.005
+               })
+               
+               space.add(cylinderCurve);
 
-                // cartesian => spherical
-                var r = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
-                var phi = Math.atan2(camY, camX);
-                var theta = Math.acos(camZ / r);
+               
 
-                phi += x/100;
+               /**
+                * Skethed volume
+                */
+               var sketchedVolume = new MathGL.Scope({
+                   primitives: {
+                       p: 0,
+                       theta: 0,
+                       alpha: 0
+                   }, 
+                   expressions: {
+                       X: 'u*p',
+                       x: 'X'
+                   }
+               });
 
-                theta -= y/100;
-                theta = theta > Math.PI ? Math.PI : theta;
-                theta = theta < 0.001 ? 0.001 : theta;
+               space.add(sketchedVolume);
 
-                // spherical => cartesian
-                camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
-                camera.primitive('z', r*Math.sin(theta)*Math.sin(phi));
-                camera.primitive('y', r*Math.cos(theta));
-            }
-        }
-        State.subscribe(updateCamera);
+               
+               var sketchedSide = new MathGL.Surface({
+                   domain: {
+                       u: [0, 1.0001],
+                       T: [0, 3]
+                   },
+                   expressions: {
+                       r: 'f*0.999',
+                       y: 'r*cos(theta*T/3)',
+                       z: 'r*sin(theta*T/3)'
+                   },
+                   appearance: surfaceToneDiffuse,
+//                   style: 'wireframe'
 
-        var showEntities = function (update) {
-            if(update == 'activeStep') {
-                switch(State.activeStep) {
-                case 1:
-                    containedSurface.primitive('c', 0);
-                    break;
-                case 2:
-                    containedSurface.primitive('c', 1);
-                    volumeElement.primitive('p', 0.7);
-                    camera.primitive('z', 3*Math.sin(Math.PI/4));
-                    camera.primitive('x', 3*Math.sin(Math.PI/4));
-                    break;
-                }
-            }
-        }
-        State.subscribe(showEntities);
+               });
+               sketchedVolume.add(sketchedSide);
 
-        var updateVolumeElementPos = function (update) {
-            if(update == 'elementPos') {
-                volumeElement.primitive('p', State.elementPos);
-            }
-        }
-        State.subscribe(updateVolumeElementPos);
+               var sketchedTop = new MathGL.Surface({
+                   domain: {
+                       R: [0, 1.00],
+                       T: [0, 3]
+                   },
+                   primitives: {
+                       u: 1,
+                       x: 1
+                   }, 
+                   expressions: {
+                       r: 'R*f',
+                       y: 'r*cos(theta*T/3)',
+                       z: 'r*sin(theta*T/3)'
+                   },
 
-        var updateIntegratedVolume = function (update) {
-            if(update == 'integrationUpperBound') {
-                integratedVolume.primitive('p', State.integrationUpperBound);
-                volumeElement.primitive('p', State.integrationUpperBound);
-            }
-        }
-        State.subscribe(updateIntegratedVolume);
+                   appearance: surfaceToneDiffuse,
+//                   style: 'wireframe'
 
-        view.startRendering(update, stats);
+               });
+               sketchedVolume.add(sketchedTop);
+               
 
-        var endTime = new Date();
-    };
+               /**
+                * Integrated
+                */ 
+               var riemannSum = new MathGL.Scope({
+                   primitives: {
+                       dx: 1,
+                       xLimit: 1
+                   },
+                   expressions: {
+                       X: '(xStart + xEnd)/2',
+                       totalRadius: 'f',
+                   }
+               });
 
-    return scene;
-});
+               space.add(riemannSum);
+
+               var volumeElements = [];
+
+               for (var i = 0; i < 10; i++) {
+                   var volumeElement = new MathGL.Scope({
+                       primitives: {
+                           i: i,
+                           width: 2,
+                           theta: 2*Math.PI,
+                           alpha: 0
+                       }, 
+                       expressions: {
+                           xStart: 'dx*i',
+                           xEnd: 'dx*(i+1)',
+                           y: 'r*cos(theta*T)',
+                           z: 'r*sin(theta*T)'
+                       },
+                       style: 'wireframe',
+                   });
+                   volumeElements.push(volumeElement);
+                   riemannSum.add(volumeElement);
+                   
+                   var integratedSide = new MathGL.Surface({
+                       domain: {
+                           s: [0, 0.0101],
+                           T: [0, 1]
+                       },
+                       expressions: {
+                           x: 'xStart*(1 - s*100) + xEnd*s*100',
+                           r: 'totalRadius'
+                       },
+                       style: 'wireframe',
+                       appearance: surfaceToneDiffuse,
+                       
+                   });
+                   volumeElement.add(integratedSide);
+                   
+                   var integratedTop = new MathGL.Surface({
+                       domain: {
+                           R: [0, 1],
+                           T: [0, 1]
+                       },
+                       expressions: {
+                           x: 'xStart',
+                           r: 'R*totalRadius'
+                       },
+                       style: 'wireframe',
+                       appearance: surfaceToneDiffuse,
+                       
+                   });
+                   //volumeElement.add(integratedTop);
+                   
+                   var integratedBottom = new MathGL.Surface({
+                       domain: {
+                           R: [0, 1],
+                           T: [0, 1]
+                       },
+                       expressions: {
+                           x: 'xEnd',
+                           r: 'R*totalRadius'
+                       },
+                       style: 'wireframe',
+                       appearance: surfaceToneDiffuse,
+                   });
+                   //volumeElement.add(integratedBottom);
+               }
+
+
+               view.space(space);
+               view.camera(camera);
+
+               /**
+                * Subscribers
+                */
+               function updateDimensions(update) {
+                   if(update == 'canvasDim') {
+                       var newDims = State.canvasDim;
+                       view.dimensions(newDims.w, newDims.h);
+                   }
+               }
+               State.subscribe(updateDimensions);
+
+               function updateCamera(update) {
+                   if(update == 'mouseState') {
+
+                       var x = State.mouseState.mouseDiff.x;
+                       var y = State.mouseState.mouseDiff.y;
+
+                       var camX = camera.primitive('x');
+                       var camY = camera.primitive('z');
+                       var camZ = camera.primitive('y');
+
+                       // cartesian => spherical
+                       var r = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
+                       var phi = Math.atan2(camY, camX);
+                       var theta = Math.acos(camZ / r);
+
+                       phi += x/100;
+
+                       theta -= y/100;
+                       theta = theta > Math.PI ? Math.PI : theta;
+                       theta = theta < 0.001 ? 0.001 : theta;
+
+                       // spherical => cartesian
+                       camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
+                       camera.primitive('z', r*Math.sin(theta)*Math.sin(phi));
+                       camera.primitive('y', r*Math.cos(theta));
+                   }
+               }
+               State.subscribe(updateCamera);
+
+               
+               function moveCamera(r, phi, theta, duration) {
+                   var camX = camera.primitive('x');
+                   var camY = camera.primitive('z');
+                   var camZ = camera.primitive('y');
+
+                   var oldR = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
+                   var oldPhi = Math.atan2(camY, camX);
+                   var oldTheta = Math.acos(camZ / r);
+                   
+//                   console.log(phi);
+                   
+                   var tween = new TWEEN.Tween( { r: oldR, phi: oldPhi, theta: oldTheta } )
+                       .to( { r: r,
+                              phi: phi,
+                              theta: theta}, duration )
+                       .easing( TWEEN.Easing.Quadratic.InOut )
+                       .onUpdate( function () {
+                           var theta = this.theta;
+                           var phi = this.phi;
+                           var r = this.r;
+                           // spherical => cartesian
+                           camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
+                           camera.primitive('z', r*Math.sin(theta)*Math.sin(phi));
+                           camera.primitive('y', r*Math.cos(theta));
+                       }).start();
+               }
+               
+
+               function drawCurve() {
+                   var tween = new TWEEN.Tween( { x: 0 } )
+                       .to( { x: 1 }, 2000 )
+                       .easing( TWEEN.Easing.Quadratic.InOut )
+                       .onUpdate( function () {
+                           curve.primitive('xLimit', this.x);
+                       }).start();
+               }
+
+
+               function fadeVolume() {
+                   sketchedVolume.primitive('p', 1);
+                   var tween = new TWEEN.Tween( { x: 1 } )
+                       .to( { x: 0 }, 1000 )
+                       .easing( TWEEN.Easing.Quadratic.InOut )
+                       .onUpdate( function () {
+                           sketchedVolume.primitive('alpha', this.x);
+                       }).delay(1000).start();
+               }
+
+               function oneCylinder() {
+                   
+               }
+               
+               function rotateCurve() {
+                   sketchedVolume.primitive('p', 1);
+                   var tween = new TWEEN.Tween( { x: 0 } )
+                       .to( { x: 1 }, 3000 )
+                       .easing( TWEEN.Easing.Quadratic.InOut )
+                       .onUpdate( function () {
+                           curve.primitive('theta', -this.x*2*Math.PI);
+                           sketchedVolume.primitive('theta', -this.x*2*Math.PI);
+                           sketchedVolume.primitive('alpha', this.x);
+                       }).delay(1000).start();
+               }
+
+
+               function updateIntegralAlphas() {
+                   var dx = riemannSum.primitive('dx');
+                   volumeElements.forEach(function (elem, k) {
+                       if ((k+1) * dx > 1) {
+                           elem.primitive('alpha', 0);
+                       } else {
+                           elem.primitive('alpha', 1);
+                       }
+                   });
+               }
+
+
+               function drawHalfMarkers() {
+                   var tween = new TWEEN.Tween({ x: 0 })
+                       .to({x: 1})
+                       .easing(TWEEN.Easing.Quadratic.InOut)
+                       .onUpdate(function () {
+                           halfDistMarker.primitive('drawRatio', this.x);
+                       })
+                       .chain(new TWEEN.Tween({x: 0})
+                              .to({x: 1})
+                              .easing(TWEEN.Easing.Quadratic.InOut)
+                              .onUpdate(function () {
+                                  cylinderCurve.primitive('drawRatio', this.x);
+                              })
+                              .chain(new TWEEN.Tween({x: 0})
+                                     .to({x: 1})
+                                     .easing(TWEEN.Easing.Quadratic.InOut)
+                                     .onUpdate(function () {
+                                         var elem = volumeElements[0];
+                                         elem.primitive('alpha', this.x);
+                                         elem.primitive('theta', -this.x*2*Math.PI);
+                                         cylinderCurve.primitive('drawRatio', 1-this.x);
+                                         halfDistMarker.primitive('drawRatio', 1-this.x);
+                                     })))
+                       .start();
+                   
+               }
+
+               function animateDx(destination, duration) {
+                   var tween = new TWEEN.Tween({ x: riemannSum.primitive('dx') })
+                       .to({x: destination}, duration)
+                       .easing(TWEEN.Easing.Quadratic.InOut)
+                       .onUpdate(function () {
+                           riemannSum.primitive('dx', this.x);
+                           updateIntegralAlphas();
+                       }).start();
+               }
+
+               function showEntities(update) {
+                   if(update == 'activeStep') {
+                       switch(State.activeStep) {
+                       case 1:
+                           moveCamera(3.5, Math.PI/4, Math.PI/4); 
+                           rotateCurve();
+                           break;
+                       case 2:
+                           fadeVolume();
+                           moveCamera(3.5, Math.PI/2, Math.PI/2); 
+                           drawHalfMarkers();
+                           setTimeout(function () {
+                               moveCamera(3.5, Math.PI/4, Math.PI/4); 
+                           }, 2000)
+                           break;
+                       case 3:
+                           // two cylinders
+                           animateDx(0.5, 1000);
+                           break;
+                       case 4:
+                           // two cylinders
+                           animateDx(0.1, 3000);
+                           break;
+                       case 5: 
+                           moveCamera(3.5, Math.PI/2, 0); 
+                           hideVolume();
+                           showArea();
+                           break;
+                       case 6: 
+                           hideArea();
+                           moveCamera(3.5, 0, 0);
+                           drawCircle();
+                           break;
+                       case 7:
+                           drawVolume();
+//                           moveCamera(3, Math.PI/4, Math.PI/4); 
+                           // user can change integration borders.
+                           break;
+                       }
+                   }
+               }
+               State.subscribe(showEntities);
+
+               function updateVolumeElementPos(update) {
+                   if(update == 'elementPos') {
+                       riemannSum.primitive('dx', State.elementPos);
+                       updateIntegralAlphas();
+                   }
+               }
+               State.subscribe(updateVolumeElementPos);
+
+               function updateIntegratedVolume(update) {
+                   if(update == 'integrationUpperBound') {
+//                       integratedVolume.primitive('p', State.integrationUpperBound);
+//                       integratedTop.primitive('p', State.integrationUpperBound);
+                   }
+               }
+
+               State.subscribe(updateIntegratedVolume);
+
+               view.startRendering(update, stats);
+
+               var endTime = new Date();
+
+               drawCurve();
+//               updateIntegralAlphas();
+               
+
+
+
+
+           };
+
+           return scene;
+       });

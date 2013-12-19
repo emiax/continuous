@@ -122,6 +122,7 @@ define(function (require) {
          * Prepare renderables. Makes calls to 'attach', 'detach' and 'refresh'
          */
         prepareRenderables: function () {
+            TWEEN.update();
             var scope = this;
             this.forEachUpdate(function (slot, id) {
                 if (slot.existence) {

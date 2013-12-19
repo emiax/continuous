@@ -113,7 +113,7 @@ define([
                 y: [-10, 10]
             },           
             expressions: {
-                z: 'cos(ax)*sin((1-a)y) + x^2/15 + y^2/15',
+                z: 'cos(a*x)*sin((1-a)y) + x^2/15 + y^2/15',
                 r: '(x^2 + y^2)^(1/2)'
             },
             appearance: diffuse,
