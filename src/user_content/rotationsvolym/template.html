@@ -20,18 +20,28 @@
         </li>
         
         <li class="card hidden">
-          <p>Vi vill beräkna volymen av det område som bildas då kurvan roteras kring x-axeln.</p>
+          <p>Vi vill beräkna volymen av det <span class="orangeyellow">område</span> som bildas då kurvan roteras kring x-axeln.</p>
         </li>
 
         <li class="card hidden">
             <p>
-                Vi definierar ett
-                <span class="red">volymelement</span>,
-                <span class="red"><equation expr="dV"></equation></span>,
-                som arean av tunna cirkelskivor, med centrum i x-axeln och radien
-                <equation expr="f(x)"></equation>.
+                En grov uppskattning av denna volym är volymen av en <span class="orangeyellow">cylinder</span>.
             </p>
             <div class="equation-block">
+                <equation expr="V = pi*r^2*h = pi*f(x)^2*h"></equation>
+            </div>
+            <p>
+                I vårt fall låter vi
+                <equation expr="r=f(0.5)=0.75"></equation> och
+                <equation expr="h=1"></equation>
+                detta ger
+            </p>
+            <div class="equation-block">
+                <equation expr="V=pi*0.75^2*1 &#8776; 1.76 v.e"></equation>
+            </div>
+            
+
+            <!-- <div class="equation-block">
                 <equation expr="dV=pi*f(x)^2 dx=pi*x^4 dx="></equation>
                 <span ng-model="elementPos">
                     {{
@@ -51,22 +61,30 @@
                 ng-change="updateState('elementPos', elementPos/100)">
                 <equation expr="x="></equation>
                 <span>{{elementPos/100 || 0.5}}</span>
-            </input>
+            </input> -->
         </li>
         <li class="card hidden">
-            <p>För att få en rotationsvolym integrerar vi volymelementen längs x-axeln.</p>
+            <p>
+                En bättre uppskattning vore att beräkna volymen av två cylindrar, båda med <equation expr="h=0.5"></equation> och radier
+                <span class="orangeyellow"><equation expr="r_1=f(0.25)"></equation></span>
+                respektive
+                <span class="yellow"><equation expr="r_2=f(0.75)"></equation></span>.
+            </p>
+        </li>
+        <li class="card hidden">
+            <p>
+                Ju fler cylindrar vi använder, desto bättre approximation får vi av den sökta volymen.
+            </p>
+            <p>
+                I teorin skulle med andra ord <em>oändligt många</em> cylindrar vara den bästa approximationen.
+            </p>
+            <p>
+                Matematiskt kan detta uttryckas som en <em>integral</em>
+                där vi integrerar dessa cylindrar. 
+            </p>
             <div class="equation-block">
-                <equation 
-                    expr="int_{0 < x < 1} dV = int_{0 < x < 1} pi*x^4 dx">
-                </equation>
+                <equation expr="int_{0<x<1} pi*f(x)^2 dx"></equation>
             </div>
-            <input 
-                type="range"
-                ng-model="upperBound"
-                ng-change="updateState('integrationUpperBound', upperBound/100)">
-                <equation expr="x="></equation>
-                <span>{{upperBound/100 || 0.5}}</span>
-            </input>
         </li>
         <li id="btn-next">
             Gå vidare
