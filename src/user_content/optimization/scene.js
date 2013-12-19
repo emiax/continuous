@@ -3,8 +3,7 @@ define([
     'kalkyl',
     'kalkyl/format/simple',
     'mathgl',
-    'mathgl/engine',
-    'jquery'],
+    'mathgl/engine'],
 
        function(
            require,

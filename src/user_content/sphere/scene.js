@@ -147,8 +147,6 @@ define([
                 camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
                 camera.primitive('y', r*Math.sin(theta)*Math.sin(phi));
                 camera.primitive('z', r*Math.cos(theta));
-
-                console.log(phi);
             }
         }
         State.subscribe(updateCamera);

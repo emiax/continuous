@@ -4,10 +4,8 @@ define(function(require) {
 
     var state = {
         t: 0,
-        canvasDim: {
-            w: 700,
-            h: 700
-        }
+        mouseState: {},
+        canvasDim: {}
     };
 
     pubFactory.makePublisher(state);
