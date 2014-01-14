@@ -5,6 +5,7 @@ define(function(require) {
     var state = {
         canvasDim: {},
         mouseState: {},
+        xCoefficient: 1.0,
         activeStep: 0,
         elementPos: 0,
         integrationUpperBound: 0

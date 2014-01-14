@@ -30,6 +30,7 @@ define([], function () {
             set: function (key, val) {
                 if(!this.hasOwnProperty(key)) {
                     throw 'publisher has no property "' + key + '"';
+                    console.log(key + ": " + val);
                 }
 
                 this[key] = val;

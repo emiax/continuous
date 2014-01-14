@@ -12,11 +12,18 @@
 
 <div id="card-bar" class="right">
     <ul cardturner>
-        <li class="card">
+        <li class="card" subscribe="state">
             <p>Betrakta <span class="light-blue">funktionskurvan</span></p>
             <div class="equation-block">
-                <equation expr="y=f(x)=1-x^2,0<x<1"></equation>
+                <equation pre="y=f(x)=1-(" watch="publisher.xCoefficient" post="x^2),0<x<1"></equation>
             </div>
+            <input
+            type="range"
+            min="-1"
+            max="1"
+            step="0.1"
+            ng-model="rangeValue"
+            ng-change="publisher.set('xCoefficient', rangeValue)" />
         </li>
         
         <li class="card hidden">

@@ -12,6 +12,7 @@ angular.module('continuousApp').compileProvider.directive(
         // real time updating expressions
         if($attrs.watch != undefined) {
           $scope.$watch($attrs.watch, function(value) {
+            //console.error("VALUE!!!!" + value);
             var pre = $attrs.pre == undefined ? "" : $attrs.pre;
             var post = $attrs.post == undefined ? "" : $attrs.post;
             $element.text(

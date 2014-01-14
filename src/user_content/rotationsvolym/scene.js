@@ -16,10 +16,11 @@ define([
 
                var space = new MathGL.Space({
                    primitives: {
-                       t: 0
+                       t: 0,
+                       xCoefficient: 1
                    },
                    expressions: {
-                       f: '1 - X^2'
+                       f: '1 - xCoefficient*X^2'
                    }
                });
 
@@ -51,7 +52,8 @@ define([
                    stops: {
                        '0': new MathGL.Color(0xff999900),
 //                       '0.5': new MathGL.Color(0xff999900),
-                       1: new MathGL.Color(0xff994400)
+                       1: new MathGL.Color(0xff994400),
+                       2: new MathGL.Color(0xffc232a5)
                    }
                })
                var surfaceTransparent = new MathGL.Color(0x00998866);
@@ -533,6 +535,14 @@ define([
                    }
                }
                State.subscribe(updateVolumeElementPos);
+
+               function xCoefficientUpdate(update) {
+                   if(update == 'xCoefficient') {
+                      var newValue = parseFloat(State.xCoefficient);
+                      space.primitive('xCoefficient', newValue);
+                   }
+               }
+               State.subscribe(xCoefficientUpdate);
 
                function updateIntegratedVolume(update) {
                    if(update == 'integrationUpperBound') {
