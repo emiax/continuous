@@ -242,7 +242,29 @@ define([
 
                });
                sketchedVolume.add(sketchedTop);
-               
+
+
+               var sketchedBottom = new MathGL.Surface({
+                   domain: {
+                       R: [0, 1.00],
+                       T: [0, 3]
+                   },
+                   primitives: {
+                       u: 0,
+                       x: 0
+                   }, 
+                   expressions: {
+                       r: 'R*f',
+                       y: 'r*cos(theta*T/3)',
+                       z: 'r*sin(theta*T/3)'
+                   },
+
+                   appearance: surfaceToneDiffuse,
+//                   style: 'wireframe'
+
+               });
+               sketchedVolume.add(sketchedBottom);
+               console.log(sketchedVolume);
 
                /**
                 * Integrated
@@ -410,8 +432,10 @@ define([
 
 
                function fadeVolume() {
+                   rotateCurveTween.stop();
                    sketchedVolume.primitive('p', 1);
-                   var tween = new TWEEN.Tween( { x: 1 } )
+                   curve.primitive('theta', 0);
+                   var tween = new TWEEN.Tween( { x: sketchedVolume.primitive('alpha') } )
                        .to( { x: 0 }, 1000 )
                        .easing( TWEEN.Easing.Quadratic.InOut )
                        .onUpdate( function () {
@@ -423,9 +447,10 @@ define([
                    
                }
                
+               var rotateCurveTween = null;
                function rotateCurve() {
                    sketchedVolume.primitive('p', 1);
-                   var tween = new TWEEN.Tween( { x: 0 } )
+                   rotateCurveTween = new TWEEN.Tween( { x: 0 } )
                        .to( { x: 1 }, 3000 )
                        .easing( TWEEN.Easing.Quadratic.InOut )
                        .onUpdate( function () {
@@ -505,7 +530,7 @@ define([
                            animateDx(0.5, 1000);
                            break;
                        case 4:
-                           // two cylinders
+                           // ten cylinders
                            animateDx(0.1, 3000);
                            break;
                        case 5: 
