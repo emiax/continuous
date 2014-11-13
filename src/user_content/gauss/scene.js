@@ -11,13 +11,22 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     var State = require('./state');
     var view = new Engine.View(document.getElementById('canvas'));
 
+    var parser = new SimpleFormat.Parser();
+    var xExpr = parser.parse('y + x');
+    var yExpr = parser.parse('-x');
+
+    var xExprDx = xExpr.differentiated('x');
+    var yExprDy = yExpr.differentiated('y');
+
     var space = new MathGL.Space({
       primitives: {
-        t: 0,
-        xCoefficient: 1
+        time: 0
       },
       expressions: {
-        f: '1 - xCoefficient*X^2'
+        Ax: xExpr,
+        Ay: yExpr,
+        AxDx: xExprDx,
+        AyDy: yExprDy
       }
     });
 
@@ -35,46 +44,65 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     });
     space.add(camera);
 
-    var t = 0
+    var t = 0;
     function update() {
       ++t;
-      space.primitive('t', t/100);
+      space.primitive('time', t/100);
+      vectorField.forEach(function (fieldVector) {
+        var x = fieldVector.primitive('x');
+        var y = fieldVector.primitive('y');
+        var lifetime = fieldVector.primitive('lifetime');
+
+
+        var dx = xExpr.evaluated({
+          x: x,
+          y: y,
+          time: t/100
+        });
+
+        var dy = yExpr.evaluated({
+          x: x,
+          y: y,
+          time: t/100
+        });
+
+        var newX = (x + dx.value()*0.0025);
+        var newY = (y + dy.value()*0.0025);
+        var newLifetime = lifetime + 1;
+
+        if (newX < -2 || newX > 2 || newY < -2 || newY > 2) {
+          updateDensityMap();
+
+          var pos = findMinDensity();
+
+          newX = pos.x + Math.random() * 0.1 - 0.05;
+          newY = pos.y + Math.random() * 0.1 - 0.05;
+          newLifetime = 0;
+        }
+        fieldVector.primitive('x', newX);
+        fieldVector.primitive('y', newY);
+        fieldVector.primitive('lifetime', newLifetime)
+      });
     }
-
-    var surfaceWhite = new MathGL.Gradient({
-      parameter: 'r',
-      stops: {
-        0: new MathGL.Color(0xff999900),
-        1: new MathGL.Color(0xff994400),
-        2: new MathGL.Color(0xffc232a5)
-      }
-    });
-    var surfaceTransparent = new MathGL.Color(0x00998866);
-
-    var surfaceTone = new MathGL.Gradient({
-      parameter: 'alpha',
-      stops: {
-        0: surfaceTransparent,
-        1: surfaceWhite
-      }
-    });
-
-    var surfaceToneDiffuse = new MathGL.Diffuse({
-      background: surfaceTone
-    });
 
     // appearance.
     var red = new MathGL.Color(0xffcc0000);
+    var transparentRed = new MathGL.Color(0x00cc0000);
     var green = new MathGL.Color(0xff00cc00);
     var darkBlue = new MathGL.Color(0x880000cc);
     var blue = new MathGL.Color(0xff0000ff);
+    var transparentBlue = new MathGL.Color(0x000000ff);
     var white = new MathGL.Color(0xffffffff);
 
     var curveColor = new MathGL.Color(0xff437bbe);
-
+    var gray = new MathGL.Color(0xff555555);
 
     var diffuseWhite = new MathGL.Diffuse({
       background: white
+    });
+
+    var diffuseGray = new MathGL.Diffuse({
+      background: gray
     });
 
     var diffuseRed = new MathGL.Diffuse({
@@ -85,12 +113,189 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       background: curveColor
     });
 
+    // var arrowColor = new MathGL.Gradient({
+    //   parameter: 'magnitude2',
+    //   stops: {
+    //     0: blue,
+    //     2: red
+    //   }
+    // });
+
+    // var transparentArrowColor = new MathGL.Gradient({
+    //   parameter: 'magnitude2',
+    //   stops: {
+    //     0: transparentBlue,
+    //     2: transparentRed
+    //   }
+    // });
+
+    var arrowColor = new MathGL.Color(0xffffffff);
+    var transparentArrowColor = new MathGL.Color(0x00ffffff);
+
+    var fieldArrowAppearance = new MathGL.Gradient({
+      parameter: 'r2',
+      stops: {
+        '1.5': new MathGL.Gradient({
+          parameter: 'lifetime',
+          stops: {
+            '0': transparentArrowColor,
+            '100': arrowColor
+          }
+        }),
+        '2.0': transparentArrowColor
+      }
+    });
+
+    var divergenceApperance = new MathGL.Gradient({
+      parameter: 'div',
+      stops: {
+        '-0.5': blue,
+        '0.5': red
+      }
+    });
+
+    var fluxApperance = new MathGL.Gradient({
+      parameter: 'flux',
+      stops: {
+        // '-0.5': blue,
+        '0': white,
+        '0.5': red
+      }
+    });
+
     /**
      * Scene Entities
      */
+    var divergenceZone = new MathGL.Surface({
+      domain: {
+        r: [0, 1],
+        theta: [0, 2*Math.PI]
+      },
+      expressions: {
+        x: 'r*cos(theta)',
+        y: 'r*sin(theta)',
+        z: '0',
+        div: 'AxDx + AyDy'
+      },
+      appearance: divergenceApperance
+    });
+    // space.add(divergenceZone);
+
+    var fluxContour = new MathGL.Curve({
+      domain: {
+        theta: [0, 2*Math.PI]
+      },
+      expressions: {
+        x: 'r*cos(theta)',
+        y: 'r*sin(theta)',
+        z: '0',
+        flux: 'Ax*x + Ay*y'
+      },
+      primitives: {
+        r: 1
+      },
+      appearance: fluxApperance,
+      thickness: 0.01,
+      stepSize: 0.01
+    });
+    // space.add(fluxContour);
+
+    var xAxis = new MathGL.VectorArrow({
+      expressions: {
+        position: '[-1.5, 0, 0]',
+        value: '[3.0, 0, 0]'
+      },
+      appearance: diffuseGray,
+      thickness: 0.005
+    });
+    space.add(xAxis);
+
+    var yAxis = new MathGL.VectorArrow({
+      expressions: {
+        position: '[0, -1.5, 0]',
+        value: '[0, 3.0, 0]'
+      },
+      appearance: diffuseGray,
+      thickness: 0.005
+    });
+    space.add(yAxis);
+
+    var vectorField = [];
+    for (var i = -3; i <= 3; i++) {
+      for (var j = -3; j <= 3; j++) {
+        var fieldVector = new MathGL.VectorArrow({
+          expressions: {
+            position: '[x, y, 0.01]',
+            value: '[Ax*0.2, Ay*0.2, 0]',
+            magnitude2: 'Ax*Ax + Ay*Ay',
+            r2: 'x*x + y*y'
+          },
+          primitives: {
+            x: i*0.33 + Math.random() * 0.1 - 0.05,
+            y: j*0.33 + Math.random() * 0.1 - 0.05,
+            lifetime: 0
+          },
+          appearance: fieldArrowAppearance,
+          thickness: 0.01
+        });
+        vectorField.push(fieldVector);
+        space.add(fieldVector);
+      }
+    }
+
+    var width = 10;
+    var height = 10;
+    var densityMap = new Float32Array(width*height);
 
     view.space(space);
     view.camera(camera);
+
+    /**
+     * Utilities
+     */
+    function updateDensityMap() {
+      for (var j = 0; j < height; j++) {
+        for (var i = 0; i < width; i++) {
+          var idx = i + j*width;
+          densityMap[idx] = 0;
+        }
+      }
+
+      vectorField.forEach(function (fieldVector) {
+        var x = fieldVector.primitive('x');
+        var y = fieldVector.primitive('y');
+
+        for (var j = 0; j < height; j++) {
+          for (var i = 0; i < width; i++) {
+            var idx = i + j*width;
+            var worldX = i/width - 0.5;
+            var worldY = j/height - 0.5;
+            var dx = 10*(x - worldX);
+            var dy = 10*(y - worldY);
+            var density = dx*dx + dy*dy + 1;
+
+            densityMap[idx] += 1/(density*density);
+          }
+        }
+      });
+    }
+
+    function findMinDensity() {
+      var min = Number.MAX_VALUE;
+      var minPos;
+      for (var j = 0; j < height; j++) {
+        for (var i = 0; i < width; i++) {
+          var idx = i + j*width;
+          var sample = densityMap[idx];
+          if (sample < min) {
+            min = sample;
+            minPos = {x: i/width - 0.5, y: j/height - 0.5};
+            //console.log(minPos);
+          }
+        }
+      }
+      return minPos;
+    }
 
     /**
      * Subscribers
@@ -176,6 +381,9 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       }
     }
     State.subscribe(showEntities);
+
+
+    view.startRendering(update, stats);
   };
 
   return scene;
