@@ -295,20 +295,23 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       space.add(contourNormal);
     }
 
-    var width = 10;
-    var height = 10;
-    var densityMap = new Float32Array(width*height);
-
     view.space(space);
     view.camera(camera);
 
     /**
      * Utilities
      */
+
+    var width = 0.5;
+    var height = 1;
+    var wRes = 4;
+    var hRes = 6;
+    var densityMap = new Float32Array(wRes*hRes);
+
     function updateDensityMap() {
-      for (var j = 0; j < height; j++) {
-        for (var i = 0; i < width; i++) {
-          var idx = i + j*width;
+      for (var j = 0; j < hRes; j++) {
+        for (var i = 0; i < wRes; i++) {
+          var idx = i + j*wRes;
           densityMap[idx] = 0;
         }
       }
@@ -317,11 +320,11 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         var x = fieldVector.primitive('x');
         var y = fieldVector.primitive('y');
 
-        for (var j = 0; j < height; j++) {
-          for (var i = 0; i < width; i++) {
-            var idx = i + j*width;
-            var worldX = i/width - 0.5;
-            var worldY = j/height - 0.5;
+        for (var j = 0; j < hRes; j++) {
+          for (var i = 0; i < wRes; i++) {
+            var idx = i + j*wRes;
+            var worldX = width*(i/(wRes-1) - 0.5);
+            var worldY = height*(j/(hRes-1) - 0.5);
             var dx = 10*(x - worldX);
             var dy = 10*(y - worldY);
             var density = dx*dx + dy*dy + 1;
@@ -335,13 +338,13 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     function findMinDensity() {
       var min = Number.MAX_VALUE;
       var minPos;
-      for (var j = 0; j < height; j++) {
-        for (var i = 0; i < width; i++) {
-          var idx = i + j*width;
+      for (var j = 0; j < hRes; j++) {
+        for (var i = 0; i < wRes; i++) {
+          var idx = i + j*wRes;
           var sample = densityMap[idx];
           if (sample < min) {
             min = sample;
-            minPos = {x: i/width - 0.5, y: j/height - 0.5};
+            minPos = {x: width*(i/(wRes-1) - 0.5), y: height*(j/(hRes-1) - 0.5)};
             //console.log(minPos);
           }
         }
