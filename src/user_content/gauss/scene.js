@@ -13,8 +13,8 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     var view = new Engine.View(canvas);
 
     var parser = new SimpleFormat.Parser();
-    var xExpr = parser.parse('x*x*x + x');
-    var yExpr = parser.parse('0');
+    var xExpr = parser.parse('2*x');
+    var yExpr = parser.parse('-y');
 
     var xExprDx = xExpr.differentiated('x');
     var yExprDy = yExpr.differentiated('y');
@@ -73,7 +73,7 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         var newY = (y + dy.value()*0.0025);
         var newLifetime = lifetime + 1;
 
-        if (newX < -2 || newX > 2 || newY < -2 || newY > 2) {
+        if (newX < -1.0 || newX > 1.0 || newY < -2 || newY > 2) {
           updateDensityMap();
 
           var pos = findMinDensity();
@@ -185,21 +185,25 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     var arrowColor = new MathGL.Color(0xffffffff);
     var transparentArrowColor = new MathGL.Color(0x00ffffff);
 
+    var lifeTimeGradient = new MathGL.Gradient({
+      parameter: 'lifetime',
+      stops: {
+        '0': transparentArrowColor,
+        '100': arrowColor
+      }
+    });
+
     var fieldArrowAppearance = new MathGL.Gradient({
       parameter: 'vectorFieldOpacity',
       stops: {
         '0': transparentArrowColor,
         '1': new MathGL.Gradient({
-          parameter: 'r2',
+          parameter: 'x',
           stops: {
-            '1.5': new MathGL.Gradient({
-              parameter: 'lifetime',
-              stops: {
-                '0': transparentArrowColor,
-                '100': arrowColor
-              }
-            }),
-            '2.0': transparentArrowColor
+            '-1.0': transparentArrowColor,
+            '-0.7': lifeTimeGradient,
+            '0.7' : lifeTimeGradient,
+            '1.0': transparentArrowColor
           }
         })
       }
@@ -243,11 +247,11 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         '1': new MathGL.Gradient({
           parameter: 'flux',
           stops: {
-            '-7': blue,
+            '-3': blue,
             '-0.5': lightBlue,
             '0': white,
             '0.5': pink,
-            '7': red
+            '3': red
           }
         })
       }
@@ -304,7 +308,7 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       },
       appearance: fluxApperance,
       thickness: 0.01,
-      stepSize: 0.01
+      stepSize: 0.1
     });
     space.add(fluxContour);
 
@@ -330,17 +334,15 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
 
     var vectorField = [];
     for (var i = -2; i <= 2; i++) {
-      for (var j = -2; j <= 2; j++) {
+      for (var j = -1; j <= 1; j++) {
         var fieldVector = new MathGL.VectorArrow({
           expressions: {
             position: '[x, y, 0.01]',
             value: '[Ax*0.2, Ay*0.2, 0]',
-            magnitude2: 'Ax*Ax + Ay*Ay',
-            r2: 'x*x + y*y'
           },
           primitives: {
-            x: i*0.33 + Math.random() * 0.1 - 0.05,
-            y: j*0.33 + Math.random() * 0.1 - 0.05,
+            x: i*0.33 + Math.random() * 0.3 - 0.15,
+            y: j*0.33 + Math.random() * 0.3 - 0.15,
             lifetime: 0
           },
           appearance: fieldArrowAppearance,
