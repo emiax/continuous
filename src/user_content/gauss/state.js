@@ -5,6 +5,12 @@ define(function(require) {
     canvasDim: {},
     mouseState: {},
     activeStep: 0,
+
+    showVectorField: true,
+    showFluxContour: false,
+    showFluxColors: false,
+    showFluxNormals: false,
+    showDivergenceZone: false
   };
 
   pubFactory.makePublisher(state);

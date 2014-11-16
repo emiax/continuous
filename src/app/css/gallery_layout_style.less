@@ -7,13 +7,77 @@
 #gallery-info-wrapper {
   padding: 10px;
   min-width: 400px;
-  .centered-x-container;
+
+  position: absolute;
+  left: 50%;
+  text-align: center;
+  // .centered-x-container;
 }
+
 #gallery-title {
   color: #f4f4f4;
   .centered-x;
 }
+
 #gallery-expression {
   color: #f4f4f4;
   .centered-x;
+}
+
+#gallery-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 10px;
+  font-family: 'Lato', Helvetica, sans-serif;
+  font-weight: 100;
+  text-transform: lowercase;
+  letter-spacing: 0.2em;
+  color: @color-almostWhite;
+  opacity: 0.3;
+}
+
+.control-widget {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: @color-almostWhite;
+  padding: 10px;
+
+  label {
+    .noselect;
+    display: block;
+    overflow: hidden;
+    clear: both;
+    padding-left: 20px;
+    position: relative;
+
+    p, input {
+      float: left;
+    }
+
+    input {
+      height: 0;
+      width: 0;
+      visibility: hidden;
+    }
+  }
+
+  label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #aaa;
+  }
+
+  label.checked:before {
+    height: 10px;
+    width: 10px;
+    background: black;
+    border: 2px solid #aaa;
+  }
 }

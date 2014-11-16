@@ -1,3 +1,47 @@
+<div id="gallery-logo">
+  <h1>Grasp</h1>
+</div>
+
+<div id="gallery-info-wrapper">
+    <h2 class="gallery" id="gallery-title">{{gui.title}}</h2>
+    <equation
+        class="gallery"
+        id="gallery-expression"
+        expr="\int\int\int_V(\nabla\cdot\mathbf{F})dV=\int\int_S\mathbf{F}\cdot\hat{\mathbf{n}} dS">
+    </equation>
+</div>
+
+<div class="control-widget" subscribe="state">
+  <label ng-class="{checked: publisher.showVectorField}">
+    <input
+      type="checkbox"
+      ng-model="publisher.showVectorField"
+      ng-change="publisher.set('showVectorField', publisher.showVectorField)">
+    <p>Vector Field</p>
+  </label>
+  <label ng-class="{checked: publisher.showFluxContour}">
+    <input
+      type="checkbox"
+      ng-model="publisher.showFluxContour"
+      ng-change="publisher.set('showFluxContour', publisher.showFluxContour)">
+    <p>Flux Contour</p>
+  </label>
+  <label ng-class="{checked: publisher.showFluxColor}">
+    <input
+      type="checkbox"
+      ng-model="publisher.showFluxColor"
+      ng-change="publisher.set('showFluxColor', publisher.showFluxColor)">
+    <p>Flux Color</p>
+  </label>
+  <label ng-class="{checked: publisher.showFluxNormals}">
+    <input
+      type="checkbox"
+      ng-model="publisher.showFluxNormals"
+      ng-change="publisher.set('showFluxNormals', publisher.showFluxNormals)">
+    <p>Flux Normals</p>
+  </label>
+</div>
+
 <div id="canvas-wrapper">
   <canvas
     id="canvas"
@@ -8,22 +52,4 @@
     publish={{publishCanvasDimensions()}}
     mouse-event="mousedrag">
   </canvas>
-</div>
-
-<div id="card-bar" class="right">
-  <ul cardturner>
-    <li class="card" subscribe="state">
-      <p>Betrakta vektorfältet</p>
-      <p><equation expr="A=((y+x),(-x))"></equation> </p>
-    </li>
-
-    <li class="card hidden">
-      <p>Vi vill beräkna flödet ut genom cirkeln med randen</p>
-    </li>
-
-    <!-- <equation expr="\int\int\int_V(\nabla\cdot\mathbf{F})dV=\int\int_S\mathbf{F}\cdot\hat{\mathbf{n}} dS"></equation> -->
-    <li id="btn-next">
-      Gå vidare
-    </li>
-  </ul>
 </div>

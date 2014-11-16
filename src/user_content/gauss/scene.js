@@ -9,7 +9,8 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
 
   var scene = function() {
     var State = require('./state');
-    var view = new Engine.View(document.getElementById('canvas'));
+    var canvas = document.getElementById('canvas');
+    var view = new Engine.View(canvas);
 
     var parser = new SimpleFormat.Parser();
     var xExpr = parser.parse('y + x');
@@ -20,7 +21,14 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
 
     var space = new MathGL.Space({
       primitives: {
-        time: 0
+        time: 0,
+        circlePosX: 0,
+        circlePosY: 0,
+        vectorFieldOpacity: 1,
+        showFluxColor: 0,
+        showFluxNormals: 0,
+        fluxNormalsStretch: 0,
+        contourArcT: 0
       },
       expressions: {
         Ax: xExpr,
@@ -86,11 +94,13 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     }
 
     // appearance.
-    var red = new MathGL.Color(0xffcc0000);
+    var red = new MathGL.Color(0xffff0000);
+    var pink = new MathGL.Color(0xffff4444);
     var transparentRed = new MathGL.Color(0x00cc0000);
     var green = new MathGL.Color(0xff00cc00);
     var darkBlue = new MathGL.Color(0x880000cc);
     var blue = new MathGL.Color(0xff0000ff);
+    var lightBlue = new MathGL.Color(0xff7799ff);
     var transparentBlue = new MathGL.Color(0x000000ff);
     var white = new MathGL.Color(0xffffffff);
 
@@ -133,16 +143,30 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     var transparentArrowColor = new MathGL.Color(0x00ffffff);
 
     var fieldArrowAppearance = new MathGL.Gradient({
-      parameter: 'r2',
+      parameter: 'vectorFieldOpacity',
       stops: {
-        '1.5': new MathGL.Gradient({
-          parameter: 'lifetime',
+        '0': transparentArrowColor,
+        '1': new MathGL.Gradient({
+          parameter: 'r2',
           stops: {
-            '0': transparentArrowColor,
-            '100': arrowColor
+            '1.5': new MathGL.Gradient({
+              parameter: 'lifetime',
+              stops: {
+                '0': transparentArrowColor,
+                '100': arrowColor
+              }
+            }),
+            '2.0': transparentArrowColor
           }
-        }),
-        '2.0': transparentArrowColor
+        })
+      }
+    });
+
+    var contourNormalAppearance = new MathGL.Gradient({
+      parameter: 'showFluxNormals',
+      stops: {
+        '0': transparentArrowColor,
+        '1': lightBlue
       }
     });
 
@@ -155,11 +179,18 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     });
 
     var fluxApperance = new MathGL.Gradient({
-      parameter: 'flux',
+      parameter: 'showFluxColor',
       stops: {
-        // '-0.5': blue,
         '0': white,
-        '0.5': red
+        '1': new MathGL.Gradient({
+          parameter: 'flux',
+          stops: {
+            // '-0.5': blue,
+            '0': white,
+            '0.5': pink,
+            '2': red
+          }
+        })
       }
     });
 
@@ -186,19 +217,20 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         theta: [0, 2*Math.PI]
       },
       expressions: {
-        x: 'r*cos(theta)',
-        y: 'r*sin(theta)',
+        x: 'circlePosX + r*cos(contourArcT*theta)',
+        y: 'circlePosY + r*sin(contourArcT*theta)',
         z: '0',
         flux: 'Ax*x + Ay*y'
       },
       primitives: {
-        r: 1
+        r: 0.5,
+        t: 0
       },
       appearance: fluxApperance,
       thickness: 0.01,
       stepSize: 0.01
     });
-    // space.add(fluxContour);
+    space.add(fluxContour);
 
     var xAxis = new MathGL.VectorArrow({
       expressions: {
@@ -241,6 +273,26 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         vectorField.push(fieldVector);
         space.add(fieldVector);
       }
+    }
+
+    var contourNormals = [];
+    for (var i = 0; i < 8; i++) {
+      var contourNormal = new MathGL.VectorArrow({
+        expressions: {
+          position: '[circlePosX + x, circlePosY + y, 0.01]',
+          value: '[x*0.2*(fluxNormalsStretch + 0.3), y*0.2*(fluxNormalsStretch + 0.3), 0]',
+          x: 'r*cos(contourArcT*radians)',
+          y: 'r*sin(contourArcT*radians)',
+        },
+        primitives: {
+          r: 0.5 + 0.005,
+          radians: i*2*Math.PI/8
+        },
+        appearance: contourNormalAppearance,
+        thickness: 0.01
+      });
+      contourNormals.push(contourNormal);
+      space.add(contourNormal);
     }
 
     var width = 10;
@@ -313,25 +365,32 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         var x = State.mouseState.mouseDiff.x;
         var y = State.mouseState.mouseDiff.y;
 
-        var camX = camera.primitive('x');
-        var camY = camera.primitive('z');
-        var camZ = camera.primitive('y');
+        var scaleFactor = 4/canvas.height;
 
-        // cartesian => spherical
-        var r = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
-        var phi = Math.atan2(camY, camX);
-        var theta = Math.acos(camZ / r);
+        var currentX = space.primitive('circlePosX');
+        var currentY = space.primitive('circlePosY');
+        space.primitive('circlePosX', currentX + x*scaleFactor);
+        space.primitive('circlePosY', currentY - y*scaleFactor);
 
-        phi += x/100;
+        // var camX = camera.primitive('x');
+        // var camY = camera.primitive('z');
+        // var camZ = camera.primitive('y');
 
-        theta -= y/100;
-        theta = theta > Math.PI ? Math.PI : theta;
-        theta = theta < 0.001 ? 0.001 : theta;
+        // // cartesian => spherical
+        // var r = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
+        // var phi = Math.atan2(camY, camX);
+        // var theta = Math.acos(camZ / r);
 
-        // spherical => cartesian
-        camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
-        camera.primitive('z', r*Math.sin(theta)*Math.sin(phi));
-        camera.primitive('y', r*Math.cos(theta));
+        // phi += x/100;
+
+        // theta -= y/100;
+        // theta = theta > Math.PI ? Math.PI : theta;
+        // theta = theta < 0.001 ? 0.001 : theta;
+
+        // // spherical => cartesian
+        // camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
+        // camera.primitive('z', r*Math.sin(theta)*Math.sin(phi));
+        // camera.primitive('y', r*Math.cos(theta));
       }
     }
     State.subscribe(updateCamera);
@@ -364,7 +423,8 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       if(update == 'activeStep') {
         switch(State.activeStep) {
           case 1:
-          break;
+            drawContour();
+            break;
           case 2:
           break;
           case 3:
@@ -382,6 +442,61 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     }
     State.subscribe(showEntities);
 
+    function toggleVectorField(update) {
+      if (update == 'showVectorField') {
+        if (State.showVectorField) {
+          space.primitive('vectorFieldOpacity', 1);
+        } else {
+          space.primitive('vectorFieldOpacity', 0);
+        }
+      }
+    }
+    State.subscribe(toggleVectorField);
+
+    function toggleFluxContour(update) {
+      if (update == 'showFluxContour') {
+        if (State.showFluxContour) {
+          var tween = new TWEEN.Tween( { x: 0 } )
+             .to({ x: 1 }, 1000)
+             .easing(TWEEN.Easing.Quadratic.InOut)
+             .onUpdate( function () {
+                 space.primitive('contourArcT', this.x);
+             }).start();
+        } else {
+          space.primitive('contourArcT', 0);
+        }
+      }
+    }
+    State.subscribe(toggleFluxContour);
+
+    function toggleFluxColor(update) {
+      if (update == 'showFluxColor') {
+        if (State.showFluxColor) {
+          space.primitive('showFluxColor', 1);
+        } else {
+          space.primitive('showFluxColor', 0);
+        }
+      }
+    }
+    State.subscribe(toggleFluxColor);
+
+    function toggleFluxNormals(update) {
+      if (update == 'showFluxNormals' || update == 'showFluxContour') {
+        if (State.showFluxNormals && State.showFluxContour) {
+          space.primitive('showFluxNormals', 1);
+          var tween = new TWEEN.Tween( { x: 0 } )
+             .to({ x: 1 }, 300)
+             .easing(TWEEN.Easing.Quadratic.InOut)
+             .onUpdate( function () {
+                 space.primitive('fluxNormalsStretch', this.x);
+             }).start();
+        } else {
+          space.primitive('showFluxNormals', 0);
+          space.primitive('fluxNormalsStretch', 0);
+        }
+      }
+    }
+    State.subscribe(toggleFluxNormals);
 
     view.startRendering(update, stats);
   };
