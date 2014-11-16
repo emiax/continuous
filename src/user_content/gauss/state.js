@@ -11,7 +11,8 @@ define(function(require) {
     showFluxColors: false,
     showFluxNormals: false,
     showDivergenceZone: false,
-    showContourVectorField: false
+    showContourVectorField: false,
+    view3D: false
   };
 
   pubFactory.makePublisher(state);

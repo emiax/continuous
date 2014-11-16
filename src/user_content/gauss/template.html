@@ -3,12 +3,12 @@
 </div>
 
 <div id="gallery-info-wrapper">
-    <h2 class="gallery" id="gallery-title">{{gui.title}}</h2>
-    <equation
+    <h2 class="gallery" id="gallery-title">Divergens och flödesintegraler</h2>
+    <!-- <equation
       class="gallery"
       id="gallery-expression"
       expr="\int\int\int_V(\nabla\cdot\mathbf{F})dV=\int\int_S\mathbf{F}\cdot\hat{\mathbf{n}} dS">
-    </equation>
+    </equation> -->
     <p>
       <equation
         class="gallery"
@@ -25,13 +25,6 @@
       ng-model="publisher.showVectorField"
       ng-change="publisher.set('showVectorField', publisher.showVectorField)">
     <p>Vector Field</p>
-  </label>
-  <label ng-class="{checked: publisher.showDivergenceZone}">
-    <input
-      type="checkbox"
-      ng-model="publisher.showDivergenceZone"
-      ng-change="publisher.set('showDivergenceZone', publisher.showDivergenceZone)">
-    <p>Divergence Zone</p>
   </label>
   <label ng-class="{checked: publisher.showFluxContour}">
     <input
@@ -60,6 +53,20 @@
       ng-model="publisher.showContourVectorField"
       ng-change="publisher.set('showContourVectorField', publisher.showContourVectorField)">
     <p>Contour Vector Field</p>
+  </label>
+  <label ng-class="{checked: publisher.showDivergenceZone}">
+    <input
+      type="checkbox"
+      ng-model="publisher.showDivergenceZone"
+      ng-change="publisher.set('showDivergenceZone', publisher.showDivergenceZone)">
+    <p>Divergence Zone</p>
+  </label>
+  <label ng-class="{checked: publisher.view3D}">
+    <input
+      type="checkbox"
+      ng-model="publisher.view3D"
+      ng-change="publisher.set('view3D', publisher.view3D)">
+    <p>3D</p>
   </label>
 </div>
 

@@ -18,6 +18,5 @@ define(function (require) {
             PlaneTessellation.constructor.call(this, domain, [0, 2*Math.PI], [stepSize, 0.2]);
         },
     });
-    
 });
 

@@ -10,7 +10,7 @@ define(function (require) {
         constructor: function () {
             var thetaMin = this._thetaMin = 0;
             var thetaMax = this._thetaMax = 2*Math.PI;
-            var thetaStep = this._thetaStep = 2*Math.PI / 50;
+            var thetaStep = this._thetaStep = 2*Math.PI / 4;
 
             this._tessellated = false;
         },

@@ -90,20 +90,68 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
 
     // appearance.
     var red = new MathGL.Color(0xffff0000);
+    var transparentRed = new MathGL.Color(0x00ff0000);
+    var translucentRed = new MathGL.Gradient({
+      parameter: 'opacity',
+      stops: {
+        '0': transparentRed,
+        '1': red
+      }
+    });
+
     var pink = new MathGL.Color(0xffffaaaa);
-    var transparentRed = new MathGL.Color(0x00cc0000);
+    var transparentPink = new MathGL.Color(0x00ffaaaa);
+    var translucentPink = new MathGL.Gradient({
+      parameter: 'opacity',
+      stops: {
+        '0': transparentPink,
+        '1': pink
+      }
+    });
+
     var green = new MathGL.Color(0xff00cc00);
-    var darkBlue = new MathGL.Color(0x880000cc);
+
     var blue = new MathGL.Color(0xff0011ff);
+    var transparentBlue = new MathGL.Color(0x000011ff);
+    var translucentBlue = new MathGL.Gradient({
+      parameter: 'opacity',
+      stops: {
+        '0': transparentBlue,
+        '1': blue
+      }
+    });
+
     var lightBlue = new MathGL.Color(0xffaaccff);
-    var transparentBlue = new MathGL.Color(0x000000ff);
+    var transparentLightBlue = new MathGL.Color(0x00aaccff);
+    var translucentLightBlue = new MathGL.Gradient({
+      parameter: 'opacity',
+      stops: {
+        '0': transparentLightBlue,
+        '1': lightBlue
+      }
+    });
+
     var white = new MathGL.Color(0xffffffff);
+    var transparentWhite = new MathGL.Color(0x00ffffff);
+    var translucentWhite = new MathGL.Gradient({
+      parameter: 'opacity',
+      stops: {
+        '0': transparentWhite,
+        '1': white
+      }
+    });
+
+    var translucentGray = new MathGL.Color(0x77999999);
 
     var curveColor = new MathGL.Color(0xff437bbe);
     var gray = new MathGL.Color(0xff555555);
 
     var diffuseWhite = new MathGL.Diffuse({
       background: white
+    });
+
+    var diffuseTranslucentWhite = new MathGL.Diffuse({
+      background: translucentWhite
     });
 
     var diffuseGray = new MathGL.Diffuse({
@@ -200,6 +248,23 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
             '0': white,
             '0.5': pink,
             '7': red
+          }
+        })
+      }
+    });
+
+    var translucentFluxAppearence = new MathGL.Gradient({
+      parameter: 'showFluxColor',
+      stops: {
+        '0': translucentWhite,
+        '1': new MathGL.Gradient({
+          parameter: 'flux',
+          stops: {
+            '-7': translucentBlue,
+            '-0.5': translucentLightBlue,
+            '0': translucentWhite,
+            '0.5': translucentPink,
+            '7': translucentRed
           }
         })
       }
@@ -326,20 +391,42 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       space.add(contourFieldVector);
     }
 
+    var fluxSphere = new MathGL.Surface({
+      domain: {
+        T: [0, Math.PI],
+        P: [0, 2*Math.PI]
+      },
+      primitives: {
+        r: 0.5,
+        opacity: 0
+      },
+      expressions: {
+        x: 'circlePosX + r*sin(T)*cos(P)',
+        y: 'circlePosY + r*sin(T)*sin(P)',
+        z: 'r*cos(T)',
+        flux: 'Ax*cos(P) + Ay*sin(P)'
+      },
+      appearance: translucentFluxAppearence
+    });
+    space.add(fluxSphere);
+
     view.space(space);
     view.camera(camera);
 
     /**
      * Utilities
      */
-    var width = 10;
-    var height = 10;
-    var densityMap = new Float32Array(width*height);
+
+    var width = 0.5;
+    var height = 1;
+    var wRes = 4;
+    var hRes = 6;
+    var densityMap = new Float32Array(wRes*hRes);
 
     function updateDensityMap() {
-      for (var j = 0; j < height; j++) {
-        for (var i = 0; i < width; i++) {
-          var idx = i + j*width;
+      for (var j = 0; j < hRes; j++) {
+        for (var i = 0; i < wRes; i++) {
+          var idx = i + j*wRes;
           densityMap[idx] = 0;
         }
       }
@@ -348,11 +435,11 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         var x = fieldVector.primitive('x');
         var y = fieldVector.primitive('y');
 
-        for (var j = 0; j < height; j++) {
-          for (var i = 0; i < width; i++) {
-            var idx = i + j*width;
-            var worldX = i/width - 0.5;
-            var worldY = j/height - 0.5;
+        for (var j = 0; j < hRes; j++) {
+          for (var i = 0; i < wRes; i++) {
+            var idx = i + j*wRes;
+            var worldX = width*(i/(wRes-1) - 0.5);
+            var worldY = height*(j/(hRes-1) - 0.5);
             var dx = 10*(x - worldX);
             var dy = 10*(y - worldY);
             var density = dx*dx + dy*dy + 1;
@@ -366,13 +453,13 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     function findMinDensity() {
       var min = Number.MAX_VALUE;
       var minPos;
-      for (var j = 0; j < height; j++) {
-        for (var i = 0; i < width; i++) {
-          var idx = i + j*width;
+      for (var j = 0; j < hRes; j++) {
+        for (var i = 0; i < wRes; i++) {
+          var idx = i + j*wRes;
           var sample = densityMap[idx];
           if (sample < min) {
             min = sample;
-            minPos = {x: i/width - 0.5, y: j/height - 0.5};
+            minPos = {x: width*(i/(wRes-1) - 0.5), y: height*(j/(hRes-1) - 0.5)};
           }
         }
       }
@@ -482,6 +569,55 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       }
     }
     State.subscribe(toggleContourVectorField);
+
+    function moveCamera(r, phi, theta, duration) {
+      var camX = camera.primitive('x');
+      var camY = camera.primitive('z');
+      var camZ = camera.primitive('y');
+
+      var oldR = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
+      var oldPhi = Math.atan2(camY, camX);
+      var oldTheta = Math.acos(camZ / oldR);
+
+      var tween = new TWEEN.Tween({ r: oldR, phi: oldPhi, theta: oldTheta })
+        .to({ r: r,
+          phi: phi,
+          theta: theta
+        }, duration)
+        .easing(TWEEN.Easing.Quadratic.InOut)
+        .onUpdate(function () {
+          var theta = this.theta;
+          var phi = this.phi;
+          var r = this.r;
+          // spherical => cartesian
+          camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
+          camera.primitive('z', r*Math.sin(theta)*Math.sin(phi));
+          camera.primitive('y', r*Math.cos(theta));
+        }).start();
+    }
+
+    function toggle3D(update) {
+      if (update == 'view3D') {
+        if (State.view3D) {
+          moveCamera(2, Math.PI/2, 5*Math.PI/6, 1000);
+          var tween = new TWEEN.Tween( { x: 0 } )
+            .to({ x: 0.7 }, 1000)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate( function () {
+              fluxSphere.primitive('opacity', this.x);
+            }).start();
+        } else {
+          moveCamera(3.5, Math.PI/2, Math.PI/2, 1000);
+          var tween = new TWEEN.Tween( { x: 0.7 } )
+            .to({ x: 0 }, 1000)
+            .easing(TWEEN.Easing.Quadratic.InOut)
+            .onUpdate( function () {
+              fluxSphere.primitive('opacity', this.x);
+            }).start();
+        }
+      }
+    }
+    State.subscribe(toggle3D);
 
     view.startRendering(update, stats);
   };

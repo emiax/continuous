@@ -129,8 +129,8 @@ define(function (require) {
             //var uStep = typeof stepSize === 'object' ? stepSize[u] : stepSize || (domain[u][1] - domain[u][1])/100;
            // var vStep = typeof stepSize === 'object' ? stepSize[v] : stepSize || (domain[v][1] - domain[v][1])/100;
 
-            var uStep = 0.01;
-            var vStep = 0.01;
+            var uStep = 0.1;
+            var vStep = 0.1;
 
             var tessellation = new exports.PlaneTessellation(uDomain, vDomain, [uStep, vStep]);
             var uData = tessellation.uArray();
