@@ -10,7 +10,8 @@ define(function(require) {
     showFluxContour: false,
     showFluxColors: false,
     showFluxNormals: false,
-    showDivergenceZone: false
+    showDivergenceZone: false,
+    showContourVectorField: false
   };
 
   pubFactory.makePublisher(state);

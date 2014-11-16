@@ -13,20 +13,21 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     var view = new Engine.View(canvas);
 
     var parser = new SimpleFormat.Parser();
-    var xExpr = parser.parse('y + x');
-    var yExpr = parser.parse('-x');
+    var xExpr = parser.parse('x*x*x + x');
+    var yExpr = parser.parse('0');
 
     var xExprDx = xExpr.differentiated('x');
     var yExprDy = yExpr.differentiated('y');
 
     var space = new MathGL.Space({
       primitives: {
-        time: 0,
         circlePosX: 0,
         circlePosY: 0,
         vectorFieldOpacity: 1,
+        showDivergenceZone: 0,
         showFluxColor: 0,
         showFluxNormals: 0,
+        showContourVectorField: 0,
         fluxNormalsStretch: 0,
         contourArcT: 0
       },
@@ -52,26 +53,20 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     });
     space.add(camera);
 
-    var t = 0;
     function update() {
-      ++t;
-      space.primitive('time', t/100);
       vectorField.forEach(function (fieldVector) {
         var x = fieldVector.primitive('x');
         var y = fieldVector.primitive('y');
         var lifetime = fieldVector.primitive('lifetime');
 
-
         var dx = xExpr.evaluated({
           x: x,
-          y: y,
-          time: t/100
+          y: y
         });
 
         var dy = yExpr.evaluated({
           x: x,
-          y: y,
-          time: t/100
+          y: y
         });
 
         var newX = (x + dx.value()*0.0025);
@@ -95,12 +90,12 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
 
     // appearance.
     var red = new MathGL.Color(0xffff0000);
-    var pink = new MathGL.Color(0xffff4444);
+    var pink = new MathGL.Color(0xffffaaaa);
     var transparentRed = new MathGL.Color(0x00cc0000);
     var green = new MathGL.Color(0xff00cc00);
     var darkBlue = new MathGL.Color(0x880000cc);
-    var blue = new MathGL.Color(0xff0000ff);
-    var lightBlue = new MathGL.Color(0xff7799ff);
+    var blue = new MathGL.Color(0xff0011ff);
+    var lightBlue = new MathGL.Color(0xffaaccff);
     var transparentBlue = new MathGL.Color(0x000000ff);
     var white = new MathGL.Color(0xffffffff);
 
@@ -166,15 +161,30 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       parameter: 'showFluxNormals',
       stops: {
         '0': transparentArrowColor,
-        '1': lightBlue
+        '1': green
+      }
+    });
+
+    var contourVectorFieldAppearance = new MathGL.Gradient({
+      parameter: 'showContourVectorField',
+      stops: {
+        '0': transparentArrowColor,
+        '1': white
       }
     });
 
     var divergenceApperance = new MathGL.Gradient({
-      parameter: 'div',
+      parameter: 'showDivergenceZone',
       stops: {
-        '-0.5': blue,
-        '0.5': red
+        '0': transparentRed,
+        '1': new MathGL.Gradient({
+          parameter: 'div',
+          stops: {
+            '-7': blue,
+            '0': white,
+            '7': red
+          }
+        })
       }
     });
 
@@ -185,10 +195,11 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         '1': new MathGL.Gradient({
           parameter: 'flux',
           stops: {
-            // '-0.5': blue,
+            '-7': blue,
+            '-0.5': lightBlue,
             '0': white,
             '0.5': pink,
-            '2': red
+            '7': red
           }
         })
       }
@@ -199,18 +210,18 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
      */
     var divergenceZone = new MathGL.Surface({
       domain: {
-        r: [0, 1],
+        r: [0, 0.5],
         theta: [0, 2*Math.PI]
       },
       expressions: {
-        x: 'r*cos(theta)',
-        y: 'r*sin(theta)',
-        z: '0',
+        x: 'circlePosX + r*cos(theta)',
+        y: 'circlePosY + r*sin(theta)',
+        z: '0.01',
         div: 'AxDx + AyDy'
       },
       appearance: divergenceApperance
     });
-    // space.add(divergenceZone);
+    space.add(divergenceZone);
 
     var fluxContour = new MathGL.Curve({
       domain: {
@@ -219,8 +230,8 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       expressions: {
         x: 'circlePosX + r*cos(contourArcT*theta)',
         y: 'circlePosY + r*sin(contourArcT*theta)',
-        z: '0',
-        flux: 'Ax*x + Ay*y'
+        z: '0.01',
+        flux: 'Ax*cos(contourArcT*theta) + Ay*sin(contourArcT*theta)'
       },
       primitives: {
         r: 0.5,
@@ -253,8 +264,8 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     space.add(yAxis);
 
     var vectorField = [];
-    for (var i = -3; i <= 3; i++) {
-      for (var j = -3; j <= 3; j++) {
+    for (var i = -2; i <= 2; i++) {
+      for (var j = -2; j <= 2; j++) {
         var fieldVector = new MathGL.VectorArrow({
           expressions: {
             position: '[x, y, 0.01]',
@@ -276,7 +287,7 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     }
 
     var contourNormals = [];
-    for (var i = 0; i < 8; i++) {
+    for (var i = 1; i < 8; i += 2) {
       var contourNormal = new MathGL.VectorArrow({
         expressions: {
           position: '[circlePosX + x, circlePosY + y, 0.01]',
@@ -295,9 +306,25 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       space.add(contourNormal);
     }
 
-    var width = 10;
-    var height = 10;
-    var densityMap = new Float32Array(width*height);
+    var contourVectorField = [];
+    for (var i = 1; i < 8; i += 2) {
+      var contourFieldVector = new MathGL.VectorArrow({
+        expressions: {
+          position: '[x, y, 0.01]',
+          value: '[Ax*0.2, Ay*0.2, 0]',
+          x: 'circlePosX + r*cos(contourArcT*radians)',
+          y: 'circlePosY + r*sin(contourArcT*radians)',
+        },
+        primitives: {
+          r: 0.5 + 0.005,
+          radians: i*2*Math.PI/8
+        },
+        appearance: contourVectorFieldAppearance,
+        thickness: 0.01
+      });
+      contourVectorField.push(contourFieldVector);
+      space.add(contourFieldVector);
+    }
 
     view.space(space);
     view.camera(camera);
@@ -305,6 +332,10 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
     /**
      * Utilities
      */
+    var width = 10;
+    var height = 10;
+    var densityMap = new Float32Array(width*height);
+
     function updateDensityMap() {
       for (var j = 0; j < height; j++) {
         for (var i = 0; i < width; i++) {
@@ -342,7 +373,6 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
           if (sample < min) {
             min = sample;
             minPos = {x: i/width - 0.5, y: j/height - 0.5};
-            //console.log(minPos);
           }
         }
       }
@@ -371,76 +401,9 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
         var currentY = space.primitive('circlePosY');
         space.primitive('circlePosX', currentX + x*scaleFactor);
         space.primitive('circlePosY', currentY - y*scaleFactor);
-
-        // var camX = camera.primitive('x');
-        // var camY = camera.primitive('z');
-        // var camZ = camera.primitive('y');
-
-        // // cartesian => spherical
-        // var r = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
-        // var phi = Math.atan2(camY, camX);
-        // var theta = Math.acos(camZ / r);
-
-        // phi += x/100;
-
-        // theta -= y/100;
-        // theta = theta > Math.PI ? Math.PI : theta;
-        // theta = theta < 0.001 ? 0.001 : theta;
-
-        // // spherical => cartesian
-        // camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
-        // camera.primitive('z', r*Math.sin(theta)*Math.sin(phi));
-        // camera.primitive('y', r*Math.cos(theta));
       }
     }
     State.subscribe(updateCamera);
-
-    function moveCamera(r, phi, theta, duration) {
-      var camX = camera.primitive('x');
-      var camY = camera.primitive('z');
-      var camZ = camera.primitive('y');
-
-      var oldR = Math.sqrt(camX*camX + camY*camY + camZ*camZ);
-      var oldPhi = Math.atan2(camY, camX);
-      var oldTheta = Math.acos(camZ / r);
-
-      var tween = new TWEEN.Tween( { r: oldR, phi: oldPhi, theta: oldTheta } )
-        .to({ r: r, phi: phi, theta: theta}, duration)
-        .easing(TWEEN.Easing.Quadratic.InOut)
-        .onUpdate( function () {
-           var theta = this.theta;
-           var phi = this.phi;
-           var r = this.r;
-               // spherical => cartesian
-               camera.primitive('x', r*Math.sin(theta)*Math.cos(phi));
-               camera.primitive('z', r*Math.sin(theta)*Math.sin(phi));
-               camera.primitive('y', r*Math.cos(theta));
-             })
-        .start();
-    }
-
-    function showEntities(update) {
-      if(update == 'activeStep') {
-        switch(State.activeStep) {
-          case 1:
-            drawContour();
-            break;
-          case 2:
-          break;
-          case 3:
-          break;
-          case 4:
-          break;
-          case 5:
-          break;
-          case 6:
-          break;
-          case 7:
-          break;
-        }
-      }
-    }
-    State.subscribe(showEntities);
 
     function toggleVectorField(update) {
       if (update == 'showVectorField') {
@@ -452,6 +415,17 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       }
     }
     State.subscribe(toggleVectorField);
+
+    function toggleDivergenceZone(update) {
+      if (update == 'showDivergenceZone') {
+        if (State.showDivergenceZone) {
+          space.primitive('showDivergenceZone', 1);
+        } else {
+          space.primitive('showDivergenceZone', 0);
+        }
+      }
+    }
+    State.subscribe(toggleDivergenceZone);
 
     function toggleFluxContour(update) {
       if (update == 'showFluxContour') {
@@ -497,6 +471,17 @@ function(require, Kalkyl, SimpleFormat, MathGL, Engine) {
       }
     }
     State.subscribe(toggleFluxNormals);
+
+    function toggleContourVectorField(update) {
+      if (update == 'showContourVectorField' || update == 'showFluxContour') {
+        if (State.showContourVectorField && State.showFluxContour) {
+          space.primitive('showContourVectorField', 1);
+        } else {
+          space.primitive('showContourVectorField', 0);
+        }
+      }
+    }
+    State.subscribe(toggleContourVectorField);
 
     view.startRendering(update, stats);
   };

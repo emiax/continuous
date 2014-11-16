@@ -6,7 +6,7 @@ angular.module('continuousApp').compileProvider.directive(
         
         scope.getWindowDimensions = function () {
             return {
-                'h': w[0].innerHeight-51,
+                'h': w[0].innerHeight,
                 'w': w[0].innerWidth
             };
         };
